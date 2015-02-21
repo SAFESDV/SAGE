@@ -64,7 +64,7 @@ class EstacionamientoExtendedForm(forms.Form):
     horario_reserin = forms.TimeField(required = True, label = 'Horario Inicio Reserva')
     horario_reserout = forms.TimeField(required = True, label = 'Horario Fin Reserva')
 
-    tarifa = forms.CharField(required = True, validators = [tarifa_validator])
+    #tarifa = forms.CharField(required = True, validators = [tarifa_validator])
     
     lista_de_esquemas = FindAllSubclasses(EsquemaTarifario)
     choices_esquema = []
@@ -75,6 +75,8 @@ class EstacionamientoExtendedForm(forms.Form):
                                 choices = choices_esquema
     )
     
+
+    
     def __init__(self, *args, **kwargs):
         super(EstacionamientoExtendedForm,self).__init__(*args, **kwargs)
         self.fields['puestos'].widget.attrs = {'class':'form-control', 'placeholder':'Número de Puestos'}
@@ -82,8 +84,19 @@ class EstacionamientoExtendedForm(forms.Form):
         self.fields['horarioout'].widget.attrs = {'class':'form-control', 'placeholder':'Horario Cierre'}
         self.fields['horario_reserin'].widget.attrs = {'class':'form-control', 'placeholder':'Horario Inicio Reserva'}
         self.fields['horario_reserout'].widget.attrs = {'class':'form-control', 'placeholder':'Horario Fin Reserva'}
-        self.fields['tarifa'].widget.attrs = {'class':'form-control', 'placeholder':'Tarifa'}
-        self.fields['esquema'].widget.attrs = {'class':'form-control'}
+        #self.fields['tarifa'].widget.attrs = {'class':'form-control', 'placeholder':'Tarifa'}
+        self.fields['esquema'].widget.attrs = {'class':'form-control', 'ng-model':'form_select','data-ng-click':"searchAll = '' ", 'placeholder':'Tipo de tarifa'}
+        
+        for i in range(len(self.lista_de_esquemas)):
+            campos = self.lista_de_esquemas[i][0].formCampos(None)
+            for j in range(len(campos)):
+                self.fields["field_%d_%d" % (i,j)] = campos[j][0]
+                if campos[j][1]:
+                    campos[j][2]['ng-show']=("form_select === '%d'" % i)
+                    campos[j][2]['data-ng-model']="default"
+                    self.fields["field_%d_%d" % (i,j)].widget.attrs = campos[j][2]
+                else:
+                    self.fields["field_%d_%d" % (i,j)].widget.attrs = {'class':'form-control', 'ng-show':("form_select === '%d'" % i),'data-ng-model':"default"}
 
 class EstacionamientoReserva(forms.Form):
     inicio = forms.DateTimeField(label = 'Horario Inicio Reserva')

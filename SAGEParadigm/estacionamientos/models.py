@@ -4,6 +4,8 @@ from math import ceil, floor
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
+from django import forms
+from django.core.validators import MinValueValidator
 
 class Estacionamiento(models.Model):
 	propietario = models.CharField(max_length = 50, help_text = "Nombre Propio")
@@ -62,6 +64,8 @@ class TarifaHora(EsquemaTarifario):
 		return(Decimal(self.tarifa*a).quantize(Decimal('1.00')))
 	def  tipo(self):
 		return("Por Hora")
+	def formCampos(self):
+		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'})]
 
 class TarifaMinuto(EsquemaTarifario):
 
@@ -72,6 +76,8 @@ class TarifaMinuto(EsquemaTarifario):
 	
 	def  tipo(self):
 		return("Por Minuto")
+	def formCampos(self):
+		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'})]
 
 class TarifaHorayFraccion(EsquemaTarifario):
 
@@ -92,3 +98,19 @@ class TarifaHorayFraccion(EsquemaTarifario):
 	
 	def  tipo(self):
 		return("Por Hora y Fraccion")
+	def formCampos(self):
+		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'})]
+	
+class TarifaHorayPicos(EsquemaTarifario):
+
+	def calcularPrecio(self,horaInicio,horaFinal):
+		
+		return(Decimal('1'))
+	
+	def  tipo(self):
+		return("Por Horas Pico")
+	def formCampos(self):
+		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'TarifaNoPico'}),\
+			(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'TarifaPico'}),\
+			(forms.TimeField(required = True, label = 'Horario Apertura'),True,{'class':'form-control', 'placeholder':'HorarioPicoInic'}),\
+			(forms.TimeField(required = True, label = 'Horario Apertura'),True,{'class':'form-control', 'placeholder':'HorarioPicoFin'})]

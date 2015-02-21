@@ -75,8 +75,10 @@ def estacionamiento_detail(request, _id):
             horaOut = form.cleaned_data['horarioout']
             reservaIn = form.cleaned_data['horario_reserin']
             reservaOut = form.cleaned_data['horario_reserout']
-            tmonto = form.cleaned_data['tarifa']
-            esquema = form.lista_de_esquemas[int(form.cleaned_data['esquema'])][0](tarifa = tmonto)
+
+            tarif_num = int(form.cleaned_data['esquema'])
+            tmonto = form.cleaned_data["field_%d_%d" % (tarif_num,0)]
+            esquema = form.lista_de_esquemas[tarif_num][0](tarifa = tmonto)
             esquema.save()
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
