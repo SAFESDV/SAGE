@@ -85,7 +85,7 @@ class EstacionamientoExtendedForm(forms.Form):
         self.fields['horario_reserin'].widget.attrs = {'class':'form-control', 'placeholder':'Horario Inicio Reserva'}
         self.fields['horario_reserout'].widget.attrs = {'class':'form-control', 'placeholder':'Horario Fin Reserva'}
         #self.fields['tarifa'].widget.attrs = {'class':'form-control', 'placeholder':'Tarifa'}
-        self.fields['esquema'].widget.attrs = {'class':'form-control', 'ng-model':'form_select','data-ng-click':"searchAll = '' ", 'placeholder':'Tipo de tarifa'}
+        self.fields['esquema'].widget.attrs = {'class':'form-control', 'ng-model':'form_select','data-ng-click':"default = '';", 'placeholder':'Tipo de tarifa'}
         
         for i in range(len(self.lista_de_esquemas)):
             campos = self.lista_de_esquemas[i][0].formCampos(None)
@@ -93,7 +93,8 @@ class EstacionamientoExtendedForm(forms.Form):
                 self.fields["field_%d_%d" % (i,j)] = campos[j][0]
                 if campos[j][1]:
                     campos[j][2]['ng-show']=("form_select === '%d'" % i)
-                    campos[j][2]['data-ng-model']="default"
+                    campos[j][2]['data-ng-model']=("default_%d_%d" % (i,j))
+                    self.fields['esquema'].widget.attrs['data-ng-click']=self.fields['esquema'].widget.attrs['data-ng-click']+("default_%d_%d = %s;" % (i,j,str(campos[j][3])))
                     self.fields["field_%d_%d" % (i,j)].widget.attrs = campos[j][2]
                 else:
                     self.fields["field_%d_%d" % (i,j)].widget.attrs = {'class':'form-control', 'ng-show':("form_select === '%d'" % i),'data-ng-model':"default"}

@@ -65,7 +65,7 @@ class TarifaHora(EsquemaTarifario):
 	def  tipo(self):
 		return("Por Hora")
 	def formCampos(self):
-		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'})]
+		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'},'0')]
 
 class TarifaMinuto(EsquemaTarifario):
 
@@ -77,7 +77,7 @@ class TarifaMinuto(EsquemaTarifario):
 	def  tipo(self):
 		return("Por Minuto")
 	def formCampos(self):
-		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'})]
+		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'},'0')]
 
 class TarifaHorayFraccion(EsquemaTarifario):
 
@@ -99,7 +99,7 @@ class TarifaHorayFraccion(EsquemaTarifario):
 	def  tipo(self):
 		return("Por Hora y Fraccion")
 	def formCampos(self):
-		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'})]
+		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'},'0')]
 	
 class TarifaHorayPicos(EsquemaTarifario):
 
@@ -110,7 +110,7 @@ class TarifaHorayPicos(EsquemaTarifario):
 	def  tipo(self):
 		return("Por Horas Pico")
 	def formCampos(self):
-		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'TarifaNoPico'}),\
-			(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'TarifaPico'}),\
-			(forms.TimeField(required = True, label = 'Horario Apertura'),True,{'class':'form-control', 'placeholder':'HorarioPicoInic'}),\
-			(forms.TimeField(required = True, label = 'Horario Apertura'),True,{'class':'form-control', 'placeholder':'HorarioPicoFin'})]
+		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'TarifaNoPico'},'0'),\
+			(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'TarifaPico'},'0'),\
+			(forms.TimeField(required = True, initial="00:01",label = 'Horario Apertura'),True,{'class':'form-control', 'placeholder':'HorarioPicoInic'},"'00:00'"),\
+			(forms.TimeField(required = True, initial="00:01", label = 'Horario Apertura'),True,{'class':'form-control', 'placeholder':'HorarioPicoFin'},"'00:00'")]
