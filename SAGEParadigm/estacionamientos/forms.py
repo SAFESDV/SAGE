@@ -97,7 +97,8 @@ class EstacionamientoExtendedForm(forms.Form):
                     self.fields['esquema'].widget.attrs['data-ng-click']=self.fields['esquema'].widget.attrs['data-ng-click']+("default_%d_%d = %s;" % (i,j,str(campos[j][3])))
                     self.fields["field_%d_%d" % (i,j)].widget.attrs = campos[j][2]
                 else:
-                    self.fields["field_%d_%d" % (i,j)].widget.attrs = {'class':'form-control', 'ng-show':("form_select === '%d'" % i),'data-ng-model':"default"}
+                    self.fields['esquema'].widget.attrs['data-ng-click']=self.fields['esquema'].widget.attrs['data-ng-click']+("default_%d_%d = %s;" % (i,j,str(campos[j][2])))
+                    self.fields["field_%d_%d" % (i,j)].widget.attrs = {'class':'form-control', 'ng-show':("form_select === '%d'" % i),'data-ng-model':("default_%d_%d" % (i,j))}
 
 class EstacionamientoReserva(forms.Form):
     inicio = forms.DateTimeField(label = 'Horario Inicio Reserva')

@@ -26,7 +26,7 @@ class Estacionamiento(models.Model):
 	content_type = models.ForeignKey(ContentType, null = True)
 	object_id = models.PositiveIntegerField(null = True)
 	esquemaTarifa = GenericForeignKey()
-	tarifa = models.DecimalField(decimal_places = 2, max_digits = 256, blank = True, null = True)
+	tarifa = models.CharField(blank = True, null = True, max_length = 255)
 	apertura = models.TimeField(blank = True, null = True)
 	cierre = models.TimeField(blank = True, null = True)
 	reservasInicio = models.TimeField(blank = True, null = True)
@@ -58,8 +58,8 @@ class EsquemaTarifario(models.Model):
 	#2 - metodo calcular precio: calcula el monto a pagar dado una fecha de inicio y una final, ademas de los atributos de la clase
 	#3 - metodo tipo: retorne el nombre de la clase que se mostrara al usuario
 	#4 - metodo formCampos: retorna una lista de 4tuplas o 3tuplas, cada una de ellas, el primer elemento es un field de form que se usara para el form, el segundo es un booleanno que indica si se quiere especificar un widget, el tercero el es un diccionario con los widget, y el cuarto es lo que debe tner el campo por default, de ser falso el booleano no se xoloca el diccionario y el default va de tercero
-	
-
+	#5 - metodo fcampos; retorna la cantidad de tuplas que contiene el metodo anterior, para no tener que contar a cada rato, aumenta eficiencia
+	#6 - metodo create: este metodo recibe una lista con los elementos retornados del form en el mismo orden que se puesieron en el metodo formCampos, debe retornar el objeto tarifa creado
 
 class TarifaHora(EsquemaTarifario):
 
@@ -72,6 +72,12 @@ class TarifaHora(EsquemaTarifario):
 		return("Por Hora")
 	def formCampos(self):
 		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'},'0')]
+	def fcampos(self):
+		return 1
+	def create(self, input):
+		return TarifaHora(tarifa = input[0])
+	def tarifString(self):
+		return (str(self.tarifa)+" Bsf.")
 
 class TarifaMinuto(EsquemaTarifario):
 
@@ -84,6 +90,12 @@ class TarifaMinuto(EsquemaTarifario):
 		return("Por Minuto")
 	def formCampos(self):
 		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'},'0')]
+	def fcampos(self):
+		return 1
+	def create(self, input):
+		return TarifaMinuto(tarifa = input[0])
+	def tarifString(self):
+		return (str(self.tarifa)+" Bsf.")
 
 class TarifaHorayFraccion(EsquemaTarifario):
 
@@ -106,6 +118,12 @@ class TarifaHorayFraccion(EsquemaTarifario):
 		return("Por Hora y Fraccion")
 	def formCampos(self):
 		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'},'0')]
+	def fcampos(self):
+		return 1
+	def create(self, input):
+		return TarifaHorayFraccion(tarifa = input[0])
+	def tarifString(self):
+		return (str(self.tarifa)+" Bsf.")
 	
 class TarifaHorayPicos(EsquemaTarifario):
 	#se usa atributo heredado tarifa para la tarifa de la hora no pico
@@ -124,3 +142,9 @@ class TarifaHorayPicos(EsquemaTarifario):
 			(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'TarifaPico'},'0'),\
 			(forms.TimeField(required = True, initial="00:01",label = 'Horario Apertura'),True,{'class':'form-control', 'placeholder':'HorarioPicoInic'},"'00:00'"),\
 			(forms.TimeField(required = True, initial="00:01", label = 'Horario Apertura'),True,{'class':'form-control', 'placeholder':'HorarioPicoFin'},"'00:00'")]
+	def fcampos(self):
+		return 4
+	def create(self, input):
+		return TarifaHorayPicos(tarifa = input[0], tarifaPico = input[1],inicPico = input[2], finPico = input[3])
+	def tarifString(self):
+		return ("Pico: "+str(self.tarifaPico)+" Bsf. - Normal: "+str(self.tarifa)+" Bsf. - Horario pico: ("+str(self.inicPico)+","+str(self.finPico)+")")

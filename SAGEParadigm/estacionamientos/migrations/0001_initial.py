@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('email2', models.EmailField(blank=True, max_length=254, null=True)),
                 ('rif', models.CharField(max_length=12)),
                 ('object_id', models.PositiveIntegerField(null=True)),
-                ('tarifa', models.DecimalField(blank=True, decimal_places=2, max_digits=256, null=True)),
+                ('tarifa', models.CharField(blank=True, max_length=255, null=True)),
                 ('apertura', models.TimeField(blank=True, null=True)),
                 ('cierre', models.TimeField(blank=True, null=True)),
                 ('reservasInicio', models.TimeField(blank=True, null=True)),
@@ -58,6 +58,19 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('tarifa', models.DecimalField(decimal_places=2, max_digits=10)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
+            name='TarifaHorayPicos',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('tarifa', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('tarifaPico', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('inicPico', models.TimeField(blank=True, null=True)),
+                ('finPico', models.TimeField(blank=True, null=True)),
             ],
             options={
                 'abstract': False,

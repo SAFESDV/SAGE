@@ -77,9 +77,13 @@ def estacionamiento_detail(request, _id):
             reservaOut = form.cleaned_data['horario_reserout']
 
             tarif_num = int(form.cleaned_data['esquema'])
-            tmonto = form.cleaned_data["field_%d_%d" % (tarif_num,0)]
-            esquema = form.lista_de_esquemas[tarif_num][0](tarifa = tmonto)
-            esquema.save()
+            esquema = form.lista_de_esquemas[tarif_num][0]
+            parametros = []
+            for i in range(esquema.fcampos(None)):
+                parametros.append(form.cleaned_data["field_%d_%d" % (tarif_num,i)])
+            t = esquema.create(None, parametros)
+            t.save()
+ 
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
             m_validado = HorarioEstacionamiento(horaIn, horaOut, reservaIn, reservaOut)
@@ -87,12 +91,12 @@ def estacionamiento_detail(request, _id):
                 return render(request, 'templateMensaje.html', {'color':'red', 'mensaje': m_validado[1]})
             # debería funcionar con excepciones
 
-            estacionamiento.tarifa = tmonto
+            estacionamiento.tarifa = t.tarifString()
             estacionamiento.apertura = horaIn
             estacionamiento.cierre = horaOut
             estacionamiento.reservasInicio = reservaIn
             estacionamiento.reservasCierre = reservaOut
-            estacionamiento.esquemaTarifa = esquema
+            estacionamiento.esquemaTarifa = t
             estacionamiento.nroPuesto = form.cleaned_data['puestos']
 
             estacionamiento.save()
