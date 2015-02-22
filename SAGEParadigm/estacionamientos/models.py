@@ -53,6 +53,12 @@ class EsquemaTarifario(models.Model):
 		abstract = True
 	def __str__(self):
 		return str(self.tarifa)
+	#estandar para creacion de tarifas:
+	#1 - anhada los atributos que requiera la nueva clase
+	#2 - metodo calcular precio: calcula el monto a pagar dado una fecha de inicio y una final, ademas de los atributos de la clase
+	#3 - metodo tipo: retorne el nombre de la clase que se mostrara al usuario
+	#4 - metodo formCampos: retorna una lista de 4tuplas o 3tuplas, cada una de ellas, el primer elemento es un field de form que se usara para el form, el segundo es un booleanno que indica si se quiere especificar un widget, el tercero el es un diccionario con los widget, y el cuarto es lo que debe tner el campo por default, de ser falso el booleano no se xoloca el diccionario y el default va de tercero
+	
 
 
 class TarifaHora(EsquemaTarifario):
@@ -102,6 +108,10 @@ class TarifaHorayFraccion(EsquemaTarifario):
 		return [(forms.DecimalField(required = True, initial=0, decimal_places=2, max_digits=12, validators=[MinValueValidator(Decimal('0'))]),True,{'class':'form-control', 'placeholder':'Tarifa'},'0')]
 	
 class TarifaHorayPicos(EsquemaTarifario):
+	#se usa atributo heredado tarifa para la tarifa de la hora no pico
+	tarifaPico = models.DecimalField(max_digits=10, decimal_places=2)
+	inicPico = models.TimeField(blank = True, null = True)
+	finPico = models.TimeField(blank = True, null = True)
 
 	def calcularPrecio(self,horaInicio,horaFinal):
 		
