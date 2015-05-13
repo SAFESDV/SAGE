@@ -34,6 +34,7 @@ from estacionamientos.forms import (
 )
 from estacionamientos.models import (
     Estacionamiento,
+    Propietario,
     Reserva,
     Pago,
     TarifaHora,
@@ -70,17 +71,22 @@ def estacionamientos_all(request):
         # el constructor del modelo
         if form.is_valid():
             obj = Estacionamiento(
-                propietario = form.cleaned_data['propietario'],
                 nombre      = form.cleaned_data['nombre'],
                 direccion   = form.cleaned_data['direccion'],
                 rif         = form.cleaned_data['rif'],
                 telefono1   = form.cleaned_data['telefono_1'],
                 telefono2   = form.cleaned_data['telefono_2'],
-                telefono3   = form.cleaned_data['telefono_3'],
-                email1      = form.cleaned_data['email_1'],
-                email2      = form.cleaned_data['email_2']
+                email1      = form.cleaned_data['email_oficina'],
             )
             obj.save()
+            
+
+            obj1 = Propietario(
+                propietario = form.cleaned_data['propietario'],
+                telefono3   = form.cleaned_data['telefono_personal'],
+                email2      = form.cleaned_data['email_personal']
+            )
+            obj1.save()            
             # Recargamos los estacionamientos ya que acabamos de agregar
             estacionamientos = Estacionamiento.objects.all()
             form = EstacionamientoForm()

@@ -87,19 +87,19 @@ class EstacionamientoForm(forms.Form):
         )
     )
 
-    telefono_3 = forms.CharField(
+    telefono_personal = forms.CharField(
         required   = False,
         validators = [phone_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Teléfono 3'
+            , 'placeholder' : 'Teléfono personal'
             , 'pattern'     : phone_validator.regex.pattern
             , 'message'     : phone_validator.message
             }
         )
     )
 
-    email_1 = forms.EmailField(
+    email_oficina = forms.EmailField(
         required = False,
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
@@ -109,11 +109,11 @@ class EstacionamientoForm(forms.Form):
         )
     )
 
-    email_2 = forms.EmailField(
+    email_personal = forms.EmailField(
         required = False,
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'E-mail 2'
+            , 'placeholder' : 'E-mail propietario'
             , 'message'     : 'La entrada debe ser un e-mail válido.'
             }
         )

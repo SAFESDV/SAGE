@@ -7,14 +7,12 @@ from decimal import Decimal
 from datetime import timedelta
 
 class Estacionamiento(models.Model):
-	propietario = models.CharField(max_length = 50, help_text = "Nombre Propio")
+	
 	nombre      = models.CharField(max_length = 50)
 	direccion   = models.TextField(max_length = 120)
 	telefono1   = models.CharField(blank = True, null = True, max_length = 30)
 	telefono2   = models.CharField(blank = True, null = True, max_length = 30)
-	telefono3   = models.CharField(blank = True, null = True, max_length = 30)
 	email1      = models.EmailField(blank = True, null = True)
-	email2      = models.EmailField(blank = True, null = True)
 	rif         = models.CharField(max_length = 12)
 
 	# Campos para referenciar al esquema de tarifa
@@ -28,6 +26,11 @@ class Estacionamiento(models.Model):
 
 	def __str__(self):
 		return self.nombre+' '+str(self.id)
+
+class Propietario(models.Model):
+	propietario = models.CharField(max_length = 50, help_text = "Nombre Propio")
+	telefono3   = models.CharField(blank = True, null = True, max_length = 30)
+	email2      = models.EmailField(blank = True, null = True)
 
 class Reserva(models.Model):
 	estacionamiento = models.ForeignKey(Estacionamiento)
