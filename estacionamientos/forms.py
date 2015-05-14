@@ -299,6 +299,7 @@ class PagoForm(forms.Form):
             }
         )
     )
+    
 
     apellido = forms.CharField(
         required   = True,
@@ -347,7 +348,7 @@ class PagoForm(forms.Form):
             ('Xpress', ' XPRESS '),
             ('BE', 'Billetera Electronica')
         ),
-        widget   = forms.RadioSelect()
+        widget   = forms.RadioSelect()#attrs={'onChange':"this.form.submit()"})
     )
 
     tarjeta = forms.CharField(
@@ -390,7 +391,7 @@ class BilleteraElectronicaForm(forms.Form):
         validators = [card_name_validator],
         widget = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Nombre del Tarjetahabiente'
+            , 'placeholder' : 'Nombre del Titular'
             , 'pattern'     : card_name_validator.regex.pattern
             , 'message'     : card_name_validator.message
             }
@@ -403,7 +404,7 @@ class BilleteraElectronicaForm(forms.Form):
         validators = [card_surname_validator],
         widget = forms.TextInput(attrs =
             { 'class'      : 'form-control'
-            , 'placeholder' : 'Apellido del Tarjetahabiente'
+            , 'placeholder' : 'Apellido del Titular'
             , 'pattern'     : card_surname_validator.regex.pattern
             , 'message'     : card_surname_validator.message
             }

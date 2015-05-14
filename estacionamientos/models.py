@@ -61,7 +61,7 @@ class BilleteraElectronica(models.Model):
     apellidoUsuario  = models.CharField(max_length = 50)
     cedulaTipo       = models.CharField(max_length = 1)
     cedula           = models.CharField(max_length = 10)
-    PIN                 = models.CharField(max_length = 4)
+    PIN              = models.CharField(max_length = 4)
     saldo            = models.DecimalField(max_digits = 5, decimal_places = 2)
     
     def __str__(self):

@@ -94,6 +94,11 @@
             onclick="self.close()"
             class="btn btn-primary"
           >
+          <a href="../crearbilletera" onClick="popup(this, 'Crear Billetera')">
+              <button class="btn btn-primary">
+                Crear Billetera
+              </button>
+          </a>
         </form>
       {% endif %}
       {% if pago %}
@@ -170,6 +175,20 @@
 {% endblock %}
 {% block scripts %}
   {% include "validator.js.html" %}
+  
+  <script type="text/javascript">
+    function popup(mylink, windowname) {
+      if (! window.focus)
+        return true;
+      var href;
+      if (typeof(mylink) == 'string')
+        href=mylink;
+      else
+        href=mylink.href;
+      window.open(href, windowname, 'width=800,height=600,scrollbars=yes');
+      return false;
+    }
+  </script>
 
   <script type="text/javascript">
     function popuponclick(){

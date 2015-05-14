@@ -29,10 +29,11 @@ from estacionamientos.forms import (
     EstacionamientoForm,
     ReservaForm,
     PagoForm,
-    BilleteraElectronicaForm,
     RifForm,
     CedulaForm,
+    BilleteraElectronicaForm
 )
+
 from estacionamientos.models import (
     Estacionamiento,
     Reserva,
@@ -42,8 +43,8 @@ from estacionamientos.models import (
     TarifaHorayFraccion,
     TarifaFinDeSemana,
     TarifaHoraPico,
-    BilleteraElectronica)
-from django.template.context_processors import request
+    BilleteraElectronica
+)
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -281,6 +282,8 @@ def estacionamiento_pago(request,_id):
     if (estacionamiento.apertura is None):
         return HttpResponse(status = 403) # No esta permitido acceder a esta vista aun
     
+    
+    
     if request.method == 'POST':
         form = PagoForm(request.POST)
         if form.is_valid():
@@ -319,8 +322,6 @@ def estacionamiento_pago(request,_id):
                 tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
                 reserva          = reservaFinal,
             )
-
-
             # Se guarda el recibo de pago en la base de datos
             pago.save()
 
@@ -333,48 +334,12 @@ def estacionamiento_pago(request,_id):
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
                 }
             )
-
     return render(
         request,
         'pago.html',
         { 'form' : form }
     )
 
-def estacionamiento_billetera(request):
-    form = BilleteraElectronicaForm()
-    
-    if request.method == 'POST':
-        form = PagoForm(request.POST)
-        if form.is_valid():
-            BE = BilleteraElectronica(
-                nombre           = form.cleaned_data['Nombre'],
-                Apellido         = form.cleaned_data['Apellido'],
-                cedulaTipo       = form.cleaned_data['cedulaTipo'],
-                cedula           = form.cleaned_data['cedula'],
-                PIN              = form.cleaned_data['PIN'],
-                saldo            = 0,
-               
-            )
-            
-            #Salva la billetera en la base de datos
-            BE.save()
-
-            return render(
-                request,
-                'BilleteraElectronica.html',
-                { "id"      : _id
-                , "BE"    : BE
-                , "color"   : "green"
-                , 'mensaje' : "Su billetera electrónica se ha creado satisfactoriamente."
-                }
-            )
-
-    return render(
-        request,
-        'BilleteraElectronica.html',
-        { 'form' : form }
-    )
-    
 def estacionamiento_ingreso(request):
     form = RifForm()
     if request.method == 'POST':
@@ -532,3 +497,40 @@ def grafica_tasa_de_reservacion(request):
     pyplot.close()
     
     return response
+
+def billetera_crear(request):
+    form = BilleteraElectronicaForm()
+    
+    if request.method == 'POST':
+        form = BilleteraElectronicaForm(request.POST)
+        if form.is_valid():
+            
+            billetera = BilleteraElectronica(
+                nombreUsuario    = form.cleaned_data['nombre'],
+                apellidoUsuario  = form.cleaned_data['apellido'],
+                cedulaTipo       = form.cleaned_data['cedulaTipo'],
+                cedula           = form.cleaned_data['cedula'],
+                PIN              = form.cleaned_data['pin'],
+                saldo            = Decimal(0).quantize(Decimal('1.00'))
+            )
+            
+            billetera.save();
+            
+            return render(
+                request,
+                'crearbilletera.html',
+                { "billetera"    : billetera
+                , "color"   : "green"
+                , 'mensaje' : "Se ha creado la billetera satisfactoriamente."
+                }
+            )
+    
+    return render(
+        request,
+        'crearbilletera.html',
+        {
+         'form' : form
+        }
+    )
+    
+    
