@@ -31,8 +31,9 @@ from estacionamientos.forms import (
     PagoForm,
     RifForm,
     CedulaForm,
-    BilleteraElectronicaForm
-)
+    BilleteraElectronicaForm,
+    ModoPagoForm, 
+    BilleteraElectronicaPagoForm)
 
 from estacionamientos.models import (
     Estacionamiento,
@@ -45,6 +46,8 @@ from estacionamientos.models import (
     TarifaHoraPico,
     BilleteraElectronica
 )
+from django.template.context_processors import request
+from django.forms.forms import Form
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -282,8 +285,6 @@ def estacionamiento_pago(request,_id):
     if (estacionamiento.apertura is None):
         return HttpResponse(status = 403) # No esta permitido acceder a esta vista aun
     
-    
-    
     if request.method == 'POST':
         form = PagoForm(request.POST)
         if form.is_valid():
@@ -340,6 +341,25 @@ def estacionamiento_pago(request,_id):
         { 'form' : form }
     )
 
+def estacionamiento_modo_pago(request, _id):
+    form = ModoPagoForm()
+    
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+    
+    if (estacionamiento.apertura is None):
+        return HttpResponse(status = 403) # No esta permitido acceder a esta vista aun
+    
+    
+    return render(
+        request,
+        'ModoPago.html',
+        { 'form' : form }
+    )
+
+    
 def estacionamiento_ingreso(request):
     form = RifForm()
     if request.method == 'POST':
@@ -363,6 +383,7 @@ def estacionamiento_ingreso(request):
         'consultar-ingreso.html',
         { "form" : form }
     )
+
 
 def estacionamiento_consulta_reserva(request):
     form = CedulaForm()
@@ -498,6 +519,106 @@ def grafica_tasa_de_reservacion(request):
     
     return response
 
+def billetera_pagar(request, _id):
+    form = BilleteraElectronicaPagoForm()
+    
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+    
+    if (estacionamiento.apertura is None):
+        return HttpResponse(status = 403) # No esta permitido acceder a esta vista aun
+    
+    if request.method == 'POST':
+        form = BilleteraElectronicaPagoForm(request.POST)
+        if form.is_valid():
+            try:
+                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
+                if (BE.PIN != form.cleaned_data['pin']):
+                    return render(
+                        request,
+                        'billetera_pagar.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+                    
+                
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'billetera_pagar.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+            
+            monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))
+            if (monto > BE.saldo):
+                return render(
+                        request,
+                        'billetera_pagar.html',
+                        { "formIns"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Saldo es insuficiente."
+                        }
+                    )
+            inicioReserva = datetime(
+                year   = request.session['anioinicial'],
+                month  = request.session['mesinicial'],
+                day    = request.session['diainicial'],
+                hour   = request.session['inicioReservaHora'],
+                minute = request.session['inicioReservaMinuto']
+            )
+
+            finalReserva  = datetime(
+                year   = request.session['aniofinal'],
+                month  = request.session['mesfinal'],
+                day    = request.session['diafinal'],
+                hour   = request.session['finalReservaHora'],
+                minute = request.session['finalReservaMinuto']
+            )
+
+            reservaFinal = Reserva(
+                estacionamiento = estacionamiento,
+                inicioReserva   = inicioReserva,
+                finalReserva    = finalReserva,
+            )
+            
+            # Se guarda la reserva en la base de datos
+            reservaFinal.save()
+
+            pago = Pago(
+                fechaTransaccion = datetime.now(),
+                cedula           = BE.cedula,
+                cedulaTipo       = BE.cedulaTipo,
+                monto            = monto,
+                tarjetaTipo      = "BE",
+                reserva          = reservaFinal,
+            )
+            
+            
+            # Se guarda el recibo de pago en la base de datos
+            pago.save()
+
+            return render(
+                request,
+                'billetera_pagar.html',
+                { "id"      : _id
+                , "pago"    : pago
+                , "color"   : "green"
+                , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
+                }
+            )
+    return render(
+        request,
+        'billetera_pagar.html',
+        { 'form' : form }
+    )
+        
 def billetera_crear(request):
     form = BilleteraElectronicaForm()
     

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}
+  SAGE - Reservar en estacionamiento {{estacionamiento.nombre}}
+{% endblock %}
+
+{% block body%}
+  <body {% if mensaje %} onunload="openlink()" {% endif %}>
+{% endblock %}
+
+{% block menu %}{% endblock %}
+  
+{% block innerContents%}
+    
+  <a href="./pago" onClick="popup(this, 'Pago Tarjeta')">
+    <button class="btn btn-primary">
+      Tarjeta de Credito
+    </button>
+  </a>
+  
+  <a href="./billeterapagar" onClick="popup(this, 'Pago Tarjeta')">
+    <button class="btn btn-primary">
+      Billetera Electronica
+    </button>
+  </a>
+  
+{% endblock %}
