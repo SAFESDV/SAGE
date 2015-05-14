@@ -1,6 +1,8 @@
 eclipse.preferences.version=1
 encoding//estacionamientos/admin.py=utf-8
 encoding//estacionamientos/forms.py=utf-8
+encoding//estacionamientos/migrations/0002_auto_20150513_1841.py=utf-8
+encoding//estacionamientos/migrations/0003_auto_20150513_1854.py=utf-8
 encoding//estacionamientos/models.py=utf-8
 encoding//estacionamientos/urls.py=utf-8
 encoding//estacionamientos/views.py=utf-8
