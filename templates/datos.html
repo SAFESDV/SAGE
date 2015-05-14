@@ -24,7 +24,7 @@
 
     {% if estacionamiento.telefono1 %}
       <tr><td><b><i class="fa fa-phone"></i>
-        Teléfono:
+        Teléfono Oficina 1:
       </b></td></tr>
       <tr><td>
         {{estacionamiento.telefono1}}
@@ -33,16 +33,16 @@
 
     {% if estacionamiento.telefono2 %}
       <tr><td><b><i class="fa fa-phone"></i>
-        Teléfono:
+        Teléfono Oficina 2:
       </b></td></tr>
       <tr><td>
         {{estacionamiento.telefono2}}
       </td></tr>
     {% endif %}
 
-     {% if estacionamiento.telefono3 %}
+     {% if estacionamiento.propietario.telefono3 %}
       <tr><td><b><i class="fa fa-phone"></i>
-        Teléfono:
+        Teléfono Propietario:
       </b></td></tr>
       <tr><td>
         {{estacionamiento.propietario.telefono3}}
@@ -51,7 +51,7 @@
 
     {% if estacionamiento.email1 %}
       <tr><td><b><i class="fa fa-at"></i>
-        Correo Electrónico:
+        Correo Electrónico Oficina:
       </b></td></tr>
       <tr><td>
         {{estacionamiento.email1}}
@@ -60,7 +60,7 @@
 
     {% if estacionamiento.propietario.email2 %}
       <tr><td><b><i class="fa fa-at"></i>
-        Correo Electrónico:
+        Correo Electrónico Personal:
       </b></td></tr>
       <tr><td>
         {{estacionamiento.propietario.email2}}
