@@ -29,6 +29,7 @@ from estacionamientos.forms import (
     EstacionamientoForm,
     ReservaForm,
     PagoForm,
+    BilleteraElectronicaForm,
     RifForm,
     CedulaForm,
 )
@@ -40,8 +41,9 @@ from estacionamientos.models import (
     TarifaMinuto,
     TarifaHorayFraccion,
     TarifaFinDeSemana,
-    TarifaHoraPico
-)
+    TarifaHoraPico,
+    BilleteraElectronica)
+from django.template.context_processors import request
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -338,6 +340,41 @@ def estacionamiento_pago(request,_id):
         { 'form' : form }
     )
 
+def estacionamiento_billetera(request):
+    form = BilleteraElectronicaForm()
+    
+    if request.method == 'POST':
+        form = PagoForm(request.POST)
+        if form.is_valid():
+            BE = BilleteraElectronica(
+                nombre           = form.cleaned_data['Nombre'],
+                Apellido         = form.cleaned_data['Apellido'],
+                cedulaTipo       = form.cleaned_data['cedulaTipo'],
+                cedula           = form.cleaned_data['cedula'],
+                PIN              = form.cleaned_data['PIN'],
+                saldo            = 0,
+               
+            )
+            
+            #Salva la billetera en la base de datos
+            BE.save()
+
+            return render(
+                request,
+                'BilleteraElectronica.html',
+                { "id"      : _id
+                , "BE"    : BE
+                , "color"   : "green"
+                , 'mensaje' : "Su billetera electrónica se ha creado satisfactoriamente."
+                }
+            )
+
+    return render(
+        request,
+        'BilleteraElectronica.html',
+        { 'form' : form }
+    )
+    
 def estacionamiento_ingreso(request):
     form = RifForm()
     if request.method == 'POST':
