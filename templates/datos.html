@@ -12,7 +12,7 @@
       Nombre del propietario:
     </b></td></tr>
     <tr><td>
-      {{Propietario.propietario}}
+      {{estacionamiento.propietario.nomb_prop}}
     </td></tr>
 
     <tr><td><b><i class="fa fa-home"></i>
@@ -40,12 +40,12 @@
       </td></tr>
     {% endif %}
 
-     {% if Propietario.telefono3 %}
+     {% if estacionamiento.telefono3 %}
       <tr><td><b><i class="fa fa-phone"></i>
         Teléfono:
       </b></td></tr>
       <tr><td>
-        {{Propietario.telefono3}}
+        {{estacionamiento.propietario.telefono3}}
       </td></tr>
     {% endif %}
 
@@ -58,12 +58,12 @@
       </td></tr>
     {% endif %}
 
-    {% if Propietario.email2 %}
+    {% if estacionamiento.propietario.email2 %}
       <tr><td><b><i class="fa fa-at"></i>
         Correo Electrónico:
       </b></td></tr>
       <tr><td>
-        {{Propietario.email2}}
+        {{estacionamiento.propietario.email2}}
       </td></tr>
     {% endif %}
 
