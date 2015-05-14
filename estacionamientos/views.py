@@ -76,19 +76,20 @@ def estacionamientos_all(request):
                 rif         = form.cleaned_data['rif'],
                 telefono1   = form.cleaned_data['telefono_1'],
                 telefono2   = form.cleaned_data['telefono_2'],
-                email1      = form.cleaned_data['email_oficina'],
+                email1      = form.cleaned_data['email_1'],
             )
             obj.save()
             
 
             obj1 = Propietario(
                 propietario = form.cleaned_data['propietario'],
-                telefono3   = form.cleaned_data['telefono_personal'],
-                email2      = form.cleaned_data['email_personal']
+                telefono3   = form.cleaned_data['telefono_3'],
+                email2      = form.cleaned_data['email_2']
             )
             obj1.save()            
             # Recargamos los estacionamientos ya que acabamos de agregar
             estacionamientos = Estacionamiento.objects.all()
+            propietarios = Propietario.objects.all()
             form = EstacionamientoForm()
 
     return render(

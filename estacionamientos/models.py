@@ -6,9 +6,20 @@ from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 from datetime import timedelta
 
+class Propietario(models.Model):
+	propietario = models.CharField(max_length = 50, help_text = "Nombre Propio",primary_key=True)
+	telefono3   = models.CharField(blank = True, null = True, max_length = 30)
+	email2      = models.EmailField(blank = True, null = True)
+	
+	def __str__(self):
+		return self.propietario + self.telefono3 + self.email2
+
+	
+
 class Estacionamiento(models.Model):
 	
 	nombre      = models.CharField(max_length = 50)
+	nom_prop	= models.ForeignKey(Propietario)
 	direccion   = models.TextField(max_length = 120)
 	telefono1   = models.CharField(blank = True, null = True, max_length = 30)
 	telefono2   = models.CharField(blank = True, null = True, max_length = 30)
@@ -27,10 +38,7 @@ class Estacionamiento(models.Model):
 	def __str__(self):
 		return self.nombre+' '+str(self.id)
 
-class Propietario(models.Model):
-	propietario = models.CharField(max_length = 50, help_text = "Nombre Propio")
-	telefono3   = models.CharField(blank = True, null = True, max_length = 30)
-	email2      = models.EmailField(blank = True, null = True)
+
 
 class Reserva(models.Model):
 	estacionamiento = models.ForeignKey(Estacionamiento)
