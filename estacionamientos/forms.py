@@ -65,6 +65,7 @@ class EstacionamientoForm(forms.Form):
 
     telefono_1 = forms.CharField(
         required   = False,
+        label    = "Telefono Oficina 1",
         validators = [phone_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
@@ -77,6 +78,7 @@ class EstacionamientoForm(forms.Form):
 
     telefono_2 = forms.CharField(
         required   = False,
+        label    = "Telefono Oficina 2",
         validators = [phone_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
@@ -89,6 +91,7 @@ class EstacionamientoForm(forms.Form):
 
     telefono_3 = forms.CharField(
         required   = False,
+        label    = "Telefono Personal",
         validators = [phone_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
@@ -101,6 +104,7 @@ class EstacionamientoForm(forms.Form):
 
     email_1 = forms.EmailField(
         required = False,
+        label    = "Email Oficina",
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'E-mail 1'
@@ -111,6 +115,7 @@ class EstacionamientoForm(forms.Form):
 
     email_2 = forms.EmailField(
         required = False,
+        label    = "Email Personal",
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'E-mail 2'
