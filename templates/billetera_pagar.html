@@ -21,6 +21,10 @@
           method="post"
           class="form form-vertical"
         >
+        <div class="col-md-8" style="color:{{color}}">
+          {{ mensaje }}
+          <hr>
+        </div>
           {% csrf_token %}
           <div class="control-group">
             <div class="controls">
