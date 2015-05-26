@@ -100,14 +100,14 @@ def consultar_ingresos(rif):
             ingresoTotal          = 0
             listaIngresos         = []
 
-            for estacionamiento in listaEstacionamientos:
-                listaFacturas = Pago.objects.filter(
-                    reserva__estacionamiento__nombre = estacionamiento.nombre
-                )
-                ingreso       = [estacionamiento.nombre, 0]
-                for factura in listaFacturas:
-                    ingreso[1] += factura.monto
-                listaIngresos += [ingreso]
-                ingresoTotal  += ingreso[1]
+    for estacionamiento in listaEstacionamientos:
+        listaFacturas = Pago.objects.filter(
+            reserva__estacionamiento__nombre = estacionamiento.nombre
+        )
+        ingreso       = [estacionamiento.nombre, 0]
+        for factura in listaFacturas:
+            ingreso[1] += factura.monto
+        listaIngresos += [ingreso]
+        ingresoTotal  += ingreso[1]
 
             return listaIngresos, ingresoTotal
