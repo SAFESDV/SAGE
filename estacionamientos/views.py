@@ -664,5 +664,12 @@ def billetera_crear(request):
          'form' : form
         }
     )
+def Consultar_Saldo(request):
+
+    return render(
+        request,
+        'consultar_saldo.html'
+    )
+
     
     
