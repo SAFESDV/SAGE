@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}
+  SAGE
+{% endblock %}
+{% block innerContents%}
+  <div class="col-sm-10">
+    <h3><i class="fa fa-user"></i>
+      Propietarios
+    </h3>
+    <hr>
+    <div class="col-md-8">
+      <table class="table table-striped">
+        {% if Propietarios %}
+        <thead>
+          <tr>
+            <th></th>
+            <th>Nombre</th>
+            <th>Cedula</th>
+            <th>Telefono</th>
+            <th>Email</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for obj in Propietarios %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>{{obj.nomb_prop}}</td>
+              <td>{{obj.Cedula}}</td>
+              <td>{{obj.telefono3}}</td>
+              <td>{{obj.email2}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        {% else %}
+          <h3>No hay Propietarios</h3>
+        {% endif %}
+      </table>
+      <hr>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <i class="glyphicon glyphicon-wrench pull-right"></i>
+            <h4>
+              Crear propietario
+            </h4>
+          </div>
+        </div>
+        <div class="panel-body">
+          <form action="/estacionamientos/propietarios" method="post" class="form form-vertical">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="control-group">
+                <div class="controls">
+                  {{ field }}
+                  <span class='error' id='{{field.name}}_error' aria-live="polite">
+                    {{ field.errors }}
+                  </span>
+                  <p>
+                </div>
+              </div>
+            {% endfor %}
+            <div class="control-group">
+              <label></label>
+              <div class="controls">
+                <button type="submit" class="btn btn-primary">
+                  Crear propietario
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  {% include "validator.js.html" %}
+{% endblock %}
