@@ -67,7 +67,6 @@ class MarzulloTestCase(TestCase):
     '''
     def crear_estacionamiento(self, puestos):
         e = Estacionamiento(
-            propietario = "prop",
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
