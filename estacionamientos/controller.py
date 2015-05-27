@@ -1,5 +1,5 @@
 # Archivo con funciones de control para SAGE
-from estacionamientos.models import Estacionamiento, Reserva, Pago, BilleteraElectronica
+from estacionamientos.models import Estacionamiento, Reserva, Pago
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
@@ -111,13 +111,3 @@ def consultar_ingresos(rif):
         ingresoTotal  += ingreso[1]
 
     return listaIngresos, ingresoTotal
-
-def consultar_saldo(id, pin):
-	
-	duenioBilletera = BilleteraElectronica.objects.filter(id = id, PIN = pin, saldo)
-	
-	if (duenioBilletera != None):
-		return duenioBilletera.saldo
-	
-	else:
-		return -1

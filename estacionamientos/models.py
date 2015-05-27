@@ -62,17 +62,6 @@ class Pago(models.Model):
 
     def __str__(self):
         return str(self.id)+" "+str(self.reserva.estacionamiento.nombre)+" "+str(self.cedulaTipo)+"-"+str(self.cedula)
-
-class BilleteraElectronica(models.Model):
-    nombreUsuario    = models.CharField(max_length = 50)
-    apellidoUsuario  = models.CharField(max_length = 50)
-    cedulaTipo       = models.CharField(max_length = 1)
-    cedula           = models.CharField(max_length = 10)
-    PIN              = models.CharField(max_length = 4)
-    saldo            = models.DecimalField(max_digits = 5, decimal_places = 2)
-    
-    def __str__(self):
-        return str(self.id)+" "+ str(self.cedula) 
     
 class EsquemaTarifario(models.Model):
 

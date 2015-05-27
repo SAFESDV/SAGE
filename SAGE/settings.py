@@ -38,7 +38,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'billetera',
     'estacionamientos',
+    'index',
 )
 
 MIDDLEWARE_CLASSES = (
