@@ -1,5 +1,3 @@
-BILLETERA_RECARGAR.HTML
-
 {% extends "base.html" %}
 {% load humanize %}
 
@@ -74,28 +72,28 @@ BILLETERA_RECARGAR.HTML
             <table class="table table-striped">
               <tbody>
                 <tr><td><b><i class="fa fa-circle"></i>
-                  Número de Transacción:
+                  Numero de Transaccion:
                 </b></td></tr>
                 <tr><td>
                   {{pago.id}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-clock-o"></i>
-                  Fecha de Transacción:
+                  Fecha de Transaccion:
                 </b></td></tr>
                 <tr><td>
                   {{pago.fechaTransaccion}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-user"></i>
-                  Cédula:
+                  Cedula:
                 </b></td></tr>
                 <tr><td>
                   {{pago.cedulaTipo}}-{{pago.cedula}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-money"></i>
-                  Tarjeta de Crédito:
+                  Tarjeta de Credito:
                 </b></td></tr>
                 <tr><td>
                   {{pago.tarjetaTipo}} </td></tr>

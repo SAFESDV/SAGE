@@ -24,6 +24,7 @@ from estacionamientos.controller import (
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
+    recargar,
 )
 
 from estacionamientos.forms import (
@@ -35,7 +36,8 @@ from estacionamientos.forms import (
     CedulaForm,
     BilleteraElectronicaForm,
     ModoPagoForm, 
-    BilleteraElectronicaPagoForm)
+    BilleteraElectronicaPagoForm,
+    BilleteraElectronicaRecargaForm)
 
 from estacionamientos.models import (
     Estacionamiento,
@@ -47,7 +49,8 @@ from estacionamientos.models import (
     TarifaHorayFraccion,
     TarifaFinDeSemana,
     TarifaHoraPico,
-    BilleteraElectronica
+    BilleteraElectronica,
+    PagoRecargaBilletera
 )
 
 
@@ -667,10 +670,10 @@ def billetera_crear(request):
     )
     
 def billetera_recargar(request):
-    form = BilleteraElectronicaForm()
+    form = BilleteraElectronicaRecargaForm()
     
     if request.method == 'POST':
-        form = BilleteraElectronicaForm(request.POST)
+        form = BilleteraElectronicaRecargaForm(request.POST)
         if form.is_valid():
             try:
                 BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
