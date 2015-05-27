@@ -395,7 +395,7 @@ class BilleteraElectronicaPagoForm(forms.Form):
             }
         )
     )
-    
+   # 
     pin = forms.CharField(
         required   = True,
         label      = "PIN",
