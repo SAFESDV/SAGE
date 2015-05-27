@@ -22,6 +22,7 @@ from estacionamientos.controller import (
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
+    consultar_saldo,
 )
 
 from estacionamientos.forms import (
@@ -664,20 +665,47 @@ def billetera_crear(request):
          'form' : form
         }
     )
+    
 def Consultar_Saldo(request):
-        
-    form = CedulaForm()
+    
+    form = BilleteraElectronicaPagoForm()
+    
     if request.method == 'POST':
-        form = CedulaForm(request.POST)
+        form = BilleteraElectronicaPagoForm(request.POST)
         if form.is_valid():
-            #facturas      = Pago.objects.filter(cedula = cedula)
+            try:
+                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
+                if (BE.PIN != form.cleaned_data['pin']):
+                    return render(
+                        request,
+                        'billetera_pagar.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+                    
+                
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'billetera_pagar.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+
+            saldo = consultar_saldo(BE.id, BE.PIN)
+            
             return render(
+                        request,
+                        'consultar_saldo.html',
+                        {"Saldo" : saldo}
+                        )
+                                   
+    return render(
                 request,
                 'consultar_saldo.html',
-                {"Saldo" : saldo}
-            )
-    return render(
-        request,
-        'consultar_saldo.html',
-        {"form" : form}
-    )    
+                {"form" : form}
+                )
