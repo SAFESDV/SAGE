@@ -697,7 +697,7 @@ def billetera_recargar(request):
             
             monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))  
             
-            pago = PagoRecargaBilletera(
+            pago = PagoBilleteraElectronica(
                 fechaTransaccion = datetime.now(),
                 cedulaTipo       = BE.cedulaTipo,
                 cedula           = BE.cedula,
@@ -709,6 +709,17 @@ def billetera_recargar(request):
             # Se guarda el recibo de pago en la base de datos
             pago.save()
             
-            
-  
-    
+            return render(
+                request,
+                'billetera_recargar.html',
+                { "id"      : _id
+                , "pago"    : pago
+                , "color"   : "green"
+                , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
+                }
+            )
+    return render(
+        request,
+        'billetera_recargar.html',
+        { 'form' : form }
+    )     

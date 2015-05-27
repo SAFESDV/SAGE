@@ -1,3 +1,5 @@
+BILLETERA_RECARGAR.HTML
+
 {% extends "base.html" %}
 {% load humanize %}
 
@@ -12,7 +14,7 @@
 {% block innerContents%}
   <div class="col-sm-10">
     <h3><i class="fa fa-money"></i>
-      Pago de Recarga a Billetera Electrónica
+      Pago de Recarga - Billetera Electronica
     </h3>
     <hr>
     <div class="col-md-4">
@@ -59,11 +61,7 @@
             onclick="self.close()"
             class="btn btn-primary"
           >
-            <a href="../crearbilletera" onClick="return popup(this, 'Pago de Reserva')">
-              <button class="btn btn-primary">
-                Recargar Billetera
-              </button>
-            </a>
+            
         </form>
       {% endif %}
       {% if pago %}
@@ -90,7 +88,7 @@
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-user"></i>
-                  CÃ©dula:
+                  Cédula:
                 </b></td></tr>
                 <tr><td>
                   {{pago.cedulaTipo}}-{{pago.cedula}}
@@ -103,7 +101,7 @@
                   {{pago.tarjetaTipo}} </td></tr>
 
                 <tr><td><b><i class="fa fa-money"></i>
-                  Monto Recargado:
+                  Monto:
                 </b></td></tr>
                 <tr><td>
                   BsF. {{pago.monto|floatformat:2|intcomma }}
