@@ -698,12 +698,12 @@ def Consultar_Saldo(request):
 
             saldo = consultar_saldo(BE.id, BE.PIN)
             
-            return render(
+            """return render(
                         request,
                         'consultar_saldo.html',
                         {"Saldo" : saldo}
                         )
-                                   
+            """                       
     return render(
                 request,
                 'consultar_saldo.html',

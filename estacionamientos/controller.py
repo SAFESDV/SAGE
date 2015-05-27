@@ -114,7 +114,7 @@ def consultar_ingresos(rif):
 
 def consultar_saldo(id, pin):
 	
-	duenioBilletera = BilleteraElectronica.objects.filter(saldo, id = id, PIN = pin)
+	duenioBilletera = BilleteraElectronica.objects.get(id = id, PIN = pin)
 	
 	if (duenioBilletera != None):
 		return duenioBilletera.saldo
