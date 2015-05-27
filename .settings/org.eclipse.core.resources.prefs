@@ -20,3 +20,4 @@ encoding//tests/tests_tarifa_hora_fraccion.py=utf-8
 encoding//tests/tests_tarifa_hora_pico.py=utf-8
 encoding//tests/tests_tarifa_minuto.py=utf-8
 encoding//tests/tests_tasa_reservacion.py=utf-8
+encoding/views.py=utf-8

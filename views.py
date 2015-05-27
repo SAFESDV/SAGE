@@ -9,8 +9,6 @@ from urllib.parse import urlencode
 from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
-from django.template.context_processors import request
-from django.forms.forms import Form
 
 from datetime import (
     datetime,
@@ -49,7 +47,8 @@ from estacionamientos.models import (
     TarifaHoraPico,
     BilleteraElectronica
 )
-
+from django.template.context_processors import request
+from django.forms.forms import Form
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -59,7 +58,7 @@ def estacionamientos_all(request):
     if request.method == 'GET':
         form = EstacionamientoForm()
 
-    # Si es POST, se verifica la informaci√≥n recibida
+    # Si es POST, se verifica la informaciÛn recibida
     elif request.method == 'POST':
         # Creamos un formulario con los datos que recibimos
         form = EstacionamientoForm(request.POST)
@@ -70,7 +69,7 @@ def estacionamientos_all(request):
             return render(
                 request, 'template-mensaje.html',
                 { 'color'   : 'red'
-                , 'mensaje' : 'No se pueden agregar m√°s estacionamientos'
+                , 'mensaje' : 'No se pueden agregar m·s estacionamientos'
                 }
             )
 
@@ -157,7 +156,7 @@ def estacionamiento_detail(request, _id):
             )
 
             esquemaTarifa.save()
-            # deber√≠a funcionar con excepciones, y el mensaje debe ser mostrado
+            # deberÌa funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
             if not HorarioEstacionamiento(horaIn, horaOut):
                 return render(
@@ -167,7 +166,7 @@ def estacionamiento_detail(request, _id):
                     , 'mensaje': 'El horario de apertura debe ser menor al horario de cierre'
                     }
                 )
-            # deber√≠a funcionar con excepciones
+            # deberÌa funcionar con excepciones
             estacionamiento.tarifa    = esquemaTarifa
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
@@ -210,7 +209,7 @@ def estacionamiento_reserva(request, _id):
             inicioReserva = form.cleaned_data['inicio']
             finalReserva = form.cleaned_data['final']
 
-            # deber√≠a funcionar con excepciones, y el mensaje debe ser mostrado
+            # deberÌa funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
             m_validado = validarHorarioReserva(
                 inicioReserva,
@@ -468,7 +467,7 @@ def receive_sms(request):
             finalReserva    = final_reserva,
         )
         reserva_sms.save()'''
-        text = 'Se realiz√≥ la reserva satisfactoriamente.'
+        text = 'Se realizÛ la reserva satisfactoriamente.'
         text = urllib.parse.quote(str(text))
         urllib.request.urlopen('http://{0}:{1}/sendsms?phone={2}&text={3}&password='.format(ip, port, phone, text))
     else:
@@ -522,7 +521,7 @@ def grafica_tasa_de_reservacion(request):
     pyplot.switch_backend('Agg') # Para que no use Tk y aparezcan problemas con hilos
     pyplot.bar(range(len(datos_ocupacion)), datos_ocupacion.values(), hold = False, color = '#6495ed')
     pyplot.ylim([0,100])
-    pyplot.title('Distribuci√≥n de los porcentajes por fecha')
+    pyplot.title('DistribuciÛn de los porcentajes por fecha')
     pyplot.xticks(range(len(datos_ocupacion)), list(datos_ocupacion.keys()), rotation=20)
     pyplot.ylabel('Porcentaje (%)')
     pyplot.grid(True, 'major', 'both')
@@ -553,7 +552,7 @@ def billetera_pagar(request, _id):
                         'billetera_pagar.html',
                         { "form"    : form
                         , "color"   : "red"
-                        ,'mensaje'  : "Autenticaci√≥n denegada."
+                        ,'mensaje'  : "AutenticaciÛn denegada."
                         }
                     )
                     
@@ -564,7 +563,7 @@ def billetera_pagar(request, _id):
                         'billetera_pagar.html',
                         { "form"    : form
                         , "color"   : "red"
-                        ,'mensaje'  : "Autenticaci√≥n denegada."
+                        ,'mensaje'  : "AutenticaciÛn denegada."
                         }
                     )
             
@@ -666,49 +665,4 @@ def billetera_crear(request):
         }
     )
     
-def billetera_recargar(request):
-    form = BilleteraElectronicaRecargaForm()
-    
-    if request.method == 'POST':
-        form = BilleteraElectronicaRecargaForm(request.POST)
-        if form.is_valid():
-            try:
-                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
-                if (BE.PIN != form.cleaned_data['pin']):
-                    return render(
-                        request,
-                        'billetera_recargar.html',
-                        { "form"    : form
-                        , "color"   : "red"
-                        ,'mensaje'  : "Autenticaci√≥n denegada."
-                        }
-                    )
-                    
-                
-            except ObjectDoesNotExist:
-                return render(
-                        request,
-                        'billetera_recargar.html',
-                        { "form"    : form
-                        , "color"   : "red"
-                        ,'mensaje'  : "Autenticaci√≥n denegada."
-                        }
-                    )
-            
-            monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))  
-            
-            pago = PagoRecargaBilletera(
-                fechaTransaccion = datetime.now(),
-                cedulaTipo       = BE.cedulaTipo,
-                cedula           = BE.cedula,
-                ID_Billetera     = BE.id,
-                monto            = monto,
-            )
-            
-            
-            # Se guarda el recibo de pago en la base de datos
-            pago.save()
-            
-            
-  
     

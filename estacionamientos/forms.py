@@ -2,6 +2,8 @@
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms.widgets import SplitDateTimeWidget
+from decimal import *
+
 
 class CustomSplitDateTimeWidget(SplitDateTimeWidget):
 
@@ -496,6 +498,60 @@ class BilleteraElectronicaForm(forms.Form):
             }
         )
     )
+
+class BilleteraElectronicaRecargaForm(forms.Form):
+    
+    id_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'La cédula solo puede contener caracteres numéricos.'
+    )
+    
+    pin_validator = RegexValidator(
+        regex   = '^[0-9]{4}$',
+        message = 'El PIN solo puede contener cuatro caracteres numéricos.'
+    )
+    
+    id = forms.CharField(
+        required   = True,
+        label      = "ID",
+        validators = [id_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'ID'
+            , 'pattern'     : id_validator.regex.pattern
+            , 'message'     : id_validator.message
+            }
+        )
+    )
+    
+    pin = forms.CharField(
+        required   = True,
+        label      = "PIN",
+        validators = [pin_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'PIN'
+            , 'pattern'     : pin_validator.regex.pattern
+            , 'message'     : pin_validator.message
+            }
+        )
+    ) 
+    
+    monto = forms.DecimalField(
+        required = True,
+        label = "Monto",
+        min_value = Decimal("0.1"),
+        widget    = forms.NumberInput(attrs=
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Monto'
+            , 'min'         : "1"
+            , 'pattern'     : '^[0-9]+'
+            , 'message'     : 'La entrada debe ser un monto mayor que 0.1.'
+            }
+        )
+    )
+    
+    
 
 
 
