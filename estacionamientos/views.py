@@ -206,11 +206,12 @@ def estacionamiento_editar(request, _id):
         form = EstacionamientoForm(request.POST)
         # Si el formulario
         if form.is_valid():
-            estacionamiento.direccion   = form.cleaned_data['direccion'],
-            estacionamiento.rif         = form.cleaned_data['rif'],
-            estacionamiento.telefono1   = form.cleaned_data['telefono_1'],
-            estacionamiento.telefono2   = form.cleaned_data['telefono_2'],
-            estacionamiento.email1      = form.cleaned_data['email_1'],
+            estacionamiento.direccion   = form.cleaned_data['direccion']
+            estacionamiento.nombre      = form.cleaned_data['nombre']
+            estacionamiento.rif         = form.cleaned_data['rif']
+            estacionamiento.telefono1   = form.cleaned_data['telefono_1']
+            estacionamiento.telefono2   = form.cleaned_data['telefono_2']
+            estacionamiento.email1      = form.cleaned_data['email_1']
                                     
             estacionamiento.save()
                                          
