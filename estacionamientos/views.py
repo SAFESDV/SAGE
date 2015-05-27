@@ -667,10 +667,10 @@ def billetera_crear(request):
     )
     
 def billetera_recargar(request):
-    form = BilleteraElectronicaRecargaForm()
+    form = BilleteraElectronicaForm()
     
     if request.method == 'POST':
-        form = BilleteraElectronicaRecargaForm(request.POST)
+        form = BilleteraElectronicaForm(request.POST)
         if form.is_valid():
             try:
                 BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
