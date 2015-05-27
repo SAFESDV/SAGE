@@ -22,7 +22,7 @@ from estacionamientos.controller import (
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
-    consultar_saldo,
+    consultar_saldo
 )
 
 from estacionamientos.forms import (
