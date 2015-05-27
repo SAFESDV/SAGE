@@ -182,6 +182,48 @@ def estacionamiento_detail(request, _id):
         , 'estacionamiento': estacionamiento
         }
     )
+    
+def estacionamiento_editar(request, _id):
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    if request.method == 'GET':
+        if estacionamiento.propietario:
+            
+            form_data = {
+                'rif' : estacionamiento.rif
+            }
+            form = EstacionamientoForm(data = form_data)
+        else:
+            form = EstacionamientoForm()
+
+    elif request.method == 'POST':
+        # Leemos el formulario
+        form = EstacionamientoForm(request.POST)
+        # Si el formulario
+        if form.is_valid():
+            estacionamiento.direccion   = form.cleaned_data['direccion'],
+            estacionamiento.rif         = form.cleaned_data['rif'],
+            estacionamiento.telefono1   = form.cleaned_data['telefono_1'],
+            estacionamiento.telefono2   = form.cleaned_data['telefono_2'],
+            estacionamiento.email1      = form.cleaned_data['email_1'],
+                                    
+            estacionamiento.save()
+                                         
+            # Recargamos los estacionamientos ya que acabamos de agregar
+            form = EstacionamientoForm()
+
+    return render(
+        request,
+        'editar-datos-estacionamiento.html',
+        { 'form': form
+        , 'estacionamiento': estacionamiento
+        }
+    )
 
 
 def estacionamiento_reserva(request, _id):
