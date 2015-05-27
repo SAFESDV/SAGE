@@ -27,6 +27,7 @@ from estacionamientos.controller import (
 from estacionamientos.forms import (
     EstacionamientoExtendedForm,
     EstacionamientoForm,
+    EditarEstacionamientoForm,
     ReservaForm,
     PagoForm,
     RifForm,
@@ -197,26 +198,22 @@ def estacionamiento_editar(request, _id):
             form_data = {
                 'rif' : estacionamiento.rif
             }
-            form = EstacionamientoForm(data = form_data)
+            form = EditarEstacionamientoForm(data = form_data)
         else:
-            form = EstacionamientoForm()
+            form = EditarEstacionamientoForm()
 
     elif request.method == 'POST':
         # Leemos el formulario
-        form = EstacionamientoForm(request.POST)
+        form = EditarEstacionamientoForm(request.POST)
+        
         # Si el formulario
         if form.is_valid():
-            estacionamiento.direccion   = form.cleaned_data['direccion']
-            estacionamiento.nombre      = form.cleaned_data['nombre']
-            estacionamiento.rif         = form.cleaned_data['rif']
-            estacionamiento.telefono1   = form.cleaned_data['telefono_1']
-            estacionamiento.telefono2   = form.cleaned_data['telefono_2']
-            estacionamiento.email1      = form.cleaned_data['email_1']
-                                    
+            estacionamiento.rif = form.cleaned_data['rif']
+                                               
             estacionamiento.save()
                                          
             # Recargamos los estacionamientos ya que acabamos de agregar
-            form = EstacionamientoForm()
+            form = EditarEstacionamientoForm()
 
     return render(
         request,

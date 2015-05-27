@@ -136,6 +136,26 @@ class EstacionamientoForm(forms.Form):
             }
         )
     )
+    
+class EditarEstacionamientoForm(forms.Form):
+    
+    rif_validator = RegexValidator(
+        regex   = '^[JVD]-\d{8}-?\d$',
+        message = 'Introduzca un RIF con un formato válido de la forma X-xxxxxxxxx.'
+    )
+    
+    rif = forms.CharField(
+        required   = True,
+        label      = "RIF",
+        validators = [rif_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'RIF: X-xxxxxxxxx'
+            , 'pattern'     : rif_validator.regex.pattern
+            , 'message'     : rif_validator.message
+            }
+        )
+    )
 
 class EstacionamientoExtendedForm(forms.Form):
     
