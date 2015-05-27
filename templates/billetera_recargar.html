@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}
+  SAGE - Pago
+{% endblock %}
+
+{% block body%}
+{% endblock %}
+
+{% block menu %}{% endblock %}
+{% block innerContents%}
+  <div class="col-sm-10">
+    <h3><i class="fa fa-money"></i>
+      Pago de Recarga a Billetera Electrónica
+    </h3>
+    <hr>
+    <div class="col-md-4">
+      {% if form %}
+        <form
+          method="post"
+          class="form form-vertical"
+        >
+        <div class="col-md-8" style="color:{{color}}">
+          {{ mensaje }}
+          <hr>
+        </div>
+          {% csrf_token %}
+          <div class="control-group">
+            <div class="controls">
+              <p>
+                {{ form.id }}
+                <span
+                  class='error'
+                  id='{{form.id.name}}_error'
+                  aria-live="polite"
+                ></span>
+              </p>
+              {{ form.id.errors }}
+              <p>
+                {{ form.pin }}
+                <span
+                  class='error'
+                  id='{{form.pin.name}}_error'
+                  aria-live="polite"
+                ></span>
+              </p>
+              {{ form.pin.errors }}
+            </div>
+          </div>
+          <input
+            type="submit"
+            value="Realizar Pago"
+            class="btn btn-primary"
+          >
+          <input
+            type="button"
+            value="Volver"
+            onclick="self.close()"
+            class="btn btn-primary"
+          >
+            <a href="../crearbilletera" onClick="return popup(this, 'Pago de Reserva')">
+              <button class="btn btn-primary">
+                Recargar Billetera
+              </button>
+            </a>
+        </form>
+      {% endif %}
+      {% if pago %}
+        <div class="row">
+          <div class="col-md-7" style="color:{{color}}">
+            {{mensaje}}
+            <hr>
+          </div>
+          <div class="col-md-4">
+            <table class="table table-striped">
+              <tbody>
+                <tr><td><b><i class="fa fa-circle"></i>
+                  Número de Transacción:
+                </b></td></tr>
+                <tr><td>
+                  {{pago.id}}
+                </td></tr>
+
+                <tr><td><b><i class="fa fa-clock-o"></i>
+                  Fecha de Transacción:
+                </b></td></tr>
+                <tr><td>
+                  {{pago.fechaTransaccion}}
+                </td></tr>
+
+                <tr><td><b><i class="fa fa-user"></i>
+                  CÃ©dula:
+                </b></td></tr>
+                <tr><td>
+                  {{pago.cedulaTipo}}-{{pago.cedula}}
+                </td></tr>
+
+                <tr><td><b><i class="fa fa-money"></i>
+                  Tarjeta de Crédito:
+                </b></td></tr>
+                <tr><td>
+                  {{pago.tarjetaTipo}} </td></tr>
+
+                <tr><td><b><i class="fa fa-money"></i>
+                  Monto Recargado:
+                </b></td></tr>
+                <tr><td>
+                  BsF. {{pago.monto|floatformat:2|intcomma }}
+                </td></tr>
+              </tbody>
+            </table>
+            <div>
+              <input
+                type="button"
+                value="Volver"
+                onclick="javascript: closepopup();"
+                class="btn btn-primary"
+              >
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      {% if formIns %}
+        <div class="row">
+          <div class="col-md-7" style="color:{{color}}">
+            {{mensaje}}
+            <hr>
+          </div>
+         
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  {% include "validator.js.html" %}
+  
+  <script type="text/javascript">
+    function popup(mylink, windowname) {
+      if (! window.focus)
+        return true;
+      var href;
+      if (typeof(mylink) == 'string')
+        href=mylink;
+      else
+        href=mylink.href;
+      window.open(href, windowname, 'width=800,height=600,scrollbars=yes');
+      return false;
+    }
+  </script>
+
+  <script type="text/javascript">
+    function popuponclick(){
+      my_window = window.open("",
+       "mywindow","status=1,width=350,height=150");
+
+      my_window.document.write('<h1>The Popup Window</h1>');
+    }
+
+    function closepopup(){
+      window.close();
+    }
+
+    function openlink(){
+      opener.location='/estacionamientos/{{ id }}/reserva';
+    }
+  </script>
+{% endblock %}

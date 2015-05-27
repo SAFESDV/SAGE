@@ -112,10 +112,12 @@ def consultar_ingresos(rif):
 
             return listaIngresos, ingresoTotal
 
-def recargar(ID_Billetera,PIN,monto):
+def recargar(ID_Billetera,monto):
 	id_billetera = BilleteraElectronica.objects.get(id = ID_Billetera)
-	pin = BilleteraElectronica.objects.filter(PIN = PIN)
+	BE = BilleteraElectronica.objects.get(id = id_billetera)
 	if monto>Decimal("0.1"):
+		BE.saldo = BE.saldo + monto
+		
 	
 	
 		
