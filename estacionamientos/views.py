@@ -665,11 +665,19 @@ def billetera_crear(request):
         }
     )
 def Consultar_Saldo(request):
-
+        
+    form = CedulaForm()
+    if request.method == 'POST':
+        form = CedulaForm(request.POST)
+        if form.is_valid():
+            #facturas      = Pago.objects.filter(cedula = cedula)
+            return render(
+                request,
+                'consultar_saldo.html',
+                {"Saldo" : saldo}
+            )
     return render(
         request,
-        'consultar_saldo.html'
-    )
-
-    
-    
+        'consultar_saldo.html',
+        {"form" : form}
+    )    

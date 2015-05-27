@@ -1,47 +1,77 @@
-{% load staticfiles %}
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <title>{% block title %}SAGE{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1">
-    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet">
-    <link href="{% static 'css/font-awesome.min.css'%}" rel="stylesheet">
-    <link href="{% static 'css/base.css'%}" rel="stylesheet">
-  </head>
-  {% block body %}<body>{% endblock %}
-    {% block header %}
-      <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
-        <div class="container">
-          <div class="navbar-header">
-            <div class="navbar-brand" href="#">
-              SAGE
-            </div>
+{% extends "base.html" %}
+{% load humanize %}
+{% load firstof from future %}
+
+{% block title %}
+  SAGE - Estacionamiento {{estacionamiento.nombre}}
+{% endblock %}
+{% block innerContents%}
+  <div class="col-sm-10">
+    <h3><i class="fa fa-bus"></i>
+      Estacionamientos
+    </h3>
+    <hr>
+    <div class="col-md-8">
+      <table class="table table-striped">
+        {% if listaFacturas %}
+          <thead>
+            <tr>
+              <th></th>
+              <th>Inicio</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for factura in listaFacturas%}
+              <tr>
+                <td></td>
+                <td>{{factura.reserva.inicioReserva}}</td>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        {% else %}
+          <h3>Introduzca su Cédula</h3>
+        {% endif %}
+      </table>
+      <hr>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <i class="glyphicon glyphicon-wrench pull-right"></i>
+            <h4>
+              Consultar Reservas
+            </h4>
           </div>
         </div>
-      </div>
-    {% endblock %}
-
-    {% block outerContents %}
-    <div class="container">
-      <div class="row">
-        {% block menu %}
-          {% include "menu.html" %}
-        {% endblock %}
-        {% block innerContents %}
-        {% endblock %}
+        <div class="panel-body">
+          <form
+            action="/estacionamientos/verSaldo"
+            method="post"
+            class="form form-vertical"
+          >
+            {% csrf_token %}
+              {% for field in form %}
+                <div class="control-group">
+                  <div class="controls">
+                    {{ field }}
+                    <span class='error' id='{{field.name}}_error' aria-live="   polite">{{ field.errors }}</span>
+                    <p></p>
+                  </div>
+                </div>
+              {% endfor %}
+              <div class="control-group">
+                <label></label>
+                <div class="controls">
+                  <button type="submit" class="btn btn-primary">
+                    Continuar
+                  </button>
+                </div>
+              </div>
+          </form>
+        </div>
       </div>
     </div>
-    {% endblock %}
-    <script
-      type="text/javascript"
-      src="{% static 'js/jquery-2.1.1.min.js'%}"
-    ></script>
-    <script
-      type="text/javascript"
-      src="{% static 'js/bootstrap.min.js'%}"
-    ></script>
-    {% block scripts %}{% endblock %}
-  </body>
-</html>
+  </div>
+{% endblock %}
