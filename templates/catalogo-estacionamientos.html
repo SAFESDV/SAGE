@@ -15,7 +15,7 @@
         <thead>
           <tr>
             <th></th>
-            <th>Dueño</th>
+            <th>CI Dueño</th>
             <th>Nombre</th>
             <th>RIF</th>
             <th></th>
@@ -25,7 +25,7 @@
           {% for obj in estacionamientos %}
             <tr>
               <td>{{forloop.counter}}</td>
-              <td>{{obj.propietario.nomb_prop}}</td>
+              <td>{{obj.CI_prop}}</td>
               <td>{{obj.nombre}}</td>
               <td>{{obj.rif}}</td>
               <td><a href="./{{obj.id}}">

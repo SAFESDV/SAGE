@@ -4,6 +4,9 @@
   </h3>
   <hr>
   <ul class="nav nav-stacked">
+  	<li><a href="/estacionamientos/propietarios"><i class="fa fa-user"></i>
+      Propietarios
+    </a></li>
     <li><a href=".."><i class="fa fa-bus"></i>
       Estacionamientos
     </a></li>
@@ -17,12 +20,12 @@
       <li><a href="./editar"><i class="fa fa-user"></i>
         Editar
       </a></li>
-      {% if estacionamiento.capacidad %}
-      	<li><a href="./"><i class="fa fa-wrench"></i>
-        	Parametrizar
+        <li><a href="./"><i class="fa fa-wrench"></i>
+          Parametrizar
       	</a></li>
+      	{% if estacionamiento.capacidad %}
       	<li><a href="./reserva"><i class="fa fa-pencil-square-o"></i>
-        	Reservar
+          Reservar
       	</a></li>
       {% endif %}
     {% endif %}
