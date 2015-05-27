@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Propietario',
             fields=[
-                ('nomb_prop', models.CharField(max_length=50, primary_key=True, help_text='Nombre Propio', serialize=False)),
+                ('nomb_prop', models.CharField(primary_key=True, max_length=50, help_text='Nombre Propio', serialize=False)),
                 ('telefono3', models.CharField(max_length=30, null=True, blank=True)),
                 ('email2', models.EmailField(max_length=254, null=True, blank=True)),
             ],

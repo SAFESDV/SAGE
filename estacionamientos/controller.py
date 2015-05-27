@@ -1,5 +1,5 @@
 # Archivo con funciones de control para SAGE
-from estacionamientos.models import Estacionamiento, Reserva, Pago, BulleteraElectronica
+from estacionamientos.models import Estacionamiento, Reserva, Pago, BilleteraElectronica
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
