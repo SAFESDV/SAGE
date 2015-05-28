@@ -99,7 +99,7 @@ class EstacionamientoForm(forms.Form):
         label    = "Email Oficina",
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'E-mail 1'
+            , 'placeholder' : 'E-mail'
             , 'message'     : 'La entrada debe ser un e-mail válido.'
             }
         )
@@ -180,7 +180,7 @@ class PropietarioForm(forms.Form):
         label    = "Email Personal",
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'E-mail 2'
+            , 'placeholder' : 'E-mail Personal'
             , 'message'     : 'La entrada debe ser un e-mail válido.'
             }
         )

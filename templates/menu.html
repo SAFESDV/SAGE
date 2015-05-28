@@ -16,13 +16,13 @@
     <li><a href="/estacionamientos/consulta_reserva"><i class="fa fa-clock-o"></i>
       Consultar Reservas
     </a></li>
-    {% if estacionamiento %}
-      <li><a href="./editar"><i class="fa fa-pencil"></i>
-        Editar
+    <li><a href="/estacionamientos/verSaldo"><i class="fa fa-clock-o"></i>
+      Consultar BE
+    </a></li>
+    {% if estacionamiento.capacidad %}
+      <li><a href="./"><i class="fa fa-wrench"></i>
+        Parametrizar
       </a></li>
-        <li><a href="./"><i class="fa fa-wrench"></i>
-          Parametrizar
-      	</a></li>
       	{% if estacionamiento.capacidad %}
       	<li><a href="./reserva"><i class="fa fa-pencil-square-o"></i>
           Reservar
