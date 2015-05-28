@@ -5,40 +5,39 @@
 {% endblock %}
 {% block innerContents%}
   <div class="col-sm-10">
-    <h3><i class="fa fa-bus"></i>
-      Estacionamientos
+    <h3><i class="fa fa-user"></i>
+      Propietarios
     </h3>
     <hr>
     <div class="col-md-8">
       <table class="table table-striped">
-        {% if estacionamientos %}
+        {% if Propietarios %}
         <thead>
           <tr>
             <th></th>
-            <th>CI Dueño</th>
-            <th>Nombre</th>
-            <th>RIF</th>
+            <th>Nombre y Apellido</th>
+            <th>Cedula</th>
+            <th>Telefono</th>
+            <th>Email</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {% for obj in estacionamientos %}
+          {% for obj in Propietarios %}
             <tr>
               <td>{{forloop.counter}}</td>
-              <td>{{obj.CI_prop}}</td>
-              <td>{{obj.nombre}}</td>
-              <td>{{obj.rif}}</td>
-              <td><a href="./{{obj.id}}">
-                  <i class="fa fa-search"></i>
-              </a></td>
-              <td><a href="./{{obj.id}}/tasa">
-                  <i class="fa fa-bar-chart"></i>
+              <td>{{obj.nomb_prop}}</td>
+              <td>{{obj.Cedula}}</td>
+              <td>{{obj.telefono3}}</td>
+              <td>{{obj.email2}}</td>
+              <td><a href="./propietarios/{{obj.id}}">
+                  <i class="fa fa-pencil"></i>
               </a></td>
             </tr>
           {% endfor %}
         </tbody>
         {% else %}
-          <h3>No hay estacionamientos</h3>
+          <h3>No hay Propietarios</h3>
         {% endif %}
       </table>
       <hr>
@@ -49,12 +48,12 @@
           <div class="panel-title">
             <i class="glyphicon glyphicon-wrench pull-right"></i>
             <h4>
-              Crear estacionamiento
+              Crear propietario
             </h4>
           </div>
         </div>
         <div class="panel-body">
-          <form action="." method="post" class="form form-vertical">
+          <form action="/estacionamientos/propietarios" method="post" class="form form-vertical">
             {% csrf_token %}
             {% for field in form %}
               <div class="control-group">
@@ -71,7 +70,7 @@
               <label></label>
               <div class="controls">
                 <button type="submit" class="btn btn-primary">
-                  Crear estacionamiento
+                  Crear propietario
                 </button>
               </div>
             </div>

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+  SAGE - Edicion de datos de estacionamiento {{estacionamiento.nombre}}
+{% endblock %}
+{% block innerContents%}
+  <div class="col-sm-10">
+    <h3><i class="fa fa-bus"></i>
+      Estacionamiento {{estacionamiento.nombre}}
+    </h3>
+    <hr>
+    <div class="col-md-4">
+      {% include "datos.html" %}
+    </div>
+    <div class="col-md-4">
+      {% include "parametros.html" %}
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <i class="glyphicon glyphicon-wrench pull-right"></i>
+            <h4>
+              Editar estacionamiento
+            </h4>
+          </div>
+        </div>
+        <div class="panel-body">
+          <form action="./editar" method="post" class="form">
+            {% csrf_token %}
+              <div class="control-group">
+                <div class="controls">
+                  {{ form.CI_prop }}
+                  <span class='error' id='{{form.CI_prop.name}}_error' aria-live="polite">
+                    {{ form.CI_prop.errors }}
+                  </span>
+                  <p>
+                </div>
+              </div>
+            <div class="control-group">
+              <label></label>
+              <div class="controls">
+                <button type="submit" class="btn btn-primary">
+                  Guardar cambios
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  {% include "validator.js.html" %}
+{% endblock %}

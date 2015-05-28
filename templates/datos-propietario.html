@@ -1,0 +1,37 @@
+<table class="table table-striped">
+  <thead></thead>
+  <tbody>
+    <tr><td><b><i class="fa fa-car"></i>
+      Nombre y Apellido:
+    </b></td></tr>
+    <tr><td>
+      {{propietario.nomb_prop}}
+    </td></tr>
+
+    <tr><td><b><i class="fa fa-user"></i>
+      Cedula:
+    </b></td></tr>
+    <tr><td>
+      {{propietario.Cedula}}
+    </td></tr>
+
+    {% if propietario.telefono3 %}
+      <tr><td><b><i class="fa fa-phone"></i>
+        Teléfono Personal:
+      </b></td></tr>
+      <tr><td>
+        {{propietario.telefono3}}
+      </td></tr>
+    {% endif %}
+
+    {% if propietario.email2 %}
+      <tr><td><b><i class="fa fa-at"></i>
+        Correo Electrónico Personal:
+      </b></td></tr>
+      <tr><td>
+        {{propietario.email2}}
+      </td></tr>
+    {% endif %}
+
+  </tbody>
+</table>

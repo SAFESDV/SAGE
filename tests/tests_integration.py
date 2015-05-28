@@ -18,7 +18,6 @@ class IntegrationTest(TestCase):
         
     def crear_estacionamiento(self, puestos,hora_apertura=time(0,0),hora_cierre=time(23,59)):
         e = Estacionamiento(
-            propietario = "prop",
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
@@ -55,7 +54,6 @@ class IntegrationTest(TestCase):
     # integracion TDD
     def test_llamada_a_reserva(self):
         e = Estacionamiento(
-            propietario = "prop",
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
@@ -137,7 +135,6 @@ class IntegrationTest(TestCase):
     # integracion TDD
     def test_llamada_a_pago_get(self):
         e = Estacionamiento(
-            propietario = "prop",
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
@@ -153,7 +150,6 @@ class IntegrationTest(TestCase):
     # integracion TDD  
     def test_llamada_a_pago_post(self):
         e = Estacionamiento(
-            propietario = "prop",
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
