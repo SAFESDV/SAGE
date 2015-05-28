@@ -135,7 +135,8 @@ def estacionamientos_all(request):
         , 'estacionamientos': estacionamientos
         }
     )
-
+            
+    
 def estacionamiento_detail(request, _id):
     _id = int(_id)
     # Verificamos que el objeto exista antes de continuar

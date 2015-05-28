@@ -15,7 +15,7 @@
         <thead>
           <tr>
             <th></th>
-            <th>Nombre</th>
+            <th>Nombre y Apellido</th>
             <th>Cedula</th>
             <th>Telefono</th>
             <th>Email</th>
@@ -30,6 +30,9 @@
               <td>{{obj.Cedula}}</td>
               <td>{{obj.telefono3}}</td>
               <td>{{obj.email2}}</td>
+              <td><a href="./{{obj.id}}">
+                  <i class="fa fa-pencil"></i>
+              </a></td>
             </tr>
           {% endfor %}
         </tbody>

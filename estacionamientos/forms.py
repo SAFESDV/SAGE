@@ -142,7 +142,7 @@ class PropietarioForm(forms.Form):
         validators = [name_validator],
         widget = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Propietario'
+            , 'placeholder' : 'Nombre y Apellido'
             , 'pattern'     : name_validator.regex.pattern
             , 'message'     : name_validator.message
             }
