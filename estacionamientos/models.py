@@ -180,3 +180,14 @@ class TarifaHoraPico(EsquemaTarifario):
 
     def tipo(self):
         return("Tarifa diferenciada por hora pico")
+ 
+class PagoRecargaBilletera(models.Model):
+    fechaTransaccion = models.DateTimeField()
+    cedulaTipo       = models.CharField(max_length = 1)
+    cedula           = models.CharField(max_length = 10)
+    ID_Billetera     = models.CharField(max_length = 4)
+    monto            = models.DecimalField(decimal_places = 2, max_digits = 256)
+    tarjetaTipo      = models.CharField(max_length = 6)
+
+    def __str__(self):
+        return str(self.id)+" "+str(self.ID_Billetera)+" "+str(self.cedulaTipo)+"-"+str(self.cedula)+"-"+str(self.monto)

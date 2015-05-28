@@ -4,7 +4,7 @@
   </h3>
   <hr>
   <ul class="nav nav-stacked">
-  	<li><a href="/estacionamientos/propietarios"><i class="fa fa-user"></i>
+ 	<li><a href="/estacionamientos/propietarios"><i class="fa fa-user"></i>
       Propietarios
     </a></li>
     <li><a href=".."><i class="fa fa-bus"></i>
@@ -16,8 +16,14 @@
     <li><a href="/estacionamientos/consulta_reserva"><i class="fa fa-clock-o"></i>
       Consultar Reservas
     </a></li>
+    <li><a href="/estacionamientos/crearbilletera"><i class="fa fa-bus"></i>
+      Crear Billetera
+    </a></li>
     <li><a href="/estacionamientos/verSaldo"><i class="fa fa-clock-o"></i>
-      Consultar BE
+      Consultar Billetera
+    </a></li>
+    <li><a href="/estacionamientos/billeterarecargar"><i class="fa fa-bus"></i>
+      Recargar Billetera
     </a></li>
     {% if estacionamiento.capacidad %}
       <li><a href="./"><i class="fa fa-wrench"></i>
@@ -29,6 +35,7 @@
       	</a></li>
       {% endif %}
     {% endif %}
+    
   </ul>
   <hr>
 </div>
