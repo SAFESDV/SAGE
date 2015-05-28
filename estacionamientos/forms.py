@@ -16,7 +16,7 @@ class EstacionamientoForm(forms.Form):
     )
     
     name_validator = RegexValidator(
-        regex   = '^[A-Za-z0-9áéíóúüÜñÑÁÉÍÓÚ ]+$',
+        regex   = '^[A-Za-záéíóúüÜñÑÁÉÍÓÚ ]+$',
         message = 'La entrada debe ser un nombre en Español sin símbolos especiales.'
     )
     
@@ -126,7 +126,7 @@ class PropietarioForm(forms.Form):
     )
     
     name_validator = RegexValidator(
-        regex   = '^[A-Za-z0-9áéíóúüÜñÑÁÉÍÓÚ ]+$',
+        regex   = '^[A-Za-záéíóúüÜñÑÁÉÍÓÚ ]+$',
         message = 'La entrada debe ser un nombre en Español sin símbolos especiales.'
     )
     
