@@ -112,6 +112,16 @@ def consultar_ingresos(rif):
 
             return listaIngresos, ingresoTotal
 
+def consultar_saldo(id, pin):
+	
+	duenioBilletera = BilleteraElectronica.objects.get(id = id, PIN = pin)
+	
+	if (duenioBilletera != None):
+		return duenioBilletera.saldo
+	
+	else:
+		return -1
+
 def recargar_saldo(ID_Billetera,monto):
 	BE = BilleteraElectronica.objects.get(id = ID_Billetera)
 	#BE = BilleteraElectronica.objects.get(id = id_billetera)
