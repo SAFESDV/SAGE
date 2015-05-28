@@ -747,10 +747,9 @@ def recarga_pago(request):
             return render(
                 request,
                 'pago_recarga.html',
-                { "id"      : _id
-                , "pago"    : pago
-                , "color"   : "green"
-                , 'mensaje' : "Se realizo la recarga satisfactoriamente."
+                {
+                "color"   : "green",
+                'mensaje' : "Se realizo la recarga satisfactoriamente."
                 }
             )
     return render(
