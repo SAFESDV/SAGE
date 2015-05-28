@@ -6,8 +6,18 @@ from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 from datetime import timedelta
 
+# -*- coding: utf-8 -*-
+from django.db import models
+from math import ceil, floor
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from decimal import Decimal
+from datetime import timedelta
+
 class Propietario(models.Model):
-    nomb_prop = models.CharField(max_length = 50, help_text = "Nombre Propio",primary_key=True)
+    
+    Cedula      = models.CharField(max_length = 50)
+    nomb_prop   = models.CharField(max_length = 50)
     telefono3   = models.CharField(blank = True, null = True, max_length = 30)
     email2      = models.EmailField(blank = True, null = True)
     
@@ -17,7 +27,7 @@ class Propietario(models.Model):
 class Estacionamiento(models.Model):
     
     nombre      = models.CharField(max_length = 50)
-    propietario    = models.ForeignKey(Propietario)
+    CI_prop     = models.CharField(max_length = 50)
     direccion   = models.TextField(max_length = 120)
     telefono1   = models.CharField(blank = True, null = True, max_length = 30)
     telefono2   = models.CharField(blank = True, null = True, max_length = 30)

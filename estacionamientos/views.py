@@ -26,7 +26,9 @@ from estacionamientos.controller import (
 
 from estacionamientos.forms import (
     EstacionamientoExtendedForm,
+    PropietarioForm,
     EstacionamientoForm,
+    EditarEstacionamientoForm,
     ReservaForm,
     PagoForm,
     RifForm,
@@ -50,6 +52,40 @@ from estacionamientos.models import (
 from django.template.context_processors import request
 from django.forms.forms import Form
 
+# Usamos esta vista para procesar todos los estacionamientos
+def PropietarioAll(request):
+    Propietarios = Propietario.objects.all()
+    # Si es un GET, mandamos un formulario vacio
+    if request.method == 'GET':
+        form = PropietarioForm()    
+    elif request.method == 'POST':
+        # Creamos un formulario con los datos que recibimos
+        form = PropietarioForm(request.POST)
+        
+        # Si el formulario es valido, entonces creamos un objeto con
+        # el constructor del modelo
+        if form.is_valid():
+                  
+            obj = Propietario(
+                nomb_prop   = form.cleaned_data['nomb_prop'],
+                Cedula      = form.cleaned_data['Cedula'],
+                telefono3   = form.cleaned_data['telefono_prop'],
+                email2      = form.cleaned_data['email_prop'],
+            )
+            obj.save()
+                                 
+            # Recargamos los estacionamientos ya que acabamos de agregar
+            Propietarios = Propietario.objects.all()
+            form = PropietarioForm()
+
+    return render(
+        request,
+        'catalogo-propietario.html',
+        { 'form': form
+        , 'Propietarios': Propietarios
+        }
+    )        
+        
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
     estacionamientos = Estacionamiento.objects.all()
@@ -76,17 +112,10 @@ def estacionamientos_all(request):
         # Si el formulario es valido, entonces creamos un objeto con
         # el constructor del modelo
         if form.is_valid():
-            
-            obj1 = Propietario(
-                nomb_prop = form.cleaned_data['propietario'],
-                telefono3   = form.cleaned_data['telefono_3'],
-                email2      = form.cleaned_data['email_2']
-            )
-            obj1.save() 
                   
             obj = Estacionamiento(
                 nombre      = form.cleaned_data['nombre'],
-                propietario    = obj1,
+                CI_prop     = form.cleaned_data['CI_prop'],
                 direccion   = form.cleaned_data['direccion'],
                 rif         = form.cleaned_data['rif'],
                 telefono1   = form.cleaned_data['telefono_1'],
@@ -94,12 +123,9 @@ def estacionamientos_all(request):
                 email1      = form.cleaned_data['email_1'],
             )
             obj.save()
-            
-
                      
             # Recargamos los estacionamientos ya que acabamos de agregar
             estacionamientos = Estacionamiento.objects.all()
-            propietarios = Propietario.objects.all()
             form = EstacionamientoForm()
 
     return render(
@@ -109,7 +135,8 @@ def estacionamientos_all(request):
         , 'estacionamientos': estacionamientos
         }
     )
-
+            
+    
 def estacionamiento_detail(request, _id):
     _id = int(_id)
     # Verificamos que el objeto exista antes de continuar
@@ -182,8 +209,91 @@ def estacionamiento_detail(request, _id):
         , 'estacionamiento': estacionamiento
         }
     )
+    
+def estacionamiento_editar(request, _id):
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
 
+    if request.method == 'GET':
+        if estacionamiento.CI_prop:
+            
+            form_data = {
+                'CI_prop' : estacionamiento.CI_prop
+            }
+            form = EditarEstacionamientoForm(data = form_data)
+        else:
+            form = EditarEstacionamientoForm()
 
+    elif request.method == 'POST':
+        # Leemos el formulario
+        form = EditarEstacionamientoForm(request.POST)
+        
+        # Si el formulario
+        if form.is_valid():
+            estacionamiento.CI_prop = form.cleaned_data['CI_prop']
+                                               
+            estacionamiento.save()
+                                         
+            # Recargamos los estacionamientos ya que acabamos de agregar
+            form = EditarEstacionamientoForm()
+
+    return render(
+        request,
+        'editar-datos-estacionamiento.html',
+        { 'form': form
+        , 'estacionamiento': estacionamiento
+        }
+    )
+
+def propietario_editar(request, _id):
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        propietario = Propietario.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    if request.method == 'GET':
+        if propietario.Cedula:
+            
+            form_data = {
+                'nomb_prop' : propietario.nomb_prop,
+                'Cedula' : propietario.Cedula,
+                'telefono_prop' : propietario.telefono3,
+                'email_prop' : propietario.email2
+            }
+            form = PropietarioForm(data = form_data)
+        else:
+            form = PropietarioForm()
+
+    elif request.method == 'POST':
+        # Leemos el formulario
+        form = PropietarioForm(request.POST)
+        
+        # Si el formulario
+        if form.is_valid():
+            propietario.nomb_prop = form.cleaned_data['nomb_prop']
+            propietario.Cedula = form.cleaned_data['Cedula']
+            propietario.telefono3 = form.cleaned_data['telefono_prop']
+            propietario.email2 = form.cleaned_data['email_prop']
+                                               
+            propietario.save()
+                                         
+            # Recargamos los estacionamientos ya que acabamos de agregar
+            form = PropietarioForm()
+
+    return render(
+        request,
+        'editar-datos-propietario.html',
+        { 'form': form
+        , 'propietario': propietario
+        }
+    )
+    
 def estacionamiento_reserva(request, _id):
     _id = int(_id)
     # Verificamos que el objeto exista antes de continuar
@@ -664,20 +774,4 @@ def billetera_crear(request):
          'form' : form
         }
     )
-def Consultar_Saldo(request):
-        
-    form = CedulaForm()
-    if request.method == 'POST':
-        form = CedulaForm(request.POST)
-        if form.is_valid():
-            #facturas      = Pago.objects.filter(cedula = cedula)
-            return render(
-                request,
-                'consultar_saldo.html',
-                {"Saldo" : saldo}
-            )
-    return render(
-        request,
-        'consultar_saldo.html',
-        {"form" : form}
-    )    
+    

@@ -16,7 +16,7 @@ class EstacionamientoForm(forms.Form):
     )
     
     name_validator = RegexValidator(
-        regex   = '^[A-Za-z0-9áéíóúüÜñÑÁÉÍÓÚ ]+$',
+        regex   = '^[A-Za-záéíóúüÜñÑÁÉÍÓÚ ]+$',
         message = 'La entrada debe ser un nombre en Español sin símbolos especiales.'
     )
     
@@ -24,20 +24,25 @@ class EstacionamientoForm(forms.Form):
         regex   = '^[JVD]-\d{8}-?\d$',
         message = 'Introduzca un RIF con un formato válido de la forma X-xxxxxxxxx.'
     )
-
-    # Nombre del dueno del estacionamiento (no se permiten digitos)
-    propietario = forms.CharField(
-        required   = True,
-        label      = "Propietario",
-        validators = [name_validator],
-        widget = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'Propietario'
-            , 'pattern'     : name_validator.regex.pattern
-            , 'message'     : name_validator.message
-            }
-        )
+    
+    id_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'La cédula solo puede contener caracteres numéricos.'
     )
+
+    # CI del dueno del estacionamiento (no se permiten digitos)
+    CI_prop = forms.CharField(
+        required = True,
+        label = "Cedula",
+        validators = [id_validator],
+        widget = forms.TextInput(attrs= 
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Cedula de Identidad'
+            , 'pattern'     : id_validator.regex.pattern
+            , 'message'     : id_validator.message  
+            }
+        )                   
+    ) 
 
     nombre = forms.CharField(
         required = True,
@@ -89,36 +94,12 @@ class EstacionamientoForm(forms.Form):
         )
     )
 
-    telefono_3 = forms.CharField(
-        required   = False,
-        label    = "Telefono Personal",
-        validators = [phone_validator],
-        widget     = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'Teléfono 3'
-            , 'pattern'     : phone_validator.regex.pattern
-            , 'message'     : phone_validator.message
-            }
-        )
-    )
-
     email_1 = forms.EmailField(
         required = False,
         label    = "Email Oficina",
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'E-mail 1'
-            , 'message'     : 'La entrada debe ser un e-mail válido.'
-            }
-        )
-    )
-
-    email_2 = forms.EmailField(
-        required = False,
-        label    = "Email Personal",
-        widget   = forms.EmailInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'E-mail 2'
             , 'message'     : 'La entrada debe ser un e-mail válido.'
             }
         )
@@ -135,6 +116,94 @@ class EstacionamientoForm(forms.Form):
             , 'message'     : rif_validator.message
             }
         )
+    )
+
+class PropietarioForm(forms.Form):
+
+    phone_validator = RegexValidator(
+        regex   = '^((0212)|(0412)|(0416)|(0414)|(0424)|(0426))-?\d{7}',
+        message = 'Debe introducir un formato válido de teléfono.'
+    )
+    
+    name_validator = RegexValidator(
+        regex   = '^[A-Za-záéíóúüÜñÑÁÉÍÓÚ ]+$',
+        message = 'La entrada debe ser un nombre en Español sin símbolos especiales.'
+    )
+    
+    id_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'La cédula solo puede contener caracteres numéricos.'
+    )
+
+    # Nombre del dueno del estacionamiento (no se permiten digitos)
+    nomb_prop = forms.CharField(
+        required   = True,
+        label      = "Nombre Completo",
+        validators = [name_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Nombre y Apellido'
+            , 'pattern'     : name_validator.regex.pattern
+            , 'message'     : name_validator.message
+            }
+        )
+    )
+    
+    Cedula = forms.CharField(
+        required = True,
+        label = "Cedula",
+        validators = [id_validator],
+        widget = forms.TextInput(attrs= 
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Cedula de Identidad'
+            , 'pattern'     : id_validator.regex.pattern
+            , 'message'     : id_validator.message  
+            }
+        )                   
+    )    
+
+    telefono_prop = forms.CharField(
+        required   = False,
+        label    = "Telefono Oficina 1",
+        validators = [phone_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Teléfono Personal'
+            , 'pattern'     : phone_validator.regex.pattern
+            , 'message'     : phone_validator.message
+            }
+        )
+    )
+
+    email_prop = forms.EmailField(
+        required = False,
+        label    = "Email Personal",
+        widget   = forms.EmailInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'E-mail 2'
+            , 'message'     : 'La entrada debe ser un e-mail válido.'
+            }
+        )
+    )
+    
+class EditarEstacionamientoForm(forms.Form):
+    
+    id_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'La cédula solo puede contener caracteres numéricos.'
+    )
+    
+    CI_prop = forms.CharField(
+        required = True,
+        label = "Cedula",
+        validators = [id_validator],
+        widget = forms.TextInput(attrs= 
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Cedula de Identidad'
+            , 'pattern'     : id_validator.regex.pattern
+            , 'message'     : id_validator.message  
+            }
+        )                   
     )
 
 class EstacionamientoExtendedForm(forms.Form):
@@ -273,12 +342,12 @@ class ReservaForm(forms.Form):
 class PagoForm(forms.Form):
     
     card_name_validator = RegexValidator(
-        regex   = '^[a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ][a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ ]*$',
+        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
         message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
     )
     
     card_surname_validator = RegexValidator(
-        regex   = '^[a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ][a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ ]*$',
+        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
         message = 'El apellido no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
     )
     
@@ -395,7 +464,7 @@ class BilleteraElectronicaPagoForm(forms.Form):
             }
         )
     )
-    
+   # 
     pin = forms.CharField(
         required   = True,
         label      = "PIN",
@@ -414,12 +483,12 @@ class BilleteraElectronicaPagoForm(forms.Form):
     
 class BilleteraElectronicaForm(forms.Form):
     card_name_validator = RegexValidator(
-        regex   = '^[a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ][a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ ]*$',
+        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
         message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
     )
     
     card_surname_validator = RegexValidator(
-        regex   = '^[a-zA-Z0-9áéíóúñüÜÑÁÉÍÓÚ][a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ ]*$',
+        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
         message = 'El apellido no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
     )
     
