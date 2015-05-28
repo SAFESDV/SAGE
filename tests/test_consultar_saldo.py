@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
-from estacionamientos.controller import consultar_saldo
-from estacionamientos.models import BilleteraElectronica
-from estacionamientos.forms import BilleteraElectronicaForm
+from billetera.controller import consultar_saldo
+from billetera.models import BilleteraElectronica
+from billetera.forms import BilleteraElectronicaForm
 
 from decimal import Decimal
 

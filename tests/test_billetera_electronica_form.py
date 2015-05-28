@@ -2,7 +2,7 @@
  
 from django.test import TestCase
  
-from estacionamientos.forms import BilleteraElectronicaForm
+from billetera.forms import BilleteraElectronicaForm
  
 ###################################################################
 #                    BILLETERA_ELECTRONICA FORM
@@ -67,16 +67,16 @@ class BilleteraElectronicaFormTestCase(TestCase):
         self.assertTrue(form.is_valid())
  
     #borde
-#    def test_BilleteraElectronicaForm_NombreInvalidoDigito(self):
-#        form_data = {
-#            'nombre': 'Car1os',
-#            'apellido': 'Rodríguez',
-#            'cedulaTipo': 'V',
-#            'cedula': '123456789',
-#            'pin': '1234',
-#        }
-#        form = BilleteraElectronicaForm(data = form_data)
-#        self.assertFalse(form.is_valid())
+    def test_BilleteraElectronicaForm_NombreInvalidoDigito(self):
+        form_data = {
+            'nombre': 'Car1os',
+            'apellido': 'Rodríguez',
+            'cedulaTipo': 'V',
+            'cedula': '123456789',
+            'pin': '1234',
+        }
+        form = BilleteraElectronicaForm(data = form_data)
+        self.assertFalse(form.is_valid())
  
     #borde
     def test_BilleteraElectronicaForm_NombreInvalidoSimbolo(self):

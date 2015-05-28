@@ -1,4 +1,4 @@
-<table class="table table-striped">
+﻿<table class="table table-striped">
   <thead></thead>
   <tbody>
     <tr><td><b><i class="fa fa-car"></i>
@@ -9,10 +9,10 @@
     </td></tr>
 
     <tr><td><b><i class="fa fa-user"></i>
-      Nombre del propietario:
+      CI del propietario:
     </b></td></tr>
     <tr><td>
-      {{estacionamiento.propietario.nomb_prop}}
+      {{estacionamiento.CI_prop}}
     </td></tr>
 
     <tr><td><b><i class="fa fa-home"></i>
@@ -40,30 +40,12 @@
       </td></tr>
     {% endif %}
 
-     {% if estacionamiento.propietario.telefono3 %}
-      <tr><td><b><i class="fa fa-phone"></i>
-        Teléfono Propietario:
-      </b></td></tr>
-      <tr><td>
-        {{estacionamiento.propietario.telefono3}}
-      </td></tr>
-    {% endif %}
-
     {% if estacionamiento.email1 %}
       <tr><td><b><i class="fa fa-at"></i>
         Correo Electrónico Oficina:
       </b></td></tr>
       <tr><td>
         {{estacionamiento.email1}}
-      </td></tr>
-    {% endif %}
-
-    {% if estacionamiento.propietario.email2 %}
-      <tr><td><b><i class="fa fa-at"></i>
-        Correo Electrónico Personal:
-      </b></td></tr>
-      <tr><td>
-        {{estacionamiento.propietario.email2}}
       </td></tr>
     {% endif %}
 

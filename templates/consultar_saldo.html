@@ -1,37 +1,18 @@
-{% extends "base.html" %}
-{% load humanize %}
-{% load firstof from future %}
+﻿{% extends "base.html" %}
 
 {% block title %}
   SAGE - Estacionamiento {{estacionamiento.nombre}}
 {% endblock %}
 {% block innerContents%}
-  <div class="col-sm-10">
+{% if form %}
+ <div class="col-sm-10">
     <h3><i class="fa fa-bus"></i>
       Estacionamientos
     </h3>
     <hr>
     <div class="col-md-8">
       <table class="table table-striped">
-        {% if listaFacturas %}
-          <thead>
-            <tr>
-              <th></th>
-              <th>Inicio</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for factura in listaFacturas%}
-              <tr>
-                <td></td>
-                <td>{{factura.reserva.inicioReserva}}</td>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        {% else %}
-          <h3>Introduzca su Cédula</h3>
-        {% endif %}
+          <h3>Login para billetera electrónica (BE)</h3>
       </table>
       <hr>
     </div>
@@ -41,32 +22,30 @@
           <div class="panel-title">
             <i class="glyphicon glyphicon-wrench pull-right"></i>
             <h4>
-              Consultar Reservas
+              Ingrese los datos de su BE
             </h4>
           </div>
         </div>
         <div class="panel-body">
-          <form
-            action="/estacionamientos/verSaldo"
-            method="post"
-            class="form form-vertical"
-          >
+          <form action="./verSaldo" method="post" class="form form-vertical">
             {% csrf_token %}
-              {% for field in form %}
+            {% for field in form %}
                 <div class="control-group">
                   <div class="controls">
                     {{ field }}
-                    <span class='error' id='{{field.name}}_error' aria-live="   polite">{{ field.errors }}</span>
-                    <p></p>
+                    <span class='error' id='{{field.name}}_error' aria-live="polite">
+                       {{ field.errors }}
+                    </span>
+                    <p>
                   </div>
                 </div>
-              {% endfor %}
+            {% endfor %}
               <div class="control-group">
                 <label></label>
                 <div class="controls">
-                  <button type="submit" class="btn btn-primary">
-                    Continuar
-                  </button>
+                    <button type="submit" class="btn btn-primary">
+                     	Ingresar
+                    </button>
                 </div>
               </div>
           </form>
@@ -74,4 +53,17 @@
       </div>
     </div>
   </div>
+  {% else %}
+   <div class="col-sm-10">
+    <h3><i class="fa fa-bus"></i>
+      Estacionamientos
+    </h3>
+    <hr>
+    <div class="col-md-8">
+      <table class="table table-striped">
+          <h3>{{ Saldo }}</h3>
+      </table>
+    </div>
+  </div>
+  {% endif %}
 {% endblock %}

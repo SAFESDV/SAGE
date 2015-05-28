@@ -27,7 +27,6 @@ class TestTasaEstacionamiento(TestCase):
     
     def crear_estacionamiento(self, puestos,hora_apertura=time(0,0),hora_cierre=time(23,59)):
         e = Estacionamiento(
-            propietario = "prop",
             nombre = "nom",
             direccion = "dir",
             rif = "rif",

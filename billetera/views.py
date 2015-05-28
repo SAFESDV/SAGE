@@ -13,14 +13,22 @@ from datetime import (
     datetime,
 )
 
-from billetera.models import BilleteraElectronica
+from billetera.models import (
+    BilleteraElectronica,
+    PagoRecargaBilletera
+)
 
 from billetera.forms import (
     BilleteraElectronicaForm,
-    BilleteraElectronicaPagoForm
+    BilleteraElectronicaPagoForm,
+    BilleteraElectronicaRecargaForm,
+    PagoRecargaForm,
 )
 
-from billetera.controller import consultar_saldo
+from billetera.controller import (
+    consultar_saldo,
+    recargar_saldo
+)
 
 from django.template.context_processors import request
 from django.forms.forms import Form
@@ -54,7 +62,7 @@ def billetera_crear(request):
     
     return render(
         request,
-        'index.html',
+        'crearbilletera.html',
         {
          'form' : form
         }
@@ -201,5 +209,110 @@ def billetera_pagar(request, _id):
     return render(
         request,
         'billetera_pagar.html',
+        { 'form' : form }
+    )
+    
+def billetera_recargar(request):
+    form = BilleteraElectronicaRecargaForm()
+    
+    if request.method == 'POST':
+        form = BilleteraElectronicaRecargaForm(request.POST)
+        if form.is_valid():
+            try:
+                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
+                if (BE.PIN != form.cleaned_data['pin']):
+                    return render(
+                        request,
+                        'billetera_recargar.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+                    
+                
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'billetera_recargar.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+            
+            '''monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))  
+            
+            recargar_saldo(BE.id,monto)
+            
+            pago = PagoRecargaBilletera(
+                fechaTransaccion = datetime.now(),
+                cedulaTipo       = BE.cedulaTipo,
+                cedula           = BE.cedula,
+                ID_Billetera     = BE.id,
+                monto            = monto,
+            )
+            
+            # Se guarda el recibo de pago en la base de datos
+            pago.save()'''
+            
+            return render(
+                request,
+                'billetera_recargar.html',
+                { "color"   : "green"
+                , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
+                }
+            )
+    return render(
+        request,
+        'billetera_recargar.html',
+        { 'form' : form }
+    )     
+
+def recarga_pago(request):
+    form = PagoRecargaForm()
+    
+    if request.method == 'POST':
+        form = PagoRecargaForm(request.POST)
+        if form.is_valid():
+            
+            pago = PagoRecargaBilletera(
+                fechaTransaccion = datetime.now(),
+                cedulaTipo       = form.cleaned_data['cedulaTipo'],
+                cedula           = form.cleaned_data['cedula'],
+                ID_Billetera     = form.cleaned_data['ID_Billetera'],
+                monto            = form.cleaned_data['monto'],
+                tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
+            )
+            
+            if pago.monto > Decimal(99999.99):
+                return render(request,
+                    'pago_recarga.html',
+                    {
+                    'error'   : 1,
+                    "color"   : "red",
+                    'mensaje' : "Saldo resultante excede el monto maximo"
+                    }
+                )           
+            
+            
+            # Se guarda el recibo de pago en la base de datos
+            pago.save()
+            
+            recargar_saldo(pago.ID_Billetera,pago.monto)
+            
+
+            return render(
+                request,
+                'pago_recarga.html',
+                {
+                 "pago"   : pago,
+                "color"   : "green",
+                'mensaje' : "Se realizo la recarga satisfactoriamente."
+                }
+            )
+    return render(
+        request,
+        'pago_recarga.html',
         { 'form' : form }
     )
