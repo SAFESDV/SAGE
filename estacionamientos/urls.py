@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from django.conf.urls import patterns, url
 
 from estacionamientos import views
-
+from django.conf.urls import patterns, url
 
 # Este error es raro, en django funciona
 urlpatterns = patterns('',
@@ -21,4 +20,5 @@ urlpatterns = patterns('',
     url(r'^grafica/.*$', views.grafica_tasa_de_reservacion, name = 'grafica_tasa_de_reservacion'),
     url(r'^billeterarecargar$', views.billetera_recargar, name = 'billetera_recargar'),
     url(r'^pagarrecarga$',views.recarga_pago, name = 'recarga_pago'),
+
 )
