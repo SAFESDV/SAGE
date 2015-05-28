@@ -22,10 +22,13 @@ from django.forms.forms import Form
 def index_page(request):
     
     if request.method == 'GET':
-        pass
+        form = EstacionamientoForm()
+        
+    elif request.method == 'POST':
+        form = EstacionamientoForm(request.POST)
     
     return render(
-        request,
-        'index.html',
-        {'mensaje' : 'No se pueden agregar más estacionamientos'}
+    request,
+    'index.html',
+    {'mensaje' : 'No se pueden agregar más estacionamientos'}
     )
