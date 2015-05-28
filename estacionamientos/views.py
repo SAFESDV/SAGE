@@ -817,7 +817,8 @@ def Consultar_Saldo(request):
             return render(
                         request,
                         'consultar_saldo.html',
-                        {"Saldo" : Saldo,
+                        {"form" : form,
+                         "Saldo" : Saldo,
                          "Hay_billetera" : Hay_billetera}
                         )
                                    
