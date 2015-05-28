@@ -1,4 +1,6 @@
-<<<<<<< HEAD
+=\=\=\=\=\=\=
+<<<<<<<=HEAD
+>>>>>>>=refs/remotes/origin/BilleteraElectronica
 eclipse.preferences.version=1
 encoding//estacionamientos/admin.py=utf-8
 encoding//estacionamientos/forms.py=utf-8
@@ -6,10 +8,12 @@ encoding//estacionamientos/migrations/0001_initial.py=utf-8
 encoding//estacionamientos/migrations/0002_auto_20150513_1841.py=utf-8
 encoding//estacionamientos/migrations/0002_auto_20150527_1356.py=utf-8
 encoding//estacionamientos/migrations/0003_auto_20150513_1854.py=utf-8
+encoding//estacionamientos/migrations/0003_auto_20150515_1654.py=utf-8
 encoding//estacionamientos/models.py=utf-8
 encoding//estacionamientos/urls.py=utf-8
 encoding//estacionamientos/views.py=utf-8
 encoding//tests/test_billetera_electronica_form.py=utf-8
+encoding//tests/test_consultar_saldo.py=utf-8
 encoding//tests/test_propietario_form.py=utf-8
 encoding//tests/tests_estacionamiento_form.py=utf-8
 encoding//tests/tests_extended_form.py=utf-8
@@ -24,30 +28,3 @@ encoding//tests/tests_tarifa_hora_fraccion.py=utf-8
 encoding//tests/tests_tarifa_hora_pico.py=utf-8
 encoding//tests/tests_tarifa_minuto.py=utf-8
 encoding//tests/tests_tasa_reservacion.py=utf-8
-=======
-eclipse.preferences.version=1
-encoding//estacionamientos/admin.py=utf-8
-encoding//estacionamientos/forms.py=utf-8
-encoding//estacionamientos/migrations/0002_auto_20150513_1841.py=utf-8
-encoding//estacionamientos/migrations/0002_auto_20150514_0403.py=utf-8
-encoding//estacionamientos/migrations/0003_auto_20150513_1854.py=utf-8
-encoding//estacionamientos/migrations/0003_auto_20150515_1654.py=utf-8
-encoding//estacionamientos/models.py=utf-8
-encoding//estacionamientos/urls.py=utf-8
-encoding//estacionamientos/views.py=utf-8
-encoding//tests/test_billetera_electronica_form.py=utf-8
-encoding//tests/test_consultar_saldo.py=utf-8
-encoding//tests/tests_estacionamiento_form.py=utf-8
-encoding//tests/tests_extended_form.py=utf-8
-encoding//tests/tests_extended_form_controller.py=utf-8
-encoding//tests/tests_marzullo.py=utf-8
-encoding//tests/tests_pago_form.py=utf-8
-encoding//tests/tests_reserva_form.py=utf-8
-encoding//tests/tests_reserva_form_controller.py=utf-8
-encoding//tests/tests_tarifa_fin_semana.py=utf-8
-encoding//tests/tests_tarifa_hora.py=utf-8
-encoding//tests/tests_tarifa_hora_fraccion.py=utf-8
-encoding//tests/tests_tarifa_hora_pico.py=utf-8
-encoding//tests/tests_tarifa_minuto.py=utf-8
-encoding//tests/tests_tasa_reservacion.py=utf-8
->>>>>>> refs/remotes/origin/BilleteraElectronica
