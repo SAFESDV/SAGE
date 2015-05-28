@@ -9,6 +9,30 @@ from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
 
+
+from estacionamientos.forms import (
+    EstacionamientoExtendedForm,
+    EstacionamientoForm,
+    EditarEstacionamientoForm,
+    ReservaForm,
+    PagoForm,
+    RifForm,
+    CedulaForm,
+    BilleteraElectronicaForm,
+    ModoPagoForm, 
+    BilleteraElectronicaPagoForm)
+
+from estacionamientos.models import (
+    Estacionamiento,
+    Reserva,
+    Pago,
+    TarifaHora,
+    TarifaMinuto,
+    TarifaHorayFraccion,
+    TarifaFinDeSemana,
+    TarifaHoraPico,
+)
+
 from datetime import (
     datetime,
 )
@@ -100,10 +124,18 @@ def Consultar_Saldo(request):
 
             saldo = consultar_saldo(BE.id, BE.PIN)
             
+            noSaldo = 1
+            if saldo > 0:
+                noSaldo = 0
+            
             return render(
                         request,
                         'consultar_saldo.html',
-                        {"Saldo" : saldo}
+                        {"Saldo" : saldo,
+                         "nosaldo" : noSaldo,
+                         "color" : "red",
+                         "mensaje" : "Se recomienda recargar."
+                         }
                         )
                                    
     return render(

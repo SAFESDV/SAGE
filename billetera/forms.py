@@ -47,12 +47,12 @@ class BilleteraElectronicaPagoForm(forms.Form):
     
 class BilleteraElectronicaForm(forms.Form):
     card_name_validator = RegexValidator(
-        regex   = '^[a-zA-Z0-9áéíóúüñÜÖóöÑÁÉÍÓÚ][a-zA-Z0-9üÜáéíóúñÑÁÉÍÓÚ ]*$',
+        regex   = '^[a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'][a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'  ]*$',
         message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
     )
     
     card_surname_validator = RegexValidator(
-        regex   = '^[a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ][a-zA-Z0-9üÜáéíóúñÑÁÉÍÓÚ ]*$',
+        regex   = '^[a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'][a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'  ]*$',
         message = 'El apellido no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
     )
     
@@ -173,12 +173,12 @@ class BilleteraElectronicaRecargaForm(forms.Form):
 class PagoRecargaForm(forms.Form):
     
     card_name_validator = RegexValidator(
-        regex   = '^[a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ][a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ ]*$',
+        regex   = '^[a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'][a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'  ]*$',
         message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
     )
     
     card_surname_validator = RegexValidator(
-        regex   = '^[a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ][a-zA-Z0-9áéíóúüÜñÑÁÉÍÓÚ ]*$',
+        regex   = '^[a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'][a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'  ]*$',
         message = 'El apellido no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
     )
     

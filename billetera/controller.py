@@ -17,7 +17,7 @@ def consultar_saldo(_id, pin):
     
 def recargar_saldo(ID_Billetera,monto):
     BE = BilleteraElectronica.objects.get(id = ID_Billetera)
-    #BE = BilleteraElectronica.objects.get(id = id_billetera)
-    if monto>Decimal("0.1"):
-        BE.saldo = BE.saldo + Decimal(monto)
+    
+    if Decimal(monto).quantize(Decimal("1.00"))>=Decimal(0.01).quantize(Decimal("1.00")):
+        BE.saldo = BE.saldo + Decimal(monto).quantize(Decimal("1.00"))
         BE.save()

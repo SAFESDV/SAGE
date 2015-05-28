@@ -21,6 +21,7 @@ encoding//propietarios/urls.py=utf-8
 encoding//propietarios/views.py=utf-8
 encoding//tests/test_billetera_electronica_form.py=utf-8
 encoding//tests/test_consultar_saldo.py=utf-8
+encoding//tests/test_propietario_form.py=utf-8
 encoding//tests/tests_consulta_reserva.py=utf-8
 encoding//tests/tests_estacionamiento_form.py=utf-8
 encoding//tests/tests_extended_form.py=utf-8

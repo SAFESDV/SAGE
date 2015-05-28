@@ -22,7 +22,7 @@ class PagoRecargaBilletera(models.Model):
     cedulaTipo       = models.CharField(max_length = 1)
     cedula           = models.CharField(max_length = 10)
     ID_Billetera     = models.CharField(max_length = 4)
-    monto            = models.DecimalField(decimal_places = 2, max_digits = 256)
+    monto            = models.DecimalField(decimal_places = 2, max_digits = 7)
     tarjetaTipo      = models.CharField(max_length = 6)
 
     def __str__(self):

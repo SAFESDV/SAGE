@@ -12,7 +12,7 @@
 {% block innerContents%}
   <div class="col-sm-10">
     <h3><i class="fa fa-money"></i>
-      Pago de Reserva - Tarjeta de Crédito
+      Pago de Reserva - Billetera Electr&oacutenica
     </h3>
     <hr>
     <div class="col-md-4">
@@ -59,11 +59,6 @@
             onclick="self.close()"
             class="btn btn-primary"
           >
-            <a href="../crearbilletera" onClick="return popup(this, 'Pago de Reserva')">
-              <button class="btn btn-primary">
-                Crear Billetera
-              </button>
-            </a>
         </form>
       {% endif %}
       {% if pago %}
@@ -109,13 +104,6 @@
                 <tr><td>
                   {{pago.cedulaTipo}}-{{pago.cedula}}
                 </td></tr>
-
-                <tr><td><b><i class="fa fa-money"></i>
-                  Tarjeta de Crédito:
-                </b></td></tr>
-                <tr><td>
-                  {{pago.tarjetaTipo}} </td></tr>
-
                 <tr><td><b><i class="fa fa-money"></i>
                   Monto:
                 </b></td></tr>

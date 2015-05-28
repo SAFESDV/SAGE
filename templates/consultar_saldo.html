@@ -7,7 +7,7 @@
 {% if form %}
  <div class="col-sm-10">
     <h3><i class="fa fa-bus"></i>
-      Estacionamientos
+      Consulta de Saldo
     </h3>
     <hr>
     <div class="col-md-8">
@@ -22,7 +22,7 @@
           <div class="panel-title">
             <i class="glyphicon glyphicon-wrench pull-right"></i>
             <h4>
-              Ingrese los datos de su BE
+              Datos de la billetera:
             </h4>
           </div>
         </div>
@@ -56,12 +56,34 @@
   {% else %}
    <div class="col-sm-10">
     <h3><i class="fa fa-bus"></i>
-      Estacionamientos
+      Consulta de Saldo
     </h3>
     <hr>
     <div class="col-md-8">
       <table class="table table-striped">
-          <h3>{{ Saldo }}</h3>
+          <div class="col-md-15">
+            <table class="table table-striped">
+              <tbody>
+                <tr><td><b><i class="fa fa-money"></i>
+                  Saldo: 
+                    {% if nosaldo %} 
+                    <div style="color:{{color}}">
+			          {{ mensaje }}
+			        </div> 
+			        {% endif %}
+                </b></td></tr>
+                <tr><td>
+                  BsF. {{Saldo|floatformat:2}}
+                </td></tr>
+              </tbody>
+            </table>
+            <div>
+              <a href="" onClick="redirect()">
+                <button name="redirect" class="btn btn-primary">
+                	Volver
+                </button>
+              </a>
+            </div>
       </table>
     </div>
   </div>

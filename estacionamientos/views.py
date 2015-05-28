@@ -557,3 +557,4 @@ def grafica_tasa_de_reservacion(request):
     pyplot.close()
     
     return response
+

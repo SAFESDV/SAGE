@@ -49,4 +49,49 @@ def PropietarioAll(request):
         { 'form': form
         , 'Propietarios': Propietarios
         }
-    ) 
+    )
+    
+def propietario_editar(request, _id):
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        propietario = Propietario.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    if request.method == 'GET':
+        if propietario.Cedula:
+            
+            form_data = {
+                'nomb_prop' : propietario.nomb_prop,
+                'Cedula' : propietario.Cedula,
+                'telefono_prop' : propietario.telefono3,
+                'email_prop' : propietario.email2
+            }
+            form = PropietarioForm(data = form_data)
+        else:
+            form = PropietarioForm()
+
+    elif request.method == 'POST':
+        # Leemos el formulario
+        form = PropietarioForm(request.POST)
+        
+        # Si el formulario
+        if form.is_valid():
+            propietario.nomb_prop = form.cleaned_data['nomb_prop']
+            propietario.Cedula = form.cleaned_data['Cedula']
+            propietario.telefono3 = form.cleaned_data['telefono_prop']
+            propietario.email2 = form.cleaned_data['email_prop']
+                                               
+            propietario.save()
+                                         
+            # Recargamos los estacionamientos ya que acabamos de agregar
+            form = PropietarioForm()
+
+    return render(
+        request,
+        'editar-datos-propietario.html',
+        { 'form': form
+        , 'propietario': propietario
+        }
+    )
