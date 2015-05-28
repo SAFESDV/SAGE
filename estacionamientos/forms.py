@@ -335,7 +335,7 @@ class PagoForm(forms.Form):
 
     cedula = forms.CharField(
         required   = True,
-        label      = "Cédula",
+        label      = "Cédula del Tarjetahabiente",
         validators = [id_validator],
         widget = forms.TextInput(attrs =
             { 'class'       : 'form-control'
@@ -410,8 +410,6 @@ class BilleteraElectronicaPagoForm(forms.Form):
             }
         )
     )
-    
-    
     
     
 class BilleteraElectronicaForm(forms.Form):
@@ -500,20 +498,20 @@ class BilleteraElectronicaForm(forms.Form):
     )
 
 class BilleteraElectronicaRecargaForm(forms.Form):
+        
+    pin_validator = RegexValidator(
+        regex   = '^[0-9]{4}$',
+        message = 'El PIN solo puede contener cuatro caracteres numéricos.'
+    )
     
     id_validator = RegexValidator(
         regex   = '^[0-9]+$',
         message = 'La cédula solo puede contener caracteres numéricos.'
     )
     
-    pin_validator = RegexValidator(
-        regex   = '^[0-9]{4}$',
-        message = 'El PIN solo puede contener cuatro caracteres numéricos.'
-    )
-    
     id = forms.CharField(
         required   = True,
-        label      = "ID",
+        label      = "ID de la Billetera a recargar",
         validators = [id_validator],
         widget = forms.TextInput(attrs =
             { 'class'       : 'form-control'
@@ -526,7 +524,7 @@ class BilleteraElectronicaRecargaForm(forms.Form):
     
     pin = forms.CharField(
         required   = True,
-        label      = "PIN",
+        label      = "PIN del la Billetera a recargar",
         validators = [pin_validator],
         widget = forms.TextInput(attrs =
             { 'class'       : 'form-control'
@@ -539,7 +537,7 @@ class BilleteraElectronicaRecargaForm(forms.Form):
     
     monto = forms.DecimalField(
         required = True,
-        label = "Monto",
+        label = "Monto a recargar",
         min_value = Decimal("0.1"),
         widget    = forms.NumberInput(attrs=
             { 'class'       : 'form-control'
@@ -551,9 +549,6 @@ class BilleteraElectronicaRecargaForm(forms.Form):
         )
     )
     
-    
-
-
 
 class RifForm(forms.Form):
     

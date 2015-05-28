@@ -614,8 +614,7 @@ def billetera_pagar(request, _id):
                 tarjetaTipo      = "BE",
                 reserva          = reservaFinal,
             )
-            
-            
+                       
             # Se guarda el recibo de pago en la base de datos
             pago.save()
 
@@ -700,6 +699,8 @@ def billetera_recargar(request):
             
             monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))  
             
+            recargar(BE.id,monto)
+            
             pago = PagoBilleteraElectronica(
                 fechaTransaccion = datetime.now(),
                 cedulaTipo       = BE.cedulaTipo,
@@ -707,7 +708,6 @@ def billetera_recargar(request):
                 ID_Billetera     = BE.id,
                 monto            = monto,
             )
-            
             
             # Se guarda el recibo de pago en la base de datos
             pago.save()
