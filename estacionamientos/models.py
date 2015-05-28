@@ -6,8 +6,18 @@ from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 from datetime import timedelta
 
+# -*- coding: utf-8 -*-
+from django.db import models
+from math import ceil, floor
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from decimal import Decimal
+from datetime import timedelta
+
 class Propietario(models.Model):
-    nomb_prop = models.CharField(max_length = 50, help_text = "Nombre Propio",primary_key=True)
+    
+    Cedula      = models.CharField(max_length = 50)
+    nomb_prop   = models.CharField(max_length = 50)
     telefono3   = models.CharField(blank = True, null = True, max_length = 30)
     email2      = models.EmailField(blank = True, null = True)
     
@@ -17,7 +27,7 @@ class Propietario(models.Model):
 class Estacionamiento(models.Model):
     
     nombre      = models.CharField(max_length = 50)
-    propietario    = models.ForeignKey(Propietario)
+    CI_prop     = models.CharField(max_length = 50)
     direccion   = models.TextField(max_length = 120)
     telefono1   = models.CharField(blank = True, null = True, max_length = 30)
     telefono2   = models.CharField(blank = True, null = True, max_length = 30)
@@ -73,20 +83,7 @@ class BilleteraElectronica(models.Model):
     
     def __str__(self):
         return str(self.id)+" "+ str(self.cedula) 
- 
-class PagoRecargaBilletera(models.Model):
-    fechaTransaccion = models.DateTimeField()
-    cedulaTipo       = models.CharField(max_length = 1)
-    cedula           = models.CharField(max_length = 10)
-    ID_Billetera     = models.CharField(max_length = 4)
-    monto            = models.DecimalField(decimal_places = 2, max_digits = 256)
-    tarjetaTipo      = models.CharField(max_length = 6)
-
-    def __str__(self):
-        return str(self.id)+" "+str(self.ID_Billetera)+" "+str(self.cedulaTipo)+"-"+str(self.cedula)+"-"+str(self.monto)
     
-    
-   
 class EsquemaTarifario(models.Model):
 
     # No se cuantos digitos deberiamos poner
@@ -99,7 +96,6 @@ class EsquemaTarifario(models.Model):
         abstract = True
     def __str__(self):
         return str(self.tarifa)
-
 
 
 class TarifaHora(EsquemaTarifario):
@@ -181,8 +177,17 @@ class TarifaHoraPico(EsquemaTarifario):
             minutosPico*self.tarifa2/60 +
             minutosValle*self.tarifa/60
         ).quantize(Decimal('1.00'))
-        
-        
 
     def tipo(self):
         return("Tarifa diferenciada por hora pico")
+ 
+class PagoRecargaBilletera(models.Model):
+    fechaTransaccion = models.DateTimeField()
+    cedulaTipo       = models.CharField(max_length = 1)
+    cedula           = models.CharField(max_length = 10)
+    ID_Billetera     = models.CharField(max_length = 4)
+    monto            = models.DecimalField(decimal_places = 2, max_digits = 256)
+    tarjetaTipo      = models.CharField(max_length = 6)
+
+    def __str__(self):
+        return str(self.id)+" "+str(self.ID_Billetera)+" "+str(self.cedulaTipo)+"-"+str(self.cedula)+"-"+str(self.monto)
