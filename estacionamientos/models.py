@@ -5,12 +5,12 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 from datetime import timedelta
-from propietario.models import Propietario
+from propietarios.models import Propietario
 
 class Estacionamiento(models.Model):
     
     nombre      = models.CharField(max_length = 50)
-    propietario = models.ForeignKey(Propietario)
+    CI_prop     = models.CharField(max_length = 50)
     direccion   = models.TextField(max_length = 120)
     telefono1   = models.CharField(blank = True, null = True, max_length = 30)
     telefono2   = models.CharField(blank = True, null = True, max_length = 30)

@@ -7,21 +7,21 @@ class PropietarioForm(forms.Form):
 
     phone_validator = RegexValidator(
         regex   = '^((0212)|(0412)|(0416)|(0414)|(0424)|(0426))-?\d{7}',
-        message = 'Debe introducir un formato v·lido de telÈfono.'
+        message = 'Debe introducir un formato v√°lido de tel√©fono.'
     )
     
     name_validator = RegexValidator(
-        regex   = '^[A-Za-z0-9·ÈÌÛ˙¸‹Ò—¡…Õ”⁄ ]+$',
-        message = 'La entrada debe ser un nombre en EspaÒol sin sÌmbolos especiales.'
+        regex   = '^[A-Za-z0-9√°√©√≠√≥√∫√º√ú√±√ë√Å√â√ç√ì√ö ]+$',
+        message = 'La entrada debe ser un nombre en Espa√±ol sin s√≠mbolos especiales.'
     )
     
     id_validator = RegexValidator(
         regex   = '^[0-9]+$',
-        message = 'La cÈdula solo puede contener caracteres numÈricos.'
+        message = 'La c√©dula solo puede contener caracteres num√©ricos.'
     )
 
     # Nombre del dueno del estacionamiento (no se permiten digitos)
-    nombre_prop = forms.CharField(
+    nomb_prop = forms.CharField(
         required   = True,
         label      = "Nombre Completo",
         validators = [name_validator],
@@ -36,7 +36,7 @@ class PropietarioForm(forms.Form):
     
     Cedula = forms.CharField(
         required = True,
-        label = "Cedula de Identidad",
+        label = "Cedula",
         validators = [id_validator],
         widget = forms.TextInput(attrs= 
             { 'class'       : 'form-control'
@@ -49,11 +49,11 @@ class PropietarioForm(forms.Form):
 
     telefono_prop = forms.CharField(
         required   = False,
-        label    = "Telefono Personal",
+        label    = "Telefono Oficina 1",
         validators = [phone_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'TelÈfono Personal'
+            , 'placeholder' : 'Tel√©fono Personal'
             , 'pattern'     : phone_validator.regex.pattern
             , 'message'     : phone_validator.message
             }
@@ -65,8 +65,8 @@ class PropietarioForm(forms.Form):
         label    = "Email Personal",
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'E-mail Personal'
-            , 'message'     : 'La entrada debe ser un e-mail v·lido.'
+            , 'placeholder' : 'E-mail 2'
+            , 'message'     : 'La entrada debe ser un e-mail v√°lido.'
             }
         )
     )

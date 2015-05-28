@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^estacionamientos/', include('estacionamientos.urls')),
     url(r'^billetera/', include('billetera.urls')), #added
     url(r'^index/', include('index.urls')),
+    url(r'^propietarios/', include('propietarios.urls')),
     url(r'^admin/', include(admin.site.urls))
 )
 

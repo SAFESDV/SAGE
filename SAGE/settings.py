@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'billetera',
     'estacionamientos',
     'index',
-    'propietario',
+    'propietarios',
 )
 
 MIDDLEWARE_CLASSES = (

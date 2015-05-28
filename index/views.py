@@ -22,10 +22,10 @@ from django.forms.forms import Form
 def index_page(request):
     
     if request.method == 'GET':
-        form = EstacionamientoForm()
+        pass
         
     elif request.method == 'POST':
-        form = EstacionamientoForm(request.POST)
+        pass
     
     return render(
     request,

@@ -27,33 +27,25 @@ from estacionamientos.controller import (
 from estacionamientos.forms import (
     EstacionamientoExtendedForm,
     EstacionamientoForm,
+    EditarEstacionamientoForm,
     ReservaForm,
     PagoForm,
     RifForm,
     CedulaForm,
-    ModoPagoForm
-    )
+    BilleteraElectronicaForm,
+    ModoPagoForm, 
+    BilleteraElectronicaPagoForm)
 
 from estacionamientos.models import (
     Estacionamiento,
-    Propietario,
     Reserva,
     Pago,
     TarifaHora,
     TarifaMinuto,
     TarifaHorayFraccion,
     TarifaFinDeSemana,
-    TarifaHoraPico
+    TarifaHoraPico,
 )
-
-from billetera.models import BilleteraElectronica
-
-from billetera.forms import (
-    BilleteraElectronicaForm,
-    BilleteraElectronicaPagoForm
-)
-
-
 from django.template.context_processors import request
 from django.forms.forms import Form
 
@@ -83,17 +75,10 @@ def estacionamientos_all(request):
         # Si el formulario es valido, entonces creamos un objeto con
         # el constructor del modelo
         if form.is_valid():
-            
-            obj1 = Propietario(
-                nomb_prop = form.cleaned_data['propietario'],
-                telefono3   = form.cleaned_data['telefono_3'],
-                email2      = form.cleaned_data['email_2']
-            )
-            obj1.save() 
                   
             obj = Estacionamiento(
                 nombre      = form.cleaned_data['nombre'],
-                propietario    = obj1,
+                CI_prop     = form.cleaned_data['CI_prop'],
                 direccion   = form.cleaned_data['direccion'],
                 rif         = form.cleaned_data['rif'],
                 telefono1   = form.cleaned_data['telefono_1'],
@@ -101,12 +86,9 @@ def estacionamientos_all(request):
                 email1      = form.cleaned_data['email_1'],
             )
             obj.save()
-            
-
                      
             # Recargamos los estacionamientos ya que acabamos de agregar
             estacionamientos = Estacionamiento.objects.all()
-            propietarios = Propietario.objects.all()
             form = EstacionamientoForm()
 
     return render(
@@ -185,6 +167,45 @@ def estacionamiento_detail(request, _id):
     return render(
         request,
         'detalle-estacionamiento.html',
+        { 'form': form
+        , 'estacionamiento': estacionamiento
+        }
+    )
+    
+def estacionamiento_editar(request, _id):
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    if request.method == 'GET':
+        if estacionamiento.CI_prop:
+            
+            form_data = {
+                'CI_prop' : estacionamiento.CI_prop
+            }
+            form = EditarEstacionamientoForm(data = form_data)
+        else:
+            form = EditarEstacionamientoForm()
+
+    elif request.method == 'POST':
+        # Leemos el formulario
+        form = EditarEstacionamientoForm(request.POST)
+        
+        # Si el formulario
+        if form.is_valid():
+            estacionamiento.CI_prop = form.cleaned_data['CI_prop']
+                                               
+            estacionamiento.save()
+                                         
+            # Recargamos los estacionamientos ya que acabamos de agregar
+            form = EditarEstacionamientoForm()
+
+    return render(
+        request,
+        'editar-datos-estacionamiento.html',
         { 'form': form
         , 'estacionamiento': estacionamiento
         }
@@ -536,4 +557,3 @@ def grafica_tasa_de_reservacion(request):
     pyplot.close()
     
     return response
-        
