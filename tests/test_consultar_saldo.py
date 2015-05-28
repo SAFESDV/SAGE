@@ -40,8 +40,44 @@ class consultar_saldoTestCase(TestCase):
     # TDD   
     def testConsultaSaldoNoVacio(self):
         
-        bill = self.crearBilletera(1234, 10)
+        bill = self.crearBilletera(1234, 0)
         recargar_saldo(bill.id,500)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(500).quantize(Decimal("1.00")))        
     
+    #borde
+    def testRecargaMaxima(self):
+        
+        bill = self.crearBilletera(1234, 0)
+        recargar_saldo(bill.id,99999,99)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(99999.99).quantize(Decimal("1.00")))   
     
+    #borde
+    def testRecargaDesbordada(self):
+        
+        bill = self.crearBilletera(1234, 99999.99)
+        self.assertRaises(Exception, recargar_saldo(bill.id,0.01))
+        
+    #borde
+    def testRecargaMinima(self):
+        
+        bill = self.crearBilletera(1234, 0)
+        recargar_saldo(bill.id,0.01)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(0.01).quantize(Decimal("1.00")))
+    
+    #esquina    
+    def testRecargasSeguidasMaxima(self):
+        
+        bill = self.crearBilletera(1234, 0)
+        recargar_saldo(bill.id,50000)
+        recargar_saldo(bill.id,49999.99)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(99999.99).quantize(Decimal("1.00")))
+        
+    #esquina    
+    def testRecargasSeguidasMaxima(self):
+        
+        bill = self.crearBilletera(1234, 500)
+        recargar_saldo(bill.id,0)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(500).quantize(Decimal("1.00")))        
+             
+        
+        
