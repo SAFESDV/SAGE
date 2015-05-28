@@ -20,4 +20,5 @@ urlpatterns = patterns('',
     url(r'^(?P<_id>\d+)/tasa$', views.tasa_de_reservacion, name = 'tasa_de_reservacion'),
     url(r'^grafica/.*$', views.grafica_tasa_de_reservacion, name = 'grafica_tasa_de_reservacion'),
     url(r'^billeterarecargar$', views.billetera_recargar, name = 'billetera_recargar'),
+    url(r'^pagarrecarga$',views.recarga_pago, name = 'recarga_pago'),
 )

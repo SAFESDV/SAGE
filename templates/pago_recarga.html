@@ -6,13 +6,14 @@
 {% endblock %}
 
 {% block body%}
+  <body {% if mensaje %} onunload="openlink()" {% endif %}>
 {% endblock %}
 
 {% block menu %}{% endblock %}
 {% block innerContents%}
   <div class="col-sm-10">
     <h3><i class="fa fa-money"></i>
-      Pago de Recarga - Billetera Electronica
+      Pago de Recarga - Tarjeta de Credito
     </h3>
     <hr>
     <div class="col-md-4">
@@ -21,32 +22,19 @@
           method="post"
           class="form form-vertical"
         >
-        <div class="col-md-8" style="color:{{color}}">
-          {{ mensaje }}
-          <hr>
-        </div>
           {% csrf_token %}
           <div class="control-group">
             <div class="controls">
               <p>
-                {{ form.id }}
+                {{ form.ID_Billetera }}
                 <span
                   class='error'
-                  id='{{form.id.name}}_error'
+                  id='{{form.ID_Billetera.name}}_error'
                   aria-live="polite"
                 ></span>
               </p>
-              {{ form.id.errors }}
+              {{ form.ID_Billetera.errors }}
               <p>
-                {{ form.pin }}
-                <span
-                  class='error'
-                  id='{{form.pin.name}}_error'
-                  aria-live="polite"
-                ></span>
-              </p>
-              {{ form.pin.errors }}
-              <!--{% comment %}  <p>
                 {{ form.monto }}
                 <span
                   class='error'
@@ -54,22 +42,76 @@
                   aria-live="polite"
                 ></span>
               </p>
-              {{ form.monto.errors }}{% endcomment %}-->
+              {{ form.monto.errors }}
+              <p>
+                {{ form.nombre }}
+                <span
+                  class='error'
+                  id='{{form.nombre.name}}_error'
+                  aria-live="polite"
+                ></span>
+              </p>
+              {{ form.nombre.errors }}
+              <p>
+                {{ form.apellido }}
+                <span
+                  class='error'
+                  id='{{form.apellido.name}}_error'
+                  aria-live="polite"
+                ></span>
+              </p>
+              {{ form.apellido.errors }}
+              <p>
+                <table><tbody><tr>
+                  <td>
+                    {{ form.cedulaTipo }}
+                  </td>
+                  <td>
+                    {{ form.cedula }}
+                  </td>
+                </tr></tbody></table>
+                <span
+                  class='error'
+                  id='{{form.cedula.name}}_error'
+                  aria-live="polite"
+                ></span>
+                {{ form.cedula.errors }}
+              </p>
+              <table width="300" border="0" cellspacing="0">
+                <tr>
+                  <td><font size="32" color="blue"><i class="fa fa-cc-visa"> </i></font></td>
+                  <td><font size="32" color="red"><i class="fa fa-cc-mastercard"> </i></font></td>
+                  <td><font size="32" color="gray"><i class="fa fa-cc-amex"> </i></font></td>
+                </tr>
+                <tr>
+                  {% for choice in form.tarjetaTipo %}
+                    <td> {{ choice }} </td>
+                  {% endfor %}
+                </tr>
+              </table>
+              {{ form.tarjetaTipo.errors }}
+              <p>
+                {{ form.tarjeta }}
+                <span
+                  class='error'
+                  id='{{form.tarjeta.name}}_error'
+                  aria-live="polite"
+                ></span>
+              </p>
+              {{ form.tarjeta.errors }}
             </div>
           </div>
-          
-          <a href="../estacionamientos/pagarrecarga" onClick="popup(this, 'Pago Tarjeta')">
-            <button class="btn btn-primary">
-               Pagar con Tarjeta de Credito
-            </button>
-          </a>
+          <input
+            type="submit"
+            value="Realizar Pago"
+            class="btn btn-primary"
+          >
           <input
             type="button"
             value="Volver"
             onclick="self.close()"
             class="btn btn-primary"
           >
-            
         </form>
       {% endif %}
       {% if pago %}
@@ -82,28 +124,42 @@
             <table class="table table-striped">
               <tbody>
                 <tr><td><b><i class="fa fa-circle"></i>
-                  Numero de Transaccion:
+                  Número de Transacción:
                 </b></td></tr>
                 <tr><td>
                   {{pago.id}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-clock-o"></i>
-                  Fecha de Transaccion:
+                  Fecha de Transacción:
                 </b></td></tr>
                 <tr><td>
                   {{pago.fechaTransaccion}}
                 </td></tr>
 
+                <tr><td><b><i class="fa fa-clock-o"></i>
+                  Horario inicio de reserva:
+                </b></td></tr>
+                <tr><td>
+                  {{pago.reserva.inicioReserva}}
+                </td></tr>
+
+                <tr><td><b><i class="fa fa-clock-o"></i>
+                  Horario fin de reserva:
+                </b></td></tr>
+                <tr><td>
+                  {{pago.reserva.finalReserva}}
+                </td></tr>
+
                 <tr><td><b><i class="fa fa-user"></i>
-                  Cedula:
+                  Cédula:
                 </b></td></tr>
                 <tr><td>
                   {{pago.cedulaTipo}}-{{pago.cedula}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-money"></i>
-                  Tarjeta de Credito:
+                  Tarjeta de Crédito:
                 </b></td></tr>
                 <tr><td>
                   {{pago.tarjetaTipo}} </td></tr>
@@ -126,14 +182,6 @@
             </div>
           </div>
         </div>
-      {% endif %}
-      {% if formIns %}
-        <div class="row">
-          <div class="col-md-7" style="color:{{color}}">
-            {{mensaje}}
-            <hr>
-          </div>
-         
       {% endif %}
     </div>
   </div>

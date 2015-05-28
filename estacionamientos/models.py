@@ -80,6 +80,7 @@ class PagoRecargaBilletera(models.Model):
     cedula           = models.CharField(max_length = 10)
     ID_Billetera     = models.CharField(max_length = 4)
     monto            = models.DecimalField(decimal_places = 2, max_digits = 256)
+    tarjetaTipo      = models.CharField(max_length = 6)
 
     def __str__(self):
         return str(self.id)+" "+str(self.ID_Billetera)+" "+str(self.cedulaTipo)+"-"+str(self.cedula)+"-"+str(self.monto)

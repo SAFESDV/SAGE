@@ -24,7 +24,7 @@ from estacionamientos.controller import (
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
-    recargar,
+    recargar_saldo,
 )
 
 from estacionamientos.forms import (
@@ -37,7 +37,8 @@ from estacionamientos.forms import (
     BilleteraElectronicaForm,
     ModoPagoForm, 
     BilleteraElectronicaPagoForm,
-    BilleteraElectronicaRecargaForm)
+    BilleteraElectronicaRecargaForm,
+    PagoRecargaForm)
 
 from estacionamientos.models import (
     Estacionamiento,
@@ -699,9 +700,9 @@ def billetera_recargar(request):
             
             monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))  
             
-            recargar(BE.id,monto)
+            recargar_saldo(BE.id,monto)
             
-            pago = PagoBilleteraElectronica(
+            pago = PagoRecargaBilletera(
                 fechaTransaccion = datetime.now(),
                 cedulaTipo       = BE.cedulaTipo,
                 cedula           = BE.cedula,
@@ -726,3 +727,36 @@ def billetera_recargar(request):
         'billetera_recargar.html',
         { 'form' : form }
     )     
+
+def recarga_pago(request):
+    form = PagoRecargaForm()
+    
+    if request.method == 'POST':
+        form = PagoRecargaForm(request.POST)
+        if form.is_valid():
+            
+            pago = PagoRecargaBilletera(
+                fechaTransaccion = datetime.now(),
+                cedulaTipo       = form.cleaned_data['cedulaTipo'],
+                cedula           = form.cleaned_data['cedula'],
+                ID_Billetera     = form.cleaned_data['ID_Billetera'],
+                monto            = form.cleaned_data['monto'],
+                tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
+            )
+            # Se guarda el recibo de pago en la base de datos
+            pago.save()
+
+            return render(
+                request,
+                'pago_recarga.html',
+                { "id"      : _id
+                , "pago"    : pago
+                , "color"   : "green"
+                , 'mensaje' : "Se realizo la recarga satisfactoriamente."
+                }
+            )
+    return render(
+        request,
+        'pago_recarga.html',
+        { 'form' : form }
+    )
