@@ -1,5 +1,5 @@
 # Archivo con funciones de control para SAGE
-from estacionamientos.models import Estacionamiento, Reserva, Pago
+from estacionamientos.models import Estacionamiento, Reserva, Pago, BilleteraElectronica
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
@@ -96,18 +96,28 @@ def calcular_porcentaje_de_tasa(hora_apertura,hora_cierre, capacidad, ocupacion)
 		ocupacion[i]=(Decimal(ocupacion[i])*100/(factor_divisor*capacidad)).quantize(Decimal('1.0'))
 
 def consultar_ingresos(rif):
-            listaEstacionamientos = Estacionamiento.objects.filter(rif = rif)
-            ingresoTotal          = 0
-            listaIngresos         = []
+    listaEstacionamientos = Estacionamiento.objects.filter(rif = rif)
+    ingresoTotal          = 0
+    listaIngresos         = []
 
-            for estacionamiento in listaEstacionamientos:
-                listaFacturas = Pago.objects.filter(
-                    reserva__estacionamiento__nombre = estacionamiento.nombre
-                )
-                ingreso       = [estacionamiento.nombre, 0]
-                for factura in listaFacturas:
-                    ingreso[1] += factura.monto
-                listaIngresos += [ingreso]
-                ingresoTotal  += ingreso[1]
+    for estacionamiento in listaEstacionamientos:
+        listaFacturas = Pago.objects.filter(
+            reserva__estacionamiento__nombre = estacionamiento.nombre
+        )
+        ingreso       = [estacionamiento.nombre, 0]
+        for factura in listaFacturas:
+            ingreso[1] += factura.monto
+        listaIngresos += [ingreso]
+        ingresoTotal  += ingreso[1]
 
-            return listaIngresos, ingresoTotal
+    return listaIngresos, ingresoTotal
+
+def consultar_saldo(id, pin):
+	
+	duenioBilletera = BilleteraElectronica.objects.get(id = id, PIN = pin)
+	
+	if (duenioBilletera != None):
+		return duenioBilletera.saldo
+	
+	else:
+		return -1

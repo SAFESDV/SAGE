@@ -22,6 +22,7 @@ from estacionamientos.controller import (
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
+    consultar_saldo
 )
 
 from estacionamientos.forms import (
@@ -775,3 +776,47 @@ def billetera_crear(request):
         }
     )
     
+def Consultar_Saldo(request):
+    
+    form = BilleteraElectronicaPagoForm()
+    
+    if request.method == 'POST':
+        form = BilleteraElectronicaPagoForm(request.POST)
+        if form.is_valid():
+            try:
+                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
+                if (BE.PIN != form.cleaned_data['pin']):
+                    return render(
+                        request,
+                        'consultar_saldo.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+                    
+                
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'consultar_saldo.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+            Hay_billetera = True
+            Saldo = consultar_saldo(BE.id, BE.PIN)
+            
+            return render(
+                        request,
+                        'consultar_saldo.html',
+                        {"Saldo" : Saldo,
+                         "Hay_billetera" : Hay_billetera}
+                        )
+                                   
+    return render(
+                request,
+                'consultar_saldo.html',
+                {"form" : form}
+                )

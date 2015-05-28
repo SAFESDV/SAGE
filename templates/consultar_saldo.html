@@ -13,24 +13,17 @@
     <hr>
     <div class="col-md-8">
       <table class="table table-striped">
-        {% if listaFacturas %}
+        {% if Hay_billetera %}
           <thead>
             <tr>
-              <th></th>
-              <th>Inicio</th>
+              <th>Saldo</th>
             </tr>
           </thead>
           <tbody>
-            {% for factura in listaFacturas%}
-              <tr>
-                <td></td>
-                <td>{{factura.reserva.inicioReserva}}</td>
-                </td>
-              </tr>
-            {% endfor %}
+              <td>{{Saldo}}</td>
           </tbody>
         {% else %}
-          <h3>Introduzca su Cédula</h3>
+          <h3>Login para billetera electrónica</h3>
         {% endif %}
       </table>
       <hr>
@@ -64,9 +57,11 @@
               <div class="control-group">
                 <label></label>
                 <div class="controls">
-                  <button type="submit" class="btn btn-primary">
-                    Continuar
-                  </button>
+                  <a href="../verSaldo" onClick="return popup(this, 'Consulta de saldo')">
+                    <button type="submit" class="btn btn-primary">
+                     Continuar1
+                    </button>
+                  </a>
                 </div>
               </div>
           </form>
