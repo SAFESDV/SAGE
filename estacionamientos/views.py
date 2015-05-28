@@ -698,7 +698,7 @@ def billetera_recargar(request):
                         }
                     )
             
-            monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))  
+            '''monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))  
             
             recargar_saldo(BE.id,monto)
             
@@ -711,14 +711,12 @@ def billetera_recargar(request):
             )
             
             # Se guarda el recibo de pago en la base de datos
-            pago.save()
+            pago.save()'''
             
             return render(
                 request,
                 'billetera_recargar.html',
-                { "id"      : _id
-                , "pago"    : pago
-                , "color"   : "green"
+                { "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
                 }
             )
