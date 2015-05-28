@@ -72,12 +72,23 @@ class consultar_saldoTestCase(TestCase):
         recargar_saldo(bill.id,49999.99)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(99999.99).quantize(Decimal("1.00")))
         
-    #esquina    
-    def testRecargasSeguidasMaxima(self):
+    #Malicia    
+    def testRecargaNula(self):
         
         bill = self.crearBilletera(1234, 500)
         recargar_saldo(bill.id,0)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(500).quantize(Decimal("1.00")))        
              
+    #Malicia    
+    def testRecargaNegativa(self):
         
+        bill = self.crearBilletera(1234, 500)
+        self.assertRaises(Exception, recargar_saldo(bill.id,-1))      
+    
+    #Malicia    
+    def testRecargaInvalidaString(self):
         
+        bill = self.crearBilletera(1234, 500)
+        self.assertRaises(Exception, recargar_saldo(bill.id,'prueba'))  
+        
+            
