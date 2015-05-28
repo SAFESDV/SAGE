@@ -65,7 +65,7 @@ class PropietarioForm(forms.Form):
         label    = "Email Personal",
         widget   = forms.EmailInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'E-mail 2'
+            , 'placeholder' : 'E-mail'
             , 'message'     : 'La entrada debe ser un e-mail válido.'
             }
         )
