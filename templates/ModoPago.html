@@ -12,15 +12,22 @@
   
 {% block innerContents%}
     
+  <div class="ex1">
   <a href="./pago" onClick="popup(this, 'Pago Tarjeta')">
     <button class="btn btn-primary">
       Tarjeta de Credito
     </button>
   </a>
-  
+  <a class="col-md-1">
   <a href="./billeterapagar" onClick="popup(this, 'Pago Tarjeta')">
     <button class="btn btn-primary">
       Billetera Electronica
+    </button>
+  </a>
+  <a class="col-md-1">
+  <a onclick="self.close()">
+    <button class="btn btn-primary">
+      Volver
     </button>
   </a>
   

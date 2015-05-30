@@ -4,43 +4,95 @@
   </h3>
   <hr>
   <ul class="nav nav-stacked">
-  <li><a href=".."><i class="fa fa-circle"></i>
+    <li><a href=".."><i class="fa fa-circle"></i>
       P&aacutegina Principal
     </a></li>
     <li><a href="/propietarios"><i class="fa fa-group"></i>
       Propietarios
     </a></li>
+    
+
+  
+  
+    
     <li><a href="/estacionamientos"><i class="fa fa-bus"></i>
       Estacionamientos
     </a></li>
-    <li><a href="/estacionamientos/ingreso"><i class="fa fa-money"></i>
-      Consultar Ingreso
-    </a></li>
     <li><a href="/estacionamientos/consulta_reserva"><i class="fa fa-clock-o"></i>
       Consultar Reservas
-    </a></li>
-    <li><a href="/billetera/crearbilletera"><i class="fa fa-credit-card"></i>
-      Crear Billetera Electronica
-    </a></li>
-	<li><a href="/billetera/billeterarecargar"><i class="fa fa-bank"></i>
-	  Recargar Billetera
-	</a></li>
-    <li><a href="/billetera/verSaldo"><i class="fa fa-bank"></i>
-      Consultar Billetera Electronica
     </a></li>
     {% if estacionamiento %}
 	  <li><a href="./editar"><i class="fa fa-pencil"></i>
 	       Editar
 	  </a></li>
-		{% if estacionamiento.capacidad %}
-	      <li><a href="./"><i class="fa fa-wrench"></i>
-	        Parametrizar
-	      </a></li>
-	      <li><a href="./reserva"><i class="fa fa-pencil-square-o"></i>
-	        Reservar
-	      </a></li>
-	    {% endif %}
+	  <li><a href="/estacionamientos/ingreso"><i class="fa fa-money"></i>
+        Consultar Ingreso
+      </a></li>
+      {% if estacionamiento.capacidad %}
+	    <li><a href="./"><i class="fa fa-wrench"></i>
+	      Parametrizar
+	    </a></li>
+	    <li><a href="./reserva"><i class="fa fa-pencil-square-o"></i>
+	      Reservar
+	    </a></li>
+	  {% endif %}
     {% endif %}
+    
+   
+     <div id="Billetera">
+        <ul class="nav nav-stacked"><li><a id="Billetera Electronica">
+          Billetera Electronica 
+        </a></li></ul>
+        
+        <ul class="nav nav-stacked"><li><a id="Crear" href="/billetera/crearbilletera">
+          <i class="fa fa-credit-card"></i> Crear
+        </a></li></ul>
+        
+        <ul class="nav nav-stacked"><li><a id="Recargar" href="/billetera/billeterarecargar">
+          <i class="fa fa-bank"></i> Recargar
+        </a></li></ul>
+        
+        <ul class="nav nav-stacked"><li><a id="Consultar" href="/billetera/verSaldo">
+          <i class="fa fa-bank"></i> Consultar
+        </a></li></ul> 
+    </div>
+    
+    <li><a href="/estacionamientos/consulta_reserva"><i class="fa fa-clock-o"></i>
+      Consultar Reservas
+    </a></li>
+       
   </ul>
-  <hr>
+  <hr> 
+    
 </div>
+
+<script type="text/javascript">
+
+	window.onload = start {
+	
+	    var menuBilletera = document.getElementById("Billetera");
+        
+        document.getElementById('Crear').style.display = 'none';
+    	document.getElementById('Recargar').style.display = 'none';
+    	document.getElementById('Consultar').style.display = 'none';
+        menuBilletera.onmouseover = ShowLinks;
+        menuBilletera.onmouseout = HideLinks;
+
+    };
+    
+
+  function ShowLinks(){
+  	document.getElementById('Crear').style.display = 'block';
+    document.getElementById('Recargar').style.display = 'block';
+    document.getElementById('Consultar').style.display = 'block';
+  }
+  function HideLinks(){
+    document.getElementById('Crear').style.display = 'none';
+    document.getElementById('Recargar').style.display = 'none';
+    document.getElementById('Consultar').style.display = 'none'; 
+  }   
+  
+ 
+   
+</script>
+
