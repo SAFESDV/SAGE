@@ -112,7 +112,9 @@
             onclick="self.close()"
             class="btn btn-primary"
           >
+          
         </form>
+        
       {% endif %}
       {% if pago %}
 	      <div class="row">
@@ -137,19 +139,7 @@
                   {{pago.fechaTransaccion}}
                 </td></tr>
 
-                <tr><td><b><i class="fa fa-clock-o"></i>
-                  Horario inicio de reserva:
-                </b></td></tr>
-                <tr><td>
-                  {{pago.reserva.inicioReserva}}
-                </td></tr>
-
-                <tr><td><b><i class="fa fa-clock-o"></i>
-                  Horario fin de reserva:
-                </b></td></tr>
-                <tr><td>
-                  {{pago.reserva.finalReserva}}
-                </td></tr>
+                
 
                 <tr><td><b><i class="fa fa-user"></i>
                   Cédula:
