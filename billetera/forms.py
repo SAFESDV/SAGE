@@ -284,13 +284,13 @@ class PagoRecargaForm(forms.Form):
     monto = forms.DecimalField(
         required = True,
         label = "Monto a recargar",
-        min_value = Decimal("0.1"),
+        min_value = Decimal("0.01"),
         widget    = forms.NumberInput(attrs=
             { 'class'       : 'form-control'
             , 'placeholder' : 'Monto'
-            , 'min'         : "1"
+            , 'min'         : "0.01"
             , 'pattern'     : '^[0-9]+'
-            , 'message'     : 'La entrada debe ser un monto mayor que 0.1.'
+            , 'message'     : 'La entrada debe ser un monto mayor o igual que 0.01.'
             }
         )
     )
