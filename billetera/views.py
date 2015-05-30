@@ -317,7 +317,8 @@ def recarga_pago(request):
                 tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
             )
             
-            if pago.monto > Decimal(99999.99):
+            BE = BilleteraElectronica.objects.get(id = pago.ID_Billetera)
+            if pago.monto + BE.saldo > Decimal(10000.00):
                 return render(request,
                     'pago_recarga.html',
                     {
