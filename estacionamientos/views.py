@@ -46,6 +46,9 @@ from estacionamientos.models import (
     TarifaFinDeSemana,
     TarifaHoraPico,
 )
+
+from propietarios.models import Propietario
+
 from django.template.context_processors import request
 from django.forms.forms import Form
 
@@ -75,7 +78,20 @@ def estacionamientos_all(request):
         # Si el formulario es valido, entonces creamos un objeto con
         # el constructor del modelo
         if form.is_valid():
-                  
+            
+            try:
+                propietario = Propietario.objects.get(Cedula = form.cleaned_data['CI_prop'])
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'template-mensaje.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
+                        }
+                    )
+            
+              
             obj = Estacionamiento(
                 nombre      = form.cleaned_data['nombre'],
                 CI_prop     = form.cleaned_data['CI_prop'],
@@ -348,7 +364,7 @@ def estacionamiento_pago(request,_id):
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
-                estado          = 'valido'
+                estado          = 'Válido'
             )
 
             # Se guarda la reserva en la base de datos

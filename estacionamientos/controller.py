@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Archivo con funciones de control para SAGE
 from estacionamientos.models import Estacionamiento, Reserva, Pago
 from datetime import datetime, timedelta, time
@@ -40,7 +42,7 @@ def marzullo(idEstacionamiento, hIn, hOut):
 	ocupacion = []
 	capacidad = e.capacidad
 
-	for reserva in e.reserva_set.filter(estado = 'valido'):
+	for reserva in e.reserva_set.filter(estado = 'Válido'):
 		ocupacion += [(reserva.inicioReserva, 1), (reserva.finalReserva, -1)]
 	ocupacion += [(hIn, 1), (hOut, -1)]
 
@@ -103,7 +105,7 @@ def consultar_ingresos(rif):
     for estacionamiento in listaEstacionamientos:
         listaFacturas = Pago.objects.filter(
             reserva__estacionamiento__nombre = estacionamiento.nombre,
-            reserva__estado = 'valido'
+            reserva__estado = 'Válido'
         )
         ingreso       = [estacionamiento.nombre, 0]
         for factura in listaFacturas:

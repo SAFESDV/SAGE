@@ -6,6 +6,7 @@ encoding//billetera/models.py=utf-8
 encoding//billetera/urls.py=utf-8
 encoding//billetera/views.py=utf-8
 encoding//estacionamientos/admin.py=utf-8
+encoding//estacionamientos/controller.py=utf-8
 encoding//estacionamientos/forms.py=utf-8
 encoding//estacionamientos/migrations/0002_auto_20150513_1841.py=utf-8
 encoding//estacionamientos/migrations/0003_auto_20150513_1854.py=utf-8
