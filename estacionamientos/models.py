@@ -33,6 +33,7 @@ class Reserva(models.Model):
     estacionamiento = models.ForeignKey(Estacionamiento)
     inicioReserva   = models.DateTimeField()
     finalReserva    = models.DateTimeField()
+    estado          = models.CharField(max_length = 10)
 
     def __str__(self):
         return self.estacionamiento.nombre+' ('+str(self.inicioReserva)+','+str(self.finalReserva)+')'

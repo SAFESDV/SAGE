@@ -348,6 +348,7 @@ def estacionamiento_pago(request,_id):
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
+                estado          = 'valido'
             )
 
             # Se guarda la reserva en la base de datos

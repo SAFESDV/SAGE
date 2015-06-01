@@ -40,7 +40,7 @@ def marzullo(idEstacionamiento, hIn, hOut):
 	ocupacion = []
 	capacidad = e.capacidad
 
-	for reserva in e.reserva_set.all():
+	for reserva in e.reserva_set.filter(estado = 'valido'):
 		ocupacion += [(reserva.inicioReserva, 1), (reserva.finalReserva, -1)]
 	ocupacion += [(hIn, 1), (hOut, -1)]
 
@@ -102,7 +102,8 @@ def consultar_ingresos(rif):
 
     for estacionamiento in listaEstacionamientos:
         listaFacturas = Pago.objects.filter(
-            reserva__estacionamiento__nombre = estacionamiento.nombre
+            reserva__estacionamiento__nombre = estacionamiento.nombre,
+            reserva__estado = 'valido'
         )
         ingreso       = [estacionamiento.nombre, 0]
         for factura in listaFacturas:
