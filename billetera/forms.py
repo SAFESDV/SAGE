@@ -290,13 +290,12 @@ class PagoRecargaForm(forms.Form):
         required = True,
         label = "Monto a recargar",
         min_value = Decimal("0.01"),
-        validators = [monto_validator],
         widget    = forms.NumberInput(attrs=
             { 'class'       : 'form-control'
             , 'placeholder' : 'Monto'
             , 'min'         : "0.01"
-            , 'pattern'     : monto_validator.regex.pattern
-            , 'message'     : monto_validator.message
+            , 'pattern'     : '[0-9]+'
+            , 'message'     : 'La entrada debe ser un monto mayor o igual que 0.01'
             }
         )
     )

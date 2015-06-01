@@ -3,6 +3,7 @@
 from django.test import TestCase
 from billetera.controller import consultar_saldo
 from billetera.controller import recargar_saldo
+from billetera.controller import consumir_saldo
 from billetera.models import BilleteraElectronica
 from billetera.models import PagoRecargaBilletera
 from billetera.forms import BilleteraElectronicaForm
@@ -25,17 +26,19 @@ class consultar_saldoTestCase(TestCase):
         bill.save()
         return bill
     
+    #TDD consulta
     def testconsultaSaldoCero(self):
         
         bill = self.crearBilletera(1234, 0)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(0).quantize(Decimal("1.00")))
-    
+        
+    #TDD consulta
     def testsaldoRegular(self):
         
         bill = self.crearBilletera(1234, 10)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(10).quantize(Decimal("1.00")))
     
-    # TDD   
+    # TDD recargar   
     def testConsultaSaldoNoVacio(self):
         
         bill = self.crearBilletera(1234, 0)
@@ -46,15 +49,15 @@ class consultar_saldoTestCase(TestCase):
     def testRecargaMaxima(self):
         
         bill = self.crearBilletera(1234, 0)
-        recargar_saldo(bill.id,99999.99)
-        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(99999.99).quantize(Decimal("1.00")))   
+        recargar_saldo(bill.id,9999.99)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(9999.99).quantize(Decimal("1.00")))   
     
-    #borde
+    #esquina
     def testRecargaDesbordada(self):
         
-        bill = self.crearBilletera(1234, 99999.99)
-        self.assertRaises(Exception, recargar_saldo(bill.id,Decimal(0.01).quantize(Decimal("1.00"))))
-        
+        bill = self.crearBilletera(1234, 10000.00)
+        recargar_saldo(bill.id, 0.01)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(10000.00).quantize(Decimal("1.00")))
     #borde
     def testRecargaMinima(self):
         
@@ -66,9 +69,9 @@ class consultar_saldoTestCase(TestCase):
     def testRecargasSeguidasMaxima(self):
         
         bill = self.crearBilletera(1234, 0)
-        recargar_saldo(bill.id,50000)
-        recargar_saldo(bill.id,49999.99)
-        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(99999.99).quantize(Decimal("1.00")))
+        recargar_saldo(bill.id,5000)
+        recargar_saldo(bill.id,4999.99)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(9999.99).quantize(Decimal("1.00")))
         
     #Malicia    
     def testRecargaNula(self):
@@ -82,3 +85,11 @@ class consultar_saldoTestCase(TestCase):
         
         bill = self.crearBilletera(1234, 500)
         self.assertRaises(Exception, recargar_saldo(bill.id,-1))
+    
+    #TDD consumir
+    def testConsumoRegular(self):
+        
+        bill = self.crearBilletera(1234, 500)
+        consumir_saldo(bill.id,300)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(200).quantize(Decimal("1.00")))        
+             
