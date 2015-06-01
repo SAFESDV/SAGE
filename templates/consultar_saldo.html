@@ -1,10 +1,12 @@
-﻿{% extends "base.html" %}
+﻿{% extends "base-billetera.html" %}
+{% load humanize %}
 
 {% block title %}
   SAGE - Estacionamiento {{estacionamiento.nombre}}
 {% endblock %}
 {% block innerContents%}
 {% if form %}
+
  <div class="col-sm-10">
     <h3><i class="fa fa-bus"></i>
       Consulta de Saldo
@@ -14,6 +16,10 @@
       <table class="table table-striped">
           <h3>Login para billetera electrónica (BE)</h3>
       </table>
+      <hr>
+    </div>
+    <div class="col-md-8" style="color:{{color}}">
+      {{ mensaje }}
       <hr>
     </div>
     <div class="col-md-4">
@@ -27,7 +33,7 @@
           </div>
         </div>
         <div class="panel-body">
-          <form action="./verSaldo" method="post" class="form form-vertical">
+          <form action="." method="post" class="form form-vertical">
             {% csrf_token %}
             {% for field in form %}
                 <div class="control-group">
@@ -78,8 +84,8 @@
               </tbody>
             </table>
             <div>
-              <a href="" onClick="redirect()">
-                <button name="redirect" class="btn btn-primary">
+              <a href="./verSaldo">
+                <button class="btn btn-primary">
                 	Volver
                 </button>
               </a>

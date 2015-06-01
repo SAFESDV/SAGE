@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-billetera.html" %}
 {% load humanize %}
 
 {% block title %}
@@ -8,7 +8,6 @@
 {% block body%}
 {% endblock %}
 
-{% block menu %} {% include "menu.html" %}{% endblock %}
 {% block innerContents%}
   <div class="col-sm-10">
     <h3><i class="fa fa-money"></i>
@@ -24,6 +23,8 @@
         <div class="col-md-8" style="color:{{color}}">
           {{ mensaje }}
         </div>
+        <br>
+        </br>
           {% csrf_token %}
           <div class="control-group">
             <div class="controls">
@@ -45,7 +46,15 @@
                 ></span>
               </p>
               {{ form.pin.errors }}
-              
+              <!--{% comment %}  <p>
+                {{ form.monto }}
+                <span
+                  class='error'
+                  id='{{form.monto.name}}_error'
+                  aria-live="polite"
+                ></span>
+              </p>
+              {{ form.monto.errors }}{% endcomment %}-->
             </div>
           </div>
           
@@ -54,14 +63,8 @@
                Pagar con Tarjeta de Credito
             </button>
           </a>
-          
-        </form>
-        <a href="/index">
-            <button class="btn btn-primary">
-               Volver
-            </button>
-          </a>
             
+        </form>
       {% endif %}
       <div class="row">
           

@@ -104,7 +104,7 @@ def Consultar_Saldo(request):
                 if (BE.PIN != form.cleaned_data['pin']):
                     return render(
                         request,
-                        'billetera_pagar.html',
+                        'consultar_saldo.html',
                         { "form"    : form
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
@@ -115,7 +115,7 @@ def Consultar_Saldo(request):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'billetera_pagar.html',
+                        'consultar_saldo.html',
                         { "form"    : form
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
