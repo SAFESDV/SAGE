@@ -172,6 +172,11 @@ class BilleteraElectronicaRecargaForm(forms.Form):
     
 class PagoRecargaForm(forms.Form):
     
+    monto_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'Introduzca un monto entre 0.01 y 10000'
+    )
+    
     card_name_validator = RegexValidator(
         regex   = '^[a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'][a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'  ]*$',
         message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
@@ -284,13 +289,14 @@ class PagoRecargaForm(forms.Form):
     monto = forms.DecimalField(
         required = True,
         label = "Monto a recargar",
-        min_value = Decimal("0.1"),
+        min_value = Decimal("0.01"),
+        validators = [monto_validator],
         widget    = forms.NumberInput(attrs=
             { 'class'       : 'form-control'
             , 'placeholder' : 'Monto'
-            , 'min'         : "1"
-            , 'pattern'     : '^[0-9]+'
-            , 'message'     : 'La entrada debe ser un monto mayor que 0.1.'
+            , 'min'         : "0.01"
+            , 'pattern'     : monto_validator.regex.pattern
+            , 'message'     : monto_validator.message
             }
         )
     )

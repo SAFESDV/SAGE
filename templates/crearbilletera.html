@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-billetera.html" %}
 {% load humanize %}
 
 {% block title %}
@@ -9,7 +9,6 @@
   <body {% if mensaje %} {% endif %}>
 {% endblock %}
 
-{% block menu %}{% include "menu.html" %}{% endblock %}
 {% block innerContents%}
   <div class="col-sm-10">
     <h3><i class="fa fa-money"></i>
@@ -75,14 +74,9 @@
             value="Crear Billetera"
             class="btn btn-primary"
           >
-          <input
-            type="button"
-            value="Volver"
-            onclick="self.close()"
-            class="btn btn-primary"
-          >
         </form>
       {% endif %}
+      
       {% if billetera %}
         <div class="row">
           <div class="col-md-15" style="color:{{color}}">
@@ -113,12 +107,14 @@
               </tbody>
             </table>
             <div>
-              <input
-                type="button"
-                value="Volver"
-                onclick="javascript: closepopup();"
-                class="btn btn-primary"
-              >
+            	
+            <div class="controls">
+            	<a href="/billetera/crearbilletera">
+                	<button type="submit" class="btn btn-primary">
+                  		Volver
+                	</button>
+                </a>
+              </div>
             </div>
           </div>
         </div>
