@@ -540,3 +540,43 @@ class CedulaForm(forms.Form):
             }
         )
     )
+    
+    
+class CancelarReservaForm(forms.Form):
+    
+    transaccion_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'El numero de transaccion solo puede contener caracteres numéricos.'
+    )
+    
+    cedula_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'La cédula solo puede contener caracteres numéricos.'
+    )
+    
+    numTransac = forms.CharField(
+        required   = True,
+        label      = "Transaccion",
+        validators = [transaccion_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Transaccion'
+            , 'pattern'     : transaccion_validator.regex.pattern
+            , 'message'     : transaccion_validator.message
+            }
+        )
+    )
+                                 
+    
+    cedula = forms.CharField(
+        required   = True,
+        label      = "Cédula",
+        validators = [cedula_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Cédula'
+            , 'pattern'     : cedula_validator.regex.pattern
+            , 'message'     : cedula_validator.message
+            }
+        )
+    )

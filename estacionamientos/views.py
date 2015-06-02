@@ -32,6 +32,7 @@ from estacionamientos.forms import (
     PagoForm,
     RifForm,
     CedulaForm,
+    CancelarReservaForm,
     BilleteraElectronicaForm,
     ModoPagoForm, 
     BilleteraElectronicaPagoForm)
@@ -467,6 +468,36 @@ def estacionamiento_consulta_reserva(request):
         'consultar-reservas.html',
         { "form" : form }
     )
+
+
+def estacionamiento_cancelar_reserva(request):
+    form = CancelarReservaForm()
+    if request.method == 'POST':
+        form = CancelarReservaForm(request.POST)
+        if form.is_valid():
+            
+            numeroTransaccion       = form.cleaned_data['numTransac']
+            factura      = Pago.objects.get(id = numeroTransaccion)
+            
+            if factura.reserva.estado == 'Válido':
+                
+                factura.reserva.estado = 'Cancelado'
+                factura.reserva.save()
+            
+                return render(
+                    request,
+                    'cancelar-reservas.html',
+                    { "color"   : "green"
+                     , 'mensaje' : 'Se realizo la cancelacion de la reserva satisfactoriamente'
+                     }
+                )
+                            
+    return render(
+        request,
+        'cancelar-reservas.html',
+        { "form" : form }
+    )
+
 
 def receive_sms(request):
     ip = get_client_ip(request) # Busca el IP del telefono donde esta montado el SMS Gateway
