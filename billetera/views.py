@@ -47,7 +47,8 @@ from billetera.models import (
 
 from billetera.controller import (
     consultar_saldo,
-    recargar_saldo
+    recargar_saldo,
+    consumir_saldo,
 )
 
 from django.template.context_processors import request
@@ -189,6 +190,9 @@ def billetera_pagar(request, _id):
                         ,'mensaje'  : "Saldo es insuficiente."
                         }
                     )
+            else:
+                consumir_saldo(BE.id, monto)
+                
             inicioReserva = datetime(
                 year   = request.session['anioinicial'],
                 month  = request.session['mesinicial'],
@@ -214,7 +218,6 @@ def billetera_pagar(request, _id):
             
             # Se guarda la reserva en la base de datos
             reservaFinal.save()
-
             pago = Pago(
                 fechaTransaccion = datetime.now(),
                 cedula           = BE.cedula,
