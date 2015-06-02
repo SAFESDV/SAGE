@@ -10,36 +10,46 @@ from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
 
-from datetime import (
-    datetime,
+from datetime import datetime
+
+from reservas.controller import (
+    validarHorarioReserva,
+    marzullo,
 )
 
 from estacionamientos.controller import (
     HorarioEstacionamiento,
-    validarHorarioReserva,
-    marzullo,
     get_client_ip,
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
 )
 
+from billetera.forms import (
+    BilleteraElectronicaForm,                          
+)
+
 from estacionamientos.forms import (
     EstacionamientoExtendedForm,
     EstacionamientoForm,
     EditarEstacionamientoForm,
-    ReservaForm,
-    PagoForm,
     RifForm,
     CedulaForm,
-    BilleteraElectronicaForm,
-    ModoPagoForm, 
-    BilleteraElectronicaPagoForm)
+)
+
+from reservas.forms import (
+    ReservaForm,
+    CancelarReservaForm,
+)
+
+from pagos.forms import (
+    PagoForm,
+    ModoPagoForm,
+    BilleteraElectronicaPagoForm
+)
 
 from estacionamientos.models import (
     Estacionamiento,
-    Reserva,
-    Pago,
     TarifaHora,
     TarifaMinuto,
     TarifaHorayFraccion,
@@ -48,6 +58,8 @@ from estacionamientos.models import (
 )
 
 from propietarios.models import Propietario
+from reservas.models import Reserva
+from pagos.models import Pago
 
 from django.template.context_processors import request
 from django.forms.forms import Form
@@ -277,6 +289,7 @@ def estacionamiento_reserva(request, _id):
                     estacionamiento = estacionamiento,
                     inicioReserva   = inicioReserva,
                     finalReserva    = finalReserva,
+                    estado          = 'Válido'
                 )
 
                 monto = Decimal(
@@ -291,6 +304,7 @@ def estacionamiento_reserva(request, _id):
                         finalReserva
                     )
                 )
+                
                 request.session['finalReservaHora']    = finalReserva.hour
                 request.session['finalReservaMinuto']  = finalReserva.minute
                 request.session['inicioReservaHora']   = inicioReserva.hour
@@ -575,3 +589,30 @@ def grafica_tasa_de_reservacion(request):
     
     return response
 
+def estacionamiento_cancelar_reserva(request):
+    form = CancelarReservaForm()
+    if request.method == 'POST':
+        form = CancelarReservaForm(request.POST)
+        if form.is_valid():
+            
+            numeroTransaccion       = form.cleaned_data['numTransac']
+            factura      = Pago.objects.get(id = numeroTransaccion)
+            
+            if factura.reserva.estado == 'Válido':
+                
+                factura.reserva.estado = 'Cancelado'
+                factura.reserva.save()
+            
+                return render(
+                    request,
+                    'cancelar-reservas.html',
+                    { "color"   : "green"
+                     , 'mensaje' : 'Se realizo la cancelacion de la reserva satisfactoriamente'
+                     }
+                )
+                            
+    return render(
+        request,
+        'cancelar-reservas.html',
+        { "form" : form }
+    )

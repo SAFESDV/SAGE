@@ -8,24 +8,31 @@ from urllib.parse import urlencode
 from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
-
+from datetime import datetime
 
 from estacionamientos.forms import (
     EstacionamientoExtendedForm,
     EstacionamientoForm,
     EditarEstacionamientoForm,
-    ReservaForm,
-    PagoForm,
     RifForm,
-    CedulaForm,
+    CedulaForm)
+
+from reservas.forms import ReservaForm
+
+from pagos.forms import (
+    PagoForm,
+    ModoPagoForm,
+    BilleteraElectronicaPagoForm,
+    PagoRecargaForm
+)
+
+from billetera.forms import (
     BilleteraElectronicaForm,
-    ModoPagoForm, 
-    BilleteraElectronicaPagoForm)
+    BilleteraElectronicaRecargaForm,
+)
 
 from estacionamientos.models import (
     Estacionamiento,
-    Reserva,
-    Pago,
     TarifaHora,
     TarifaMinuto,
     TarifaHorayFraccion,
@@ -33,20 +40,9 @@ from estacionamientos.models import (
     TarifaHoraPico,
 )
 
-from datetime import (
-    datetime,
-)
-
 from billetera.models import (
     BilleteraElectronica,
     PagoRecargaBilletera
-)
-
-from billetera.forms import (
-    BilleteraElectronicaForm,
-    BilleteraElectronicaPagoForm,
-    BilleteraElectronicaRecargaForm,
-    PagoRecargaForm,
 )
 
 from billetera.controller import (
@@ -56,6 +52,8 @@ from billetera.controller import (
 
 from django.template.context_processors import request
 from django.forms.forms import Form
+from reservas.models import Reserva
+from pagos.models import Pago
 
 def billetera_crear(request):
     form = BilleteraElectronicaForm()
@@ -211,6 +209,7 @@ def billetera_pagar(request, _id):
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
+                estado          = 'Válido'
             )
             
             # Se guarda la reserva en la base de datos
