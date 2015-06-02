@@ -588,31 +588,3 @@ def grafica_tasa_de_reservacion(request):
     pyplot.close()
     
     return response
-
-def estacionamiento_cancelar_reserva(request):
-    form = CancelarReservaForm()
-    if request.method == 'POST':
-        form = CancelarReservaForm(request.POST)
-        if form.is_valid():
-            
-            numeroTransaccion       = form.cleaned_data['numTransac']
-            factura      = Pago.objects.get(id = numeroTransaccion)
-            
-            if factura.reserva.estado == 'Válido':
-                
-                factura.reserva.estado = 'Cancelado'
-                factura.reserva.save()
-            
-                return render(
-                    request,
-                    'cancelar-reservas.html',
-                    { "color"   : "green"
-                     , 'mensaje' : 'Se realizo la cancelacion de la reserva satisfactoriamente'
-                     }
-                )
-                            
-    return render(
-        request,
-        'cancelar-reservas.html',
-        { "form" : form }
-    )
