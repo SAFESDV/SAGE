@@ -132,6 +132,10 @@ class BilleteraElectronicaRecargaForm(forms.Form):
     
 class PagoRecargaForm(forms.Form):
     
+    monto_validator = RegexValidator(
+        regex   = '^[0-9]{5}[.][0-9]{2}$',
+        message = 'El monto debe ser un número decimal mayor 0.01 y menor 10000.00.'
+    )
     card_name_validator = RegexValidator(
         regex   = '^[a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'][a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'  ]*$',
         message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
@@ -253,6 +257,8 @@ class PagoRecargaForm(forms.Form):
             , 'min'         : "0.01"
             , 'max'         : "10000.00"
             , 'decimal'     : '2'
+            , 'pattern'     : monto_validator.regex.pattern
+            , 'message'     : monto_validator.message
             }
         )
     )
