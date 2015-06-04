@@ -81,7 +81,7 @@ class BilleteraElectronicaForm(forms.Form):
         required   = True,
         label      = "PIN",
         validators = [pin_validator],
-        widget = forms.TextInput(attrs =
+        widget = forms.PasswordInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'PIN'
             , 'pattern'     : pin_validator.regex.pattern
@@ -119,7 +119,7 @@ class BilleteraElectronicaRecargaForm(forms.Form):
         required   = True,
         label      = "PIN del la Billetera a recargar",
         validators = [pin_validator],
-        widget = forms.TextInput(attrs =
+        widget = forms.PasswordInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'PIN'
             , 'pattern'     : pin_validator.regex.pattern

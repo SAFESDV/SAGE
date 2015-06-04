@@ -39,6 +39,12 @@ class consultar_saldoTestCase(TestCase):
         
         bill = self.crearBilletera(1234, 10)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(10).quantize(Decimal("1.00")))
+        
+    #Malicia
+    def testConsumirNoID(self):
+        
+       self.assertRaises(BilleteraElectronica.DoesNotExist, consultar_saldo(2000, 1))
+    
     
     ###################################################################
     #                     RECARGAR SALDO                              #
@@ -93,10 +99,10 @@ class consultar_saldoTestCase(TestCase):
         self.assertRaises(Exception, recargar_saldo(bill.id,-1))
 
     #Malicia
-    
-    #def testNoID(self):
+    def testConsultarNoID(self):
         
-    #   self.assertRaises(ObjectDoesNotExist, consultar_saldo(2000, 1))
+       self.assertRaises(BilleteraElectronica.DoesNotExist, recargar_saldo(2000, 1))
+    
        
     ###################################################################
     #                      CONSUMIR SALDO                             # 
@@ -137,6 +143,12 @@ class consultar_saldoTestCase(TestCase):
         consumir_saldo(bill.id,-0.01)
         self.assertEqual(consultar_saldo(bill.id, 1234), Decimal(500).quantize(Decimal("1.00")))
         
+    #Malicia
+    def testConsultarNoID(self):
+        
+       self.assertRaises(BilleteraElectronica.DoesNotExist, consumir_saldo(2000, 1))
+    
+    
     ###################################################################
     #               PROPIEDADES OPERACIONES BILLETERA                 # 
     ###################################################################

@@ -134,7 +134,7 @@ class BilleteraElectronicaPagoForm(forms.Form):
         required   = True,
         label      = "PIN",
         validators = [pin_validator],
-        widget = forms.TextInput(attrs =
+        widget = forms.PasswordInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'PIN'
             , 'pattern'     : pin_validator.regex.pattern
