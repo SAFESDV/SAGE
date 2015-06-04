@@ -24,8 +24,6 @@ def recargar_saldo(ID_Billetera, monto):
     if (monto2 >= minMonto and (monto2 + BE.saldo <= maxMonto)):
         BE.saldo += Decimal(monto).quantize(Decimal("1.00"))
         BE.save()
-    else:
-        raise
         
 def consumir_saldo(ID_Billetera, monto):
     BE = BilleteraElectronica.objects.get(id = ID_Billetera)
@@ -36,8 +34,6 @@ def consumir_saldo(ID_Billetera, monto):
     if (BE.saldo - monto2 >= Decimal(0).quantize(Decimal("1.00"))):
         BE.saldo -= Decimal(monto).quantize(Decimal("1.00"))
         BE.save()
-    else:
-        raise
         
     
     
