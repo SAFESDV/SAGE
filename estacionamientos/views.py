@@ -10,42 +10,57 @@ from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
 
-from datetime import (
-    datetime,
+from datetime import datetime
+
+from reservas.controller import (
+    validarHorarioReserva,
+    marzullo,
 )
 
 from estacionamientos.controller import (
     HorarioEstacionamiento,
-    validarHorarioReserva,
-    marzullo,
     get_client_ip,
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
 )
 
+from billetera.forms import (
+    BilleteraElectronicaForm,                          
+)
+
 from estacionamientos.forms import (
     EstacionamientoExtendedForm,
     EstacionamientoForm,
     EditarEstacionamientoForm,
-    ReservaForm,
-    PagoForm,
     RifForm,
     CedulaForm,
-    BilleteraElectronicaForm,
-    ModoPagoForm, 
-    BilleteraElectronicaPagoForm)
+)
+
+from reservas.forms import (
+    ReservaForm,
+    CancelarReservaForm,
+)
+
+from pagos.forms import (
+    PagoForm,
+    ModoPagoForm,
+    BilleteraElectronicaPagoForm
+)
 
 from estacionamientos.models import (
     Estacionamiento,
-    Reserva,
-    Pago,
     TarifaHora,
     TarifaMinuto,
     TarifaHorayFraccion,
     TarifaFinDeSemana,
     TarifaHoraPico,
 )
+
+from propietarios.models import Propietario
+from reservas.models import Reserva
+from pagos.models import Pago
+
 from django.template.context_processors import request
 from django.forms.forms import Form
 
@@ -66,8 +81,9 @@ def estacionamientos_all(request):
         # estacionamientos a 5
         if len(estacionamientos) >= 5:
             return render(
-                request, 'template-mensaje.html',
-                { 'color'   : 'red'
+                request, 
+                'catalogo-estacionamientos.html',
+                {'color'   : 'red'
                 , 'mensaje' : 'No se pueden agregar más estacionamientos'
                 }
             )
@@ -75,7 +91,21 @@ def estacionamientos_all(request):
         # Si el formulario es valido, entonces creamos un objeto con
         # el constructor del modelo
         if form.is_valid():
-                  
+            
+            try:
+                propietario = Propietario.objects.get(Cedula = form.cleaned_data['CI_prop'])
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'catalogo-estacionamientos.html',
+                        { "form"    : form
+                        , 'estacionamientos': estacionamientos
+                        , "color"   : "red"
+                        ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
+                        }
+                    )
+            
+              
             obj = Estacionamiento(
                 nombre      = form.cleaned_data['nombre'],
                 CI_prop     = form.cleaned_data['CI_prop'],
@@ -261,6 +291,7 @@ def estacionamiento_reserva(request, _id):
                     estacionamiento = estacionamiento,
                     inicioReserva   = inicioReserva,
                     finalReserva    = finalReserva,
+                    estado          = 'Válido'
                 )
 
                 monto = Decimal(
@@ -275,6 +306,7 @@ def estacionamiento_reserva(request, _id):
                         finalReserva
                     )
                 )
+                
                 request.session['finalReservaHora']    = finalReserva.hour
                 request.session['finalReservaMinuto']  = finalReserva.minute
                 request.session['inicioReservaHora']   = inicioReserva.hour
@@ -348,6 +380,7 @@ def estacionamiento_pago(request,_id):
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
+                estado          = 'Válido'
             )
 
             # Se guarda la reserva en la base de datos
@@ -557,4 +590,3 @@ def grafica_tasa_de_reservacion(request):
     pyplot.close()
     
     return response
-

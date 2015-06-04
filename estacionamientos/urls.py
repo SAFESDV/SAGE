@@ -4,6 +4,7 @@ from django.conf.urls import patterns, url
 
 from estacionamientos import views
 from billetera.views import billetera_pagar
+from reservas.views import *
 
 
 # Este error es raro, en django funciona
@@ -16,6 +17,8 @@ urlpatterns = patterns('',
     url(r'^(?P<_id>\d+)/modopago$', views.estacionamiento_modo_pago, name = 'modo_pago'),
     url(r'^ingreso$', views.estacionamiento_ingreso, name = 'estacionamiento_ingreso'),
     url(r'^consulta_reserva$', views.estacionamiento_consulta_reserva, name = 'estacionamiento_consulta_reserva'),
+    url(r'^cancelar_reserva$', estacionamiento_cancelar_reserva, name = 'estacionamiento_cancelar_reserva'),
+    url(r'^cancelar_reserva/confirmar$', confirmar_cancelar_reserva, name = 'confirmar_cancelar_reserva'),
     url(r'^sms$', views.receive_sms, name='receive_sms'),
     url(r'^(?P<_id>\d+)/tasa$', views.tasa_de_reservacion, name = 'tasa_de_reservacion'),
     url(r'^grafica/.*$', views.grafica_tasa_de_reservacion, name = 'grafica_tasa_de_reservacion'),

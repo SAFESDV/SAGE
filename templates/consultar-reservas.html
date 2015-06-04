@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-reserva.html" %}
 {% load humanize %}
 {% load firstof from future %}
 
@@ -20,7 +20,7 @@
               <th>Inicio</th>
               <th>Fin</th>
               <th>Estacionamiento</th>
-              <th>Telefono</th>
+              <th>Estado</th>
             </tr>
           </thead>
           <tbody>
@@ -30,7 +30,7 @@
                 <td>{{factura.reserva.inicioReserva}}</td>
                 <td>{{factura.reserva.finalReserva}}</td>
                 <td>{{factura.reserva.estacionamiento.nombre}}</td>
-                <td>{%firstof factura.reserva.estacionamiento.telefono1 factura.reserva.estacionamiento.telefono2 factura.reserva.estacionamiento.telefono3 "N/A"%}
+                <td>{{factura.reserva.estado}}</td>
                 </td>
               </tr>
             {% endfor %}

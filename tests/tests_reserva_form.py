@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from datetime import time, date
 
-from estacionamientos.forms import ReservaForm
+from reservas.forms import ReservaForm
 
 ###################################################################
 # ESTACIONAMIENTO_RESERVA_FORM

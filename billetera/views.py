@@ -8,33 +8,27 @@ from urllib.parse import urlencode
 from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
-
+from datetime import datetime
 
 from estacionamientos.forms import (
     EstacionamientoExtendedForm,
     EstacionamientoForm,
     EditarEstacionamientoForm,
-    ReservaForm,
-    PagoForm,
     RifForm,
-    CedulaForm,
-    BilleteraElectronicaForm,
-    ModoPagoForm, 
-    BilleteraElectronicaPagoForm)
+    CedulaForm)
 
-from estacionamientos.models import (
-    Estacionamiento,
-    Reserva,
-    Pago,
-    TarifaHora,
-    TarifaMinuto,
-    TarifaHorayFraccion,
-    TarifaFinDeSemana,
-    TarifaHoraPico,
+from reservas.forms import ReservaForm
+
+from pagos.forms import (
+    PagoForm,
+    ModoPagoForm,
+    BilleteraElectronicaPagoForm,
+    PagoRecargaForm
 )
 
-from datetime import (
-    datetime,
+from billetera.forms import (
+    BilleteraElectronicaForm,
+    BilleteraElectronicaRecargaForm,
 )
 
 from billetera.models import (
@@ -42,20 +36,27 @@ from billetera.models import (
     PagoRecargaBilletera
 )
 
-from billetera.forms import (
-    BilleteraElectronicaForm,
-    BilleteraElectronicaPagoForm,
-    BilleteraElectronicaRecargaForm,
-    PagoRecargaForm,
-)
-
 from billetera.controller import (
     consultar_saldo,
-    recargar_saldo
+    recargar_saldo,
+    consumir_saldo,
 )
+
+from estacionamientos.models import (
+    Estacionamiento,
+    TarifaHora,
+    TarifaMinuto,
+    TarifaHorayFraccion,
+    TarifaFinDeSemana,
+    TarifaHoraPico,
+)
+
+
 
 from django.template.context_processors import request
 from django.forms.forms import Form
+from reservas.models import Reserva
+from pagos.models import Pago
 
 def billetera_crear(request):
     form = BilleteraElectronicaForm()
@@ -99,31 +100,19 @@ def Consultar_Saldo(request):
     if request.method == 'POST':
         form = BilleteraElectronicaPagoForm(request.POST)
         if form.is_valid():
-            try:
-                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
-                if (BE.PIN != form.cleaned_data['pin']):
-                    return render(
-                        request,
-                        'billetera_pagar.html',
-                        { "form"    : form
-                        , "color"   : "red"
-                        ,'mensaje'  : "Autenticación denegada."
-                        }
-                    )
-                    
-                
-            except ObjectDoesNotExist:
+            saldo = consultar_saldo(form.cleaned_data['id'], form.cleaned_data['pin'])
+            
+            if(saldo == -1):
                 return render(
                         request,
-                        'billetera_pagar.html',
+                        'consultar_saldo.html',
                         { "form"    : form
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
                         }
                     )
-
-            saldo = consultar_saldo(BE.id, BE.PIN)
-            
+                
+                
             noSaldo = 1
             if saldo > 0:
                 noSaldo = 0
@@ -191,6 +180,9 @@ def billetera_pagar(request, _id):
                         ,'mensaje'  : "Saldo es insuficiente."
                         }
                     )
+            else:
+                consumir_saldo(BE.id, monto)
+                
             inicioReserva = datetime(
                 year   = request.session['anioinicial'],
                 month  = request.session['mesinicial'],
@@ -211,11 +203,11 @@ def billetera_pagar(request, _id):
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
+                estado          = 'Válido'
             )
             
             # Se guarda la reserva en la base de datos
             reservaFinal.save()
-
             pago = Pago(
                 fechaTransaccion = datetime.now(),
                 cedula           = BE.cedula,
@@ -273,21 +265,6 @@ def billetera_recargar(request):
                         }
                     )
             
-            '''monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))  
-            
-            recargar_saldo(BE.id,monto)
-            
-            pago = PagoRecargaBilletera(
-                fechaTransaccion = datetime.now(),
-                cedulaTipo       = BE.cedulaTipo,
-                cedula           = BE.cedula,
-                ID_Billetera     = BE.id,
-                monto            = monto,
-            )
-            
-            # Se guarda el recibo de pago en la base de datos
-            pago.save()'''
-            
             return render(
                 request,
                 'billetera_recargar.html',
@@ -317,7 +294,8 @@ def recarga_pago(request):
                 tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
             )
             
-            if pago.monto > Decimal(99999.99):
+            BE = BilleteraElectronica.objects.get(id = pago.ID_Billetera)
+            if pago.monto + BE.saldo > Decimal(10000.00):
                 return render(request,
                     'pago_recarga.html',
                     {

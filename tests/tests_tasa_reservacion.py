@@ -14,7 +14,7 @@ from estacionamientos.controller import (
     calcular_porcentaje_de_tasa
 )
 
-from estacionamientos.models import (
+from reservas.models import (
     Estacionamiento,
     Reserva
 )

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base-estacionamiento.html" %}
 
 {% block title %}
   SAGE
@@ -28,7 +28,7 @@
               <td>{{obj.CI_prop}}</td>
               <td>{{obj.nombre}}</td>
               <td>{{obj.rif}}</td>
-              <td><a href="./{{obj.id}}">
+              <td><a href="./{{	obj.id}}">
                   <i class="fa fa-search"></i>
               </a></td>
               <td><a href="./{{obj.id}}/tasa">
@@ -36,6 +36,7 @@
               </a></td>
             </tr>
           {% endfor %}
+          
         </tbody>
         {% else %}
           <h3>No hay estacionamientos</h3>
@@ -67,6 +68,11 @@
                 </div>
               </div>
             {% endfor %}
+            <div class="col-md-10" style="color:{{color}}">
+        		{{mensaje}}
+        		<br>
+        		</br>
+			</div>
             <div class="control-group">
               <label></label>
               <div class="controls">

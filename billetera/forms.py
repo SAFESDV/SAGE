@@ -4,47 +4,7 @@ from django.core.validators import RegexValidator
 from django.forms.widgets import SplitDateTimeWidget
 from decimal import *
 
-class BilleteraElectronicaPagoForm(forms.Form):
-    
-    id_validator = RegexValidator(
-        regex   = '^[0-9]+$',
-        message = 'La cédula solo puede contener caracteres numéricos.'
-    )
-    
-    pin_validator = RegexValidator(
-        regex   = '^[0-9]{4}$',
-        message = 'El PIN solo puede contener cuatro caracteres numéricos.'
-    )
-    
-    id = forms.CharField(
-        required   = True,
-        label      = "ID",
-        validators = [id_validator],
-        widget = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'ID'
-            , 'pattern'     : id_validator.regex.pattern
-            , 'message'     : id_validator.message
-            }
-        )
-    )
-   # 
-    pin = forms.CharField(
-        required   = True,
-        label      = "PIN",
-        validators = [pin_validator],
-        widget = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'PIN'
-            , 'pattern'     : pin_validator.regex.pattern
-            , 'message'     : pin_validator.message
-            }
-        )
-    )
-    
-    
-    
-    
+
 class BilleteraElectronicaForm(forms.Form):
     card_name_validator = RegexValidator(
         regex   = '^[a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'][a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'  ]*$',
@@ -121,7 +81,7 @@ class BilleteraElectronicaForm(forms.Form):
         required   = True,
         label      = "PIN",
         validators = [pin_validator],
-        widget = forms.TextInput(attrs =
+        widget = forms.PasswordInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'PIN'
             , 'pattern'     : pin_validator.regex.pattern
@@ -159,7 +119,7 @@ class BilleteraElectronicaRecargaForm(forms.Form):
         required   = True,
         label      = "PIN del la Billetera a recargar",
         validators = [pin_validator],
-        widget = forms.TextInput(attrs =
+        widget = forms.PasswordInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'PIN'
             , 'pattern'     : pin_validator.regex.pattern
@@ -172,6 +132,10 @@ class BilleteraElectronicaRecargaForm(forms.Form):
     
 class PagoRecargaForm(forms.Form):
     
+    monto_validator = RegexValidator(
+        regex   = '^[0-9]{5}[.][0-9]{2}$',
+        message = 'El monto debe ser un número decimal mayor 0.01 y menor 10000.00.'
+    )
     card_name_validator = RegexValidator(
         regex   = '^[a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'][a-zA-ZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\'  ]*$',
         message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
@@ -284,13 +248,17 @@ class PagoRecargaForm(forms.Form):
     monto = forms.DecimalField(
         required = True,
         label = "Monto a recargar",
-        min_value = Decimal("0.1"),
+        min_value = Decimal("0.01"),
+        max_value = Decimal("10000.00"),
+        decimal_places = 2,
         widget    = forms.NumberInput(attrs=
             { 'class'       : 'form-control'
             , 'placeholder' : 'Monto'
-            , 'min'         : "1"
-            , 'pattern'     : '^[0-9]+'
-            , 'message'     : 'La entrada debe ser un monto mayor que 0.1.'
+            , 'min'         : "0.01"
+            , 'max'         : "10000.00"
+            , 'decimal'     : '2'
+            , 'pattern'     : monto_validator.regex.pattern
+            , 'message'     : monto_validator.message
             }
         )
     )
