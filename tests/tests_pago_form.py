@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from estacionamientos.forms import PagoForm
+from pagos.forms import PagoForm
 
 ###################################################################
 # Pago Tarjeta de Credito Form

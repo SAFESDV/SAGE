@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
+from django.core.exceptions import ObjectDoesNotExist
 from billetera.controller import consultar_saldo
 from billetera.controller import recargar_saldo
 from billetera.controller import consumir_saldo
 from billetera.models import BilleteraElectronica
 from billetera.models import PagoRecargaBilletera
-from billetera.forms import BilleteraElectronicaForm
-from billetera.forms import BilleteraElectronicaRecargaForm
-from billetera.forms import PagoRecargaForm
 
 from decimal import Decimal
 
@@ -26,6 +24,10 @@ class consultar_saldoTestCase(TestCase):
         bill.save()
         return bill
     
+    ###################################################################
+    #                 CONSULTAR SALDO                                 #
+    ###################################################################
+    
     #TDD consulta
     def testconsultaSaldoCero(self):
         
@@ -37,6 +39,10 @@ class consultar_saldoTestCase(TestCase):
         
         bill = self.crearBilletera(1234, 10)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(10).quantize(Decimal("1.00")))
+    
+    ###################################################################
+    #                     RECARGAR SALDO                              #
+    ###################################################################
     
     # TDD recargar   
     def testConsultaSaldoNoVacio(self):
@@ -85,69 +91,94 @@ class consultar_saldoTestCase(TestCase):
         
         bill = self.crearBilletera(1234, 500)
         self.assertRaises(Exception, recargar_saldo(bill.id,-1))
+
+    #Malicia
+    
+    #def testNoID(self):
+        
+    #   self.assertRaises(ObjectDoesNotExist, consultar_saldo(2000, 1))
+       
+    ###################################################################
+    #                      CONSUMIR SALDO                             # 
+    ###################################################################
     
     #TDD consumir
+    def testConsumoRegular(self):
+        
+        bill = self.crearBilletera(1234, 500)
+        consumir_saldo(bill.id,300)
+        self.assertEqual(consultar_saldo(bill.id, 1234), Decimal(200).quantize(Decimal("1.00")))   
+            
+    #TDD consumir/borde
     def testConsumoCero(self):
         
         bill = self.crearBilletera(1234, 500)
-        self.assertRaises(Exception, consumir_saldo(bill.id,0))
+        consumir_saldo(bill.id,0)
+        self.assertEqual(consultar_saldo(bill.id, 1234), Decimal(500).quantize(Decimal("1.00")))
         
-    #TDD consumir
+    #TDD consumir/borde
     def testConsumoMinimoPositivo(self):
         
         bill = self.crearBilletera(1234, 500)
         consumir_saldo(bill.id,0.01)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(499.99).quantize(Decimal("1.00")))
         
-    #TDD consumir
+    #TDD consumir/borde
     def testConsumirTodo(self):
         
         bill = self.crearBilletera(1234, 500)
         consumir_saldo(bill.id,500)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(0).quantize(Decimal("1.00")))
     
-    #Borde
-    def testConsumirHastaSaldoPositivoMinimo(self):
-        
-        bill = self.crearBilletera(1234, 500)
-        consumir_saldo(bill.id,499.99)
-        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(0.01).quantize(Decimal("1.00")))
-        
-    #Borde
-    def testConsumirDeMasConDiferenciaMinima(self):
-        
-        bill = self.crearBilletera(1234, 500)
-        self.assertFalse(Exception, consumir_saldo(bill.id,500.01))
-        
     #Malicia
     def testConsumirNegativo(self):
         
         bill = self.crearBilletera(1234, 500)
-        self.assertFalse(Exception, consumir_saldo(bill.id,-1))
+        consumir_saldo(bill.id,-0.01)
+        self.assertEqual(consultar_saldo(bill.id, 1234), Decimal(500).quantize(Decimal("1.00")))
+        
+    ###################################################################
+    #               PROPIEDADES OPERACIONES BILLETERA                 # 
+    ###################################################################
+    
+    #Borde
+    def testConsumirHastaSaldoPositivoMinimo(self):
+        
+        bill = self.crearBilletera(1234, 0)
+        recargar_saldo(bill.id, 500)
+        consumir_saldo(bill.id,499.99)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(0.01).quantize(Decimal("1.00")))
+        
+    #Malicia
+    def testConsumirEnExcesoMaximo(self):
+        
+        bill = self.crearBilletera(1234, 0)
+        recargar_saldo(bill.id, 10000)
+        consumir_saldo(bill.id,10000.01)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(10000).quantize(Decimal("1.00")))
         
     #Esquina
-    def testConsumirRegularTeniendoSaldoMaximo(self):
+    def testRecargaMaximaConsumoMinimo(self):
         
-        bill = self.crearBilletera(1234, 10000)
-        consumir_saldo(bill.id,500)
-        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(9500).quantize(Decimal("1.00")))
+        bill = self.crearBilletera(1234, 0)
+        recargar_saldo(bill.id, 10000)
+        consumir_saldo(bill.id, 0.01)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(9999.99).quantize(Decimal("1.00")))
         
-    #Borde
+    #Esquina
     def testConsumirSaldoMaximoSinTenerSaldoMaximo(self):
         
-        bill = self.crearBilletera(1234, 100)
-        self.assertFalse(Exception, consumir_saldo(bill.id,10000))
+        bill = self.crearBilletera(1234, 0)
+        recargar_saldo(bill.id, 9999.99)
+        consumir_saldo(bill.id, 10000)
+        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(9999.99).quantize(Decimal("1.00")))
 
     #Esquina
     def testConsumirSaldoMaximoTeniendoSaldoMaximo(self):
         
-        bill = self.crearBilletera(1234, 10000)
-        consumir_saldo(bill.id,10000)
+        bill = self.crearBilletera(1234, 0)
+        recargar_saldo(bill.id, 10000)
+        consumir_saldo(bill.id, 10000)
         self.assertEqual(consultar_saldo(bill.id,1234), Decimal(0).quantize(Decimal("1.00")))
-                    
-    #TDD consumir
-    def testConsumoRegular(self):
-        
-        bill = self.crearBilletera(1234, 500)
-        consumir_saldo(bill.id,300)
-        self.assertEqual(consultar_saldo(bill.id,1234), Decimal(200).quantize(Decimal("1.00")))   
+
+    

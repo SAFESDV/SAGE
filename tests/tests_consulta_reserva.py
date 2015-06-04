@@ -4,11 +4,9 @@ from django.test import TestCase
 
 from datetime import time,datetime
 from estacionamientos.controller import consultar_ingresos
-from estacionamientos.models import (
-                                        Pago,
-                                        Estacionamiento,
-                                        Reserva
-                                    )
+from pagos.models import Pago
+from estacionamientos.models import Estacionamiento
+from reservas.models import Reserva
 
 ###################################################################
 #                    ESTACIONAMIENTO VISTA DISPONIBLE
@@ -48,7 +46,8 @@ class consultaReservaTestCase(TestCase):
         r = Reserva(
                 estacionamiento = e,
                 inicioReserva = datetime(2015,3,10,3,0),
-                finalReserva  = datetime(2015,3,10,5,0)
+                finalReserva  = datetime(2015,3,10,5,0),
+                estado = "Válido"
             )
         r.save()
         p = Pago(
@@ -79,7 +78,8 @@ class consultaReservaTestCase(TestCase):
             r = Reserva(
                     estacionamiento = e,
                     inicioReserva = datetime(2015,3,10,3,0),
-                    finalReserva  = datetime(2015,3,10,5,0)
+                    finalReserva  = datetime(2015,3,10,5,0),
+                    estado = "Válido"
                 )
             r.save()
             p = Pago(
@@ -119,7 +119,8 @@ class consultaReservaTestCase(TestCase):
             r = Reserva(
                     estacionamiento = e1,
                     inicioReserva = datetime(2015,3,10,3,0),
-                    finalReserva  = datetime(2015,3,10,5,0)
+                    finalReserva  = datetime(2015,3,10,5,0),
+                    estado = "Válido"
                 )
             r.save()
             p = Pago(
@@ -135,7 +136,8 @@ class consultaReservaTestCase(TestCase):
             r = Reserva(
                     estacionamiento = e2,
                     inicioReserva = datetime(2015,3,10,3,0),
-                    finalReserva  = datetime(2015,3,10,5,0)
+                    finalReserva  = datetime(2015,3,10,5,0),
+                    estado = "Válido"
                 )
             r.save()
             p = Pago(
@@ -151,7 +153,7 @@ class consultaReservaTestCase(TestCase):
         self.assertTrue(len(lista) == 2 and total == 2*n*100)
 
     def test_muchos_estacionamiento_mitad_sin_pagos(self):
-        n  = 100
+        n  = 100 
         m  = 10
         for i in range(0,n):
 
@@ -177,7 +179,8 @@ class consultaReservaTestCase(TestCase):
                 r = Reserva(
                         estacionamiento = e1,
                         inicioReserva = datetime(2015,3,10,3,0),
-                        finalReserva  = datetime(2015,3,10,5,0)
+                        finalReserva  = datetime(2015,3,10,5,0),
+                        estado = "Válido"
                     )
                 r.save()
                 p = Pago(
@@ -223,7 +226,8 @@ class consultaReservaTestCase(TestCase):
             r = Reserva(
                     estacionamiento = e1,
                     inicioReserva = datetime(2015,3,10,3,0),
-                    finalReserva  = datetime(2015,3,10,5,0)
+                    finalReserva  = datetime(2015,3,10,5,0),
+                    estado = "Válido"
                 )
             r.save()
             p = Pago(

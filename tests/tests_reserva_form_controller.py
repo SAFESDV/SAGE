@@ -8,7 +8,7 @@ from datetime import (
     timedelta
 )
 
-from estacionamientos.controller import validarHorarioReserva
+from reservas.controller import validarHorarioReserva
 
 
 ##############################################################

@@ -100,20 +100,9 @@ def Consultar_Saldo(request):
     if request.method == 'POST':
         form = BilleteraElectronicaPagoForm(request.POST)
         if form.is_valid():
-            try:
-                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
-                if (BE.PIN != form.cleaned_data['pin']):
-                    return render(
-                        request,
-                        'consultar_saldo.html',
-                        { "form"    : form
-                        , "color"   : "red"
-                        ,'mensaje'  : "Autenticación denegada."
-                        }
-                    )
-                    
-                
-            except ObjectDoesNotExist:
+            saldo = consultar_saldo(form.cleaned_data['id'], form.cleaned_data['pin'])
+            
+            if(saldo == -1):
                 return render(
                         request,
                         'consultar_saldo.html',
@@ -122,9 +111,8 @@ def Consultar_Saldo(request):
                         ,'mensaje'  : "Autenticación denegada."
                         }
                     )
-
-            saldo = consultar_saldo(BE.id, BE.PIN)
-            
+                
+                
             noSaldo = 1
             if saldo > 0:
                 noSaldo = 0
