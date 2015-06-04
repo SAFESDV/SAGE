@@ -81,8 +81,9 @@ def estacionamientos_all(request):
         # estacionamientos a 5
         if len(estacionamientos) >= 5:
             return render(
-                request, 'template-mensaje.html',
-                { 'color'   : 'red'
+                request, 
+                'catalogo-estacionamientos.html',
+                {'color'   : 'red'
                 , 'mensaje' : 'No se pueden agregar más estacionamientos'
                 }
             )
@@ -96,8 +97,9 @@ def estacionamientos_all(request):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'template-mensaje.html',
+                        'catalogo-estacionamientos.html',
                         { "form"    : form
+                        , 'estacionamientos': estacionamientos
                         , "color"   : "red"
                         ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
                         }
