@@ -132,6 +132,11 @@ class BilleteraElectronicaRecargaForm(forms.Form):
     
 class PagoRecargaForm(forms.Form):
     
+    monto2_validator = RegexValidator(
+        regex   = '^([0-9]+(\.[0-9]+)?)$',
+        message = 'Sólo debe contener dígitos.'
+    )
+    
     monto_validator = RegexValidator(
         regex   = '^[0-9]{5}[.][0-9]{2}$',
         message = 'El monto debe ser un número decimal mayor 0.01 y menor 10000.00.'
@@ -250,6 +255,7 @@ class PagoRecargaForm(forms.Form):
         label = "Monto a recargar",
         min_value = Decimal("0.01"),
         max_value = Decimal("10000.00"),
+        validators = [monto_validator,monto2_validator],
         decimal_places = 2,
         widget    = forms.NumberInput(attrs=
             { 'class'       : 'form-control'

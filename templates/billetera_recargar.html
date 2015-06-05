@@ -57,17 +57,20 @@
               {{ form.monto.errors }}{% endcomment %}-->
             </div>
           </div>
-		
-          	<a href="./pagarrecarga" onClick="popup(this, 'Pago Tarjeta')">
-            	<button class="btn btn-primary">
-               		Pagar con Tarjeta de Credito
-            	</button>
-          	</a>
-        
+          <button class="btn btn-primary">
+            Confirmar
+          </button>
         </form>
       {% endif %}
       <div class="row">
-          
+      {% if valido %}
+        <a href="./pagarrecarga" onClick="popup(this, 'Pago Tarjeta')">
+          <button class="btn btn-primary">
+            Pagar con Tarjeta de Credito
+          </button>
+        </a>
+      {% endif %}
+
       {% if pago %}
         <div class="col-md-7" style="color:{{color}}">
             {{mensaje}}
@@ -163,7 +166,7 @@
     }
 
     function openlink(){
-      opener.location='/estacionamientos/{{ id }}/pagarrecarga';
+      opener.location='./billeterarecargar';
     }
   </script>
 {% endblock %}
