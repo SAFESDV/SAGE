@@ -45,6 +45,12 @@ class EsquemaTarifario(models.Model):
     tarifa2        = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
     inicioEspecial = models.TimeField(blank = True, null = True)
     finEspecial    = models.TimeField(blank = True, null = True)
+    
+    tarifa_feriado         = models.DecimalField(blank = True, null = True, max_digits=20, decimal_places=2)
+    tarifa2_feriado        = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
+    inicioEspecial_feriado = models.TimeField(blank = True, null = True)
+    finEspecial_feriado    = models.TimeField(blank = True, null = True)
+    
 
     class Meta:
         abstract = True

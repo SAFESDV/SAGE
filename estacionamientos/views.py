@@ -148,7 +148,12 @@ def estacionamiento_detail(request, _id):
                 'inicioTarifa2' : estacionamiento.tarifa.inicioEspecial,
                 'finTarifa2' : estacionamiento.tarifa.finEspecial,
                 'puestos' : estacionamiento.capacidad,
-                'esquema' : estacionamiento.tarifa.__class__.__name__
+                'esquema' : estacionamiento.tarifa.__class__.__name__,
+                'tarifa_feriado' : estacionamiento.tarifa_feriado.tarifa_feriado,
+                'tarifa2_feriado' : estacionamiento.tarifa_feriado.tarifa2_feriado,
+                'inicioTarifa2_feriado' : estacionamiento.tarifa_feriado.inicioEspecial_feriado,
+                'finTarifa2_feriado' : estacionamiento.tarifa_feriado.finEspecial_feriado,
+                'esquema_feriado' : estacionamiento.tarifa_feriado.__class__.__name__
             }
             form = EstacionamientoExtendedForm(data = form_data)
         else:
@@ -159,22 +164,36 @@ def estacionamiento_detail(request, _id):
         form = EstacionamientoExtendedForm(request.POST)
         # Si el formulario
         if form.is_valid():
-            horaIn        = form.cleaned_data['horarioin']
-            horaOut       = form.cleaned_data['horarioout']
-            tarifa        = form.cleaned_data['tarifa']
-            tipo          = form.cleaned_data['esquema']
-            inicioTarifa2 = form.cleaned_data['inicioTarifa2']
-            finTarifa2    = form.cleaned_data['finTarifa2']
-            tarifa2       = form.cleaned_data['tarifa2']
+            horaIn                = form.cleaned_data['horarioin']
+            horaOut               = form.cleaned_data['horarioout']
+            tarifa                = form.cleaned_data['tarifa']
+            tipo                  = form.cleaned_data['esquema']
+            inicioTarifa2         = form.cleaned_data['inicioTarifa2']
+            finTarifa2            = form.cleaned_data['finTarifa2']
+            tarifa2               = form.cleaned_data['tarifa2']
+            tipo_feriado          = form.cleaned_data['esquema_feriado']
+            tarifa_feriado        = form.cleaned_data['tarifa_feriado']
+            inicioTarifa2_feriado = form.cleaned_data['inicioTarifa2_feriado']
+            finTarifa2_feriado    = form.cleaned_data['finTarifa2_feriado']
+            tarifa2_feriado       = form.cleaned_data['tarifa2_feriado']
 
             esquemaTarifa = eval(tipo)(
                 tarifa         = tarifa,
                 tarifa2        = tarifa2,
                 inicioEspecial = inicioTarifa2,
-                finEspecial    = finTarifa2
+                finEspecial    = finTarifa2,
             )
 
             esquemaTarifa.save()
+            
+            esquemaTarifa_feriado = eval(tipo)(
+                tarifa_feriado         = tarifa_feriado,
+                tarifa2_feriado        = tarifa2_feriado,
+                inicioEspecial_feriado = inicioTarifa2_feriado,
+                finEspecial_feriado    = finTarifa2_feriado
+            )
+
+            esquemaTarifa_feriado.save()
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
             if not HorarioEstacionamiento(horaIn, horaOut):
@@ -187,6 +206,7 @@ def estacionamiento_detail(request, _id):
                 )
             # debería funcionar con excepciones
             estacionamiento.tarifa    = esquemaTarifa
+            estacionamiento.tarifa_feriado = esquemaTarifa_feriado
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
             estacionamiento.capacidad = form.cleaned_data['puestos']
@@ -211,6 +231,7 @@ def estacionamiento_editar(request, _id):
         raise Http404
 
     if request.method == 'GET':
+        
         if estacionamiento.CI_prop:
             
             form_data = {
@@ -226,6 +247,21 @@ def estacionamiento_editar(request, _id):
         
         # Si el formulario
         if form.is_valid():
+            
+            try:
+                propietario = Propietario.objects.get(Cedula = form.cleaned_data['CI_prop'])
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'editar-datos-estacionamiento.html',
+                        { "form"    : form
+                        , 'estacionamientos': estacionamiento
+                        , 'estacionamiento': estacionamiento
+                        , "color"   : "red"
+                        ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
+                        }
+                    )
+                
             estacionamiento.CI_prop = form.cleaned_data['CI_prop']
                                                
             estacionamiento.save()

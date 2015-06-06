@@ -242,6 +242,71 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )
+    
+    choices_esquema_feriado = [
+        ('TarifaSinFeriado', 'Mantener tarifa para Dias feriados'),
+        ('TarifaHoraDiaFeriado', 'Por hora en los Dias feriado'),
+        ('TarifaMinutoDiaFeriado', 'Por minuto en los Dias feriado'),
+        ('TarifaHorayFraccionDiaFeriado', 'Por hora y fracción en los Dias feriado'),
+        ('TarifaHoraPicoDiaFeriado', 'Diferenciada por horario pico en los Dias feriado'),
+        ('TarifaFinDeSemanaDiaFeriado', 'Diferenciada para fines de semana en los Dias feriado')
+    ]
+
+    esquema_feriado = forms.ChoiceField(
+        required = True,
+        choices  = choices_esquema_feriado,
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )
+    
+    tarifa_feriado = forms.DecimalField(
+        required   = False,
+        validators = [tarifa_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Tarifa Dia Feriado'
+            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
+            , 'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    tarifa2_feriado = forms.DecimalField(
+            required   = False,
+            validators = [tarifa_validator],
+            widget     = forms.TextInput(attrs = {
+                'class'       : 'form-control',
+                'placeholder' : 'Tarifa 2 Dia Feriado',
+                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
+                'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    inicioTarifa2_feriado = forms.TimeField(
+        required = False,
+        label    = 'Inicio Horario Especial',
+        widget   = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Horario Inicio Reserva para los Dias Feriados'
+            , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
+            , 'message'     : 'La entrada debe ser una hora válida.'
+            }
+        )
+    )
+
+    finTarifa2_feriado = forms.TimeField(
+        required = False,
+        label    = 'Fin Horario Especial',
+        widget   = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Horario Fin Reserva para los Dias Feriados'
+            , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
+            , 'message'     : 'La entrada debe ser una hora válida.'
+            }
+        )
+    )
 
 
 
