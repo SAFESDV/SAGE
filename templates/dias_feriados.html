@@ -1,0 +1,34 @@
+{% extends "base-estacionamiento.html" %}
+
+{% block title %}
+  SAGE - Estacionamiento {{estacionamiento.nombre}}
+{% endblock %}
+{% block innerContents%}
+  <div class="col-sm-10">
+    <h3><i class="fa fa-bus"></i>
+      Estacionamiento {{estacionamiento.nombre}}
+    </h3>
+    <hr>
+       <form action="." method="post" class="form form-vertical">
+      {% csrf_token %}
+        <div class="control-group">
+          <div class="controls">
+            {{ form.esquema_diasFeriados }}
+            <span class='error' id='{{form.esquema_diasFeriados}}_error' aria-live="polite">
+              {{ form.errors }}
+            </span>
+            <p>
+          </div>
+        </div>
+      <div class="control-group">
+        <label></label>
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">
+            Dias Feriados!!!!!!
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+{% endblock %} 
