@@ -11,15 +11,14 @@
     <hr>
        <form action="." method="post" class="form form-vertical">
       {% csrf_token %}
+      {% for choice in form.esquema_diasFeriados %}
+      
         <div class="control-group">
           <div class="controls">
-            {{ form.esquema_diasFeriados }}
-            <span class='error' id='{{form.esquema_diasFeriados}}_error' aria-live="polite">
-              {{ form.errors }}
-            </span>
-            <p>
+            {{ choice }}
           </div>
-        </div>
+        </div>     
+      {% endfor %}
       <div class="control-group">
         <label></label>
         <div class="controls">

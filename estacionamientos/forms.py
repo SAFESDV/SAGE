@@ -371,9 +371,7 @@ class ElegirFechaForm(forms.Form):
         required = True,
         choices  = dias_feriados,
         label = '',
-        widget   = forms.CheckboxSelectMultiple(attrs =
-            { 'class' : 'form-control' }
-        )
+        widget   = forms.CheckboxSelectMultiple()
     )
     
 class AgregarFeriadoForm(forms.Form):
