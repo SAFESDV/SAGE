@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 from datetime import timedelta
 from propietarios.models import Propietario
+from _datetime import date, datetime
 
 class Estacionamiento(models.Model):
     
@@ -59,47 +60,64 @@ class EsquemaTarifario(models.Model):
 
 
 class TarifaHora(EsquemaTarifario):
+    
     def calcularPrecio(self,horaInicio,horaFinal):
+        
         a = horaFinal-horaInicio
         a = a.days*24+a.seconds/3600
         a = ceil(a) #  De las horas se calcula el techo de ellas
+        
         return(Decimal(self.tarifa*a).quantize(Decimal('1.00')))
+    
     def tipo(self):
+        
         return("Por Hora")
 
 class TarifaMinuto(EsquemaTarifario):
+    
     def calcularPrecio(self,horaInicio,horaFinal):
+        
         minutes = horaFinal-horaInicio
         minutes = minutes.days*24*60+minutes.seconds/60
+        
         return (Decimal(minutes)*Decimal(self.tarifa/60)).quantize(Decimal('1.00'))
+    
     def tipo(self):
         return("Por Minuto")
 
 class TarifaHorayFraccion(EsquemaTarifario):
+    
     def calcularPrecio(self,horaInicio,horaFinal):
         time = horaFinal-horaInicio
         time = time.days*24*3600+time.seconds
+        
         if(time>3600):
             valor = (floor(time/3600)*self.tarifa)
+            
             if((time%3600)==0):
                 pass
             elif((time%3600)>1800):
                 valor += self.tarifa
             else:
                 valor += self.tarifa/2
+                
         else:
             valor = self.tarifa
+            
         return(Decimal(valor).quantize(Decimal('1.00')))
 
     def tipo(self):
         return("Por Hora y Fraccion")
 
 class TarifaFinDeSemana(EsquemaTarifario):
+    
     def calcularPrecio(self,inicio,final):
+        
         minutosNormales    = 0
         minutosFinDeSemana = 0
         tiempoActual       = inicio
         minuto             = timedelta(minutes=1)
+        
         while tiempoActual < final:
             # weekday() devuelve un numero del 0 al 6 tal que
             # 0 = Lunes
@@ -112,6 +130,7 @@ class TarifaFinDeSemana(EsquemaTarifario):
             else:
                 minutosFinDeSemana += 1
             tiempoActual += minuto
+            
         return Decimal(
             minutosNormales*self.tarifa/60 +
             minutosFinDeSemana*self.tarifa2/60
@@ -121,18 +140,22 @@ class TarifaFinDeSemana(EsquemaTarifario):
         return("Tarifa diferenciada para fines de semana")
 
 class TarifaHoraPico(EsquemaTarifario):
+    
     def calcularPrecio(self,reservaInicio,reservaFinal):
         minutosPico  = 0
         minutosValle = 0
         tiempoActual = reservaInicio
         minuto       = timedelta(minutes=1)
+        
         while tiempoActual < reservaFinal:
             horaActual = tiempoActual.time()
+            
             if horaActual >= self.inicioEspecial and horaActual < self.finEspecial:
                 minutosPico += 1
             elif horaActual < self.inicioEspecial or horaActual >= self.finEspecial:
                 minutosValle += 1
             tiempoActual += minuto
+            
         return Decimal(
             minutosPico*self.tarifa2/60 +
             minutosValle*self.tarifa/60
@@ -140,3 +163,27 @@ class TarifaHoraPico(EsquemaTarifario):
 
     def tipo(self):
         return("Tarifa diferenciada por hora pico")
+        
+    
+class DiasFeriados(models.Model):
+    
+    fecha   = models.DateTimeField()
+    descripcion = models.CharField(max_length = 50)
+    
+    def rellenarDiasFeriados(self):
+        
+        diasFeriados = [ (datetime(month = 1, day = 1), 'Año Nuevo'), (datetime(month = 4, day = 19), 'Declaración de la Independecia'), 
+                           ( datetime(month = 5, day  = 1), 'Día del trabajo' ), ( datetime(month = 6, day  = 24), 'Batalla de Carabobo' ), 
+                           (datetime(month = 7, day  = 5 ), 'Día de la independecia' ), (datetime(month = 7, day  = 24 ), 'Natalicio de Simón Bolívar ' ),
+                           (datetime(month = 10, day  = 12  ), 'Día de la resistencia indígena' ),  (datetime(month = 12, day  = 25 ), 'Navidad' ),
+                            (datetime(month = 12, day  = 31 ), 'Fin de Año'  )]
+        
+        for elem in diasFeriados:
+            dia = DiasFeriados(elem[0], elem[1])
+            dia.save()
+             
+    
+class DiasFeriadosEscogidos(models.Model):
+    
+    fecha   = models.DateTimeField()
+    descripcion = models.CharField(max_length = 50)    
