@@ -23,6 +23,7 @@ from estacionamientos.controller import (
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
+    seleccionar_feriados,
 )
 
 from billetera.forms import (
@@ -35,6 +36,8 @@ from estacionamientos.forms import (
     EditarEstacionamientoForm,
     RifForm,
     CedulaForm,
+    ElegirFechaForm,
+    AgregarFeriadoForm,
 )
 
 from reservas.forms import (
@@ -55,6 +58,8 @@ from estacionamientos.models import (
     TarifaHorayFraccion,
     TarifaFinDeSemana,
     TarifaHoraPico,
+    DiasFeriados,
+    DiasFeriadosEscogidos,
 )
 
 from propietarios.models import Propietario
@@ -163,7 +168,7 @@ def estacionamiento_detail(request, _id):
         # Leemos el formulario
         form = EstacionamientoExtendedForm(request.POST)
         # Si el formulario
-        if form.is_valid():
+        if form.is_valid(): 
             horaIn                = form.cleaned_data['horarioin']
             horaOut               = form.cleaned_data['horarioout']
             tarifa                = form.cleaned_data['tarifa']
@@ -626,3 +631,34 @@ def grafica_tasa_de_reservacion(request):
     pyplot.close()
     
     return response
+
+def Estacionamiento_Dias_Feriados(request, _id):
+    
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    diasFeriados = DiasFeriados.objects.all() #obtiene todos los valores de la tabla
+
+    # Si es un GET, mandamos un formulario vacio
+    if request.method == 'GET':
+         form = ElegirFechaForm()
+
+    # Si es POST, se verifica la información recibida
+    elif request.method == 'POST':
+        # Creamos un formulario con los datos que recibimos
+        form =  ElegirFechaForm(request.POST.getlist('diasFeriados') )
+        
+        if form.is_valid():
+            diaFeriado =  form.cleaned_data['esquema_diasFeriados']
+
+    return render(
+        request,
+        'dias_feriados.html',
+        { "form" : form }
+    )
+        
+    

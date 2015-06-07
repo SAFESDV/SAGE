@@ -23,4 +23,5 @@ urlpatterns = patterns('',
     url(r'^(?P<_id>\d+)/tasa$', views.tasa_de_reservacion, name = 'tasa_de_reservacion'),
     url(r'^grafica/.*$', views.grafica_tasa_de_reservacion, name = 'grafica_tasa_de_reservacion'),
     url(r'^(?P<_id>\d+)/editar$', views.estacionamiento_editar, name = 'estacionamiento_editar'),
+    url(r'^(?P<_id>\d+)/diasFeriados$', views.Estacionamiento_Dias_Feriados, name = 'Estacionamiento_Dias_Feriados'),
 )

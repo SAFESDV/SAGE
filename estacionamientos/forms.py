@@ -367,19 +367,20 @@ class ElegirFechaForm(forms.Form):
         ('FinAño', '31 de Diciembre')
         ]
 
-    esquema_diasFeriados= forms.ChoiceField(
+    esquema_diasFeriados= forms.MultipleChoiceField(
         required = True,
         choices  = dias_feriados,
+        label = '',
         widget   = forms.CheckboxSelectMultiple(attrs =
             { 'class' : 'form-control' }
         )
     )
     
-class AgregarFecha(forms.Form):
+class AgregarFeriadoForm(forms.Form):
     
     descripcion_validator = RegexValidator(
         regex   = '^[-A-Za-z0-9!"#$%&()*,./:;?@\\\[\]_`{|}¡©®°µ·¸¿ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\' ]+$',
-        message = 'La entrada debe ser un nombre en Español sin símbolos especiales.'
+        message = 'La descripción del Día feriado debe estar escrita en Español y sin símbolos especiales.'
     )
     
     fecha = forms.DateField(
@@ -401,4 +402,6 @@ class AgregarFecha(forms.Form):
             , 'pattern'     : descripcion_validator.regex.pattern
             , 'message'     : descripcion_validator.message
             }
+        )
     )
+                                  
