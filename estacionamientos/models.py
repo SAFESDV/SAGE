@@ -172,11 +172,11 @@ class DiasFeriados(models.Model):
     
     def rellenarDiasFeriados(self):
         
-        diasFeriados = [ [datetime(month = 1, day = 1), 'Año Nuevo'], [datetime(month = 4, day = 19), 'Declaración de la Independecia' ], 
-                           [ datetime(month = 5, day  = 1), 'Día del trabajo' ], [ datetime(month = 6, day  = 24), 'Batalla de Carabobo' ], 
-                           [datetime(month = 7, day  = 5 ), 'Día de la independecia' ], [datetime(month = 7, day  = 24 ), 'Natalicio de Simón Bolívar ' ],
-                           [datetime(month = 10, day  = 12  ), 'Día de la resistencia indígena' ],  [datetime(month = 12, day  = 25 ), 'Navidad' ],
-                           [datetime(month = 12, day  = 31 ), 'Fin de Año'  ]]
+        diasFeriados = [ [datetime(year=  datetime.now().year, month = 1, day = 1), 'Año Nuevo'], [datetime(year=  datetime.now().year, month = 4, day = 19), 'Declaración de la Independecia' ], 
+                           [ datetime(year=  datetime.now().year, month = 5, day  = 1), 'Día del trabajo' ], [ datetime(year=  datetime.now().year, month = 6, day  = 24), 'Batalla de Carabobo' ], 
+                           [datetime(year=  datetime.now().year, month = 7, day  = 5 ), 'Día de la independecia' ], [datetime(year=  datetime.now().year, month = 7, day  = 24 ), 'Natalicio de Simón Bolívar ' ],
+                           [datetime(year=  datetime.now().year, month = 10, day  = 12  ), 'Día de la resistencia indígena' ],  [datetime(year=  datetime.now().year, month = 12, day  = 25 ), 'Navidad' ],
+                           [datetime(year=  datetime.now().year, month = 12, day  = 31 ), 'Fin de Año'  ]]
         
         for elem in diasFeriados:
             dia = DiasFeriados(elem[0], elem[1])

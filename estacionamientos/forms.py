@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.core.validators import RegexValidator
-from django.forms.widgets import SplitDateTimeWidget
+from django.forms.widgets import SplitDateTimeWidget, DateInput
+from logging import PlaceHolder
 
 class EstacionamientoForm(forms.Form):
 
@@ -348,4 +349,56 @@ class CedulaForm(forms.Form):
             , 'message'     : id_validator.message
             }
         )
+    )
+    
+class ElegirFechaForm(forms.Form):
+    
+    dias_feriados = [
+        ('AñoNuevo', '1 de Enero'),
+        ('DomingoResurreccion', '5 de Abril'),
+        ('DeclaracionIndependencia', '19 de Abril'),
+        ('DiaTrabajor', '1 de Mayo'),
+        ('BatallaCarabobo', '24 de Junio'),
+        ('DiaIndependencia', '5 de Julio'),
+        ('NatalicioSimonBolivar', '24 de Julio'),
+        ('DiaResistenciaIndigena', '12 de Octubre'),
+        ('VisperaNavidad', '24 de Diciembre'),
+        ('Navidad', '25 de Diciembre'),
+        ('FinAño', '31 de Diciembre')
+        ]
+
+    esquema_diasFeriados= forms.ChoiceField(
+        required = True,
+        choices  = dias_feriados,
+        widget   = forms.CheckboxSelectMultiple(attrs =
+            { 'class' : 'form-control' }
+        )
+    )
+    
+class AgregarFecha(forms.Form):
+    
+    descripcion_validator = RegexValidator(
+        regex   = '^[-A-Za-z0-9!"#$%&()*,./:;?@\\\[\]_`{|}¡©®°µ·¸¿ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\' ]+$',
+        message = 'La entrada debe ser un nombre en Español sin símbolos especiales.'
+    )
+    
+    fecha = forms.DateField(
+        required = True,
+        label = 'Fecha del Día Feriado',
+        widget = forms.DateInput( attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Fecha del Día Feriado'
+             }
+        )
+     )
+    
+    descripcion = forms.CharField(
+        required = True,
+        label = 'Descripción del Día Feriado',
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Descripción del Día Feriado'
+            , 'pattern'     : descripcion_validator.regex.pattern
+            , 'message'     : descripcion_validator.message
+            }
     )
