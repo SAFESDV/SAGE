@@ -369,7 +369,6 @@ class ElegirFechaForm(forms.Form):
     esquema_diasFeriados= forms.MultipleChoiceField(
         required = False,
         choices  = dias_feriados,
-        label = '',
         widget   = forms.CheckboxSelectMultiple()
     )
     

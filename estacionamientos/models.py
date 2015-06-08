@@ -168,7 +168,7 @@ class TarifaHoraPico(EsquemaTarifario):
 class DiasFeriados(models.Model): #capaz la usamos!!!! xD
     
     fecha   = models.DateTimeField(primary_key = True)
-    descripcion = models.CharField(max_length = 50, primary_key = True)
+    descripcion = models.CharField(max_length = 50)
     
     def rellenarDiasFeriados(self):
         
@@ -194,4 +194,4 @@ class DiasFeriadosEscogidos(models.Model):
     estacionamiento = models.ForeignKey(Estacionamiento) 
     
     def __str__(self):
-        return ' ('+str(self.fecha)+','+str(self.descripcion)+')'
+        return ' ('+str(self.fecha)+')'

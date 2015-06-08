@@ -635,6 +635,7 @@ def grafica_tasa_de_reservacion(request):
 def Estacionamiento_Dias_Feriados(request, _id):
     
     _id = int(_id)
+    
     # Verificamos que el objeto exista antes de continuar
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
@@ -648,24 +649,30 @@ def Estacionamiento_Dias_Feriados(request, _id):
     # Si es POST, se verifica la información recibida
     elif request.method == 'POST':
         # Creamos un formulario con los datos que recibimos
-        form =  ElegirFechaForm(request.POST.getlist('diasFeriados') )
+        form =  ElegirFechaForm(request.POST)
         
         if form.is_valid():
             diaFeriado =  form.cleaned_data['esquema_diasFeriados']
-            diasFeriados = { 'AñoNuevo'  : datetime(year = datetime.now().year, month =1,   day  = 1), 
-                                        'DeclaracionIndependecia'  : datetime( year =  datetime.now().year, month =  4, day = 19), 
-                                        'DiaTrabajador'  : datetime(year=  datetime.now().year, month = 5, day  = 1),  
-                                        'BatallaCarabobo'  :  datetime(year=  datetime.now().year, month = 6, day  = 24),  
-                                        'DiaIndependecia'  : datetime(year=  datetime.now().year, month = 7, day  = 5 ), 
-                                        'NatalicioSimonBolivar '  :  datetime(year=  datetime.now().year, month = 7, day  = 24 ), 
-                                        'DiaResistenciaIndigena'  : datetime(year=  datetime.now().year, month = 10, day  = 12  ),
-                                        'Navidad'  : datetime(year=  datetime.now().year, month = 12, day  = 25 ), 
-                                        ' FinAño'  :  datetime(year=  datetime.now().year, month = 12, day  = 31 ) }
-            print(diasFeriados['AñoNuevo'])
-            print(id)
-            feriadosEscogidos = DiasFeriadosEscogidos(diasFeriados['AñoNuevo'], 'AñoNuevo' ,  id )
-                
-           # print(request.POST)
+            diasFeriados = {'AñoNuevo'  : datetime(year = datetime.now().year, month = 1, day = 1), 
+                            'DeclaracionIndependecia'  : datetime(year =  datetime.now().year, month =  4, day = 19), 
+                            'DiaTrabajador'  : datetime(year=  datetime.now().year, month = 5, day  = 1),  
+                            'BatallaCarabobo'  :  datetime(year=  datetime.now().year, month = 6, day  = 24),  
+                            'DiaIndependencia'  : datetime(year=  datetime.now().year, month = 7, day  = 5 ), 
+                            'NatalicioSimonBolivar '  :  datetime(year=  datetime.now().year, month = 7, day  = 24 ), 
+                            'DiaResistenciaIndigena'  : datetime(year=  datetime.now().year, month = 10, day  = 12  ),
+                            'Navidad'  : datetime(year=  datetime.now().year, month = 12, day  = 25 ), 
+                            'FinAño'  :  datetime(year=  datetime.now().year, month = 12, day  = 31 ) }
+
+            print(request.POST)
+            
+        
+            for dia in diaFeriado:
+            
+                feriadosEscogidos = DiasFeriadosEscogidos(fecha = diasFeriados[dia],
+                                                      descripcion = dia,
+                                                      estacionamiento = estacionamiento)
+                feriadosEscogidos.save()  
+           
             
     return render(
         request,
