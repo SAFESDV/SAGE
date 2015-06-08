@@ -9,7 +9,7 @@
       Estacionamiento {{estacionamiento.nombre}}
     </h3>
     <hr>
-       <form action="." method="post" class="form form-vertical">
+       <form  method="post" class="form form-vertical">
       {% csrf_token %}
       {% for choice in form.esquema_diasFeriados %}
       

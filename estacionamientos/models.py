@@ -165,18 +165,22 @@ class TarifaHoraPico(EsquemaTarifario):
         return("Tarifa diferenciada por hora pico")
         
     
-class DiasFeriados(models.Model):
+class DiasFeriados(models.Model): #capaz la usamos!!!! xD
     
-    fecha   = models.DateTimeField()
-    descripcion = models.CharField(max_length = 50)
+    fecha   = models.DateTimeField(primary_key = True)
+    descripcion = models.CharField(max_length = 50, primary_key = True)
     
     def rellenarDiasFeriados(self):
         
-        diasFeriados = [ [datetime(year=  datetime.now().year, month = 1, day = 1), 'Año Nuevo'], [datetime(year=  datetime.now().year, month = 4, day = 19), 'Declaración de la Independecia' ], 
-                           [ datetime(year=  datetime.now().year, month = 5, day  = 1), 'Día del trabajo' ], [ datetime(year=  datetime.now().year, month = 6, day  = 24), 'Batalla de Carabobo' ], 
-                           [datetime(year=  datetime.now().year, month = 7, day  = 5 ), 'Día de la independecia' ], [datetime(year=  datetime.now().year, month = 7, day  = 24 ), 'Natalicio de Simón Bolívar ' ],
-                           [datetime(year=  datetime.now().year, month = 10, day  = 12  ), 'Día de la resistencia indígena' ],  [datetime(year=  datetime.now().year, month = 12, day  = 25 ), 'Navidad' ],
-                           [datetime(year=  datetime.now().year, month = 12, day  = 31 ), 'Fin de Año'  ]]
+        diasFeriados = [ [datetime(year=  datetime.now().year, month = 1, day = 1), 'Año Nuevo'], 
+                                            [datetime(year=  datetime.now().year, month = 4, day = 19), 'Declaración de la Independecia' ], 
+                                            [datetime(year=  datetime.now().year, month = 5, day  = 1), 'Día del trabajo' ], 
+                                            [datetime(year=  datetime.now().year, month = 6, day  = 24), 'Batalla de Carabobo' ], 
+                                            [datetime(year=  datetime.now().year, month = 7, day  = 5 ), 'Día de la independecia' ], 
+                                            [datetime(year=  datetime.now().year, month = 7, day  = 24 ), 'Natalicio de Simón Bolívar ' ],
+                                            [datetime(year=  datetime.now().year, month = 10, day  = 12  ), 'Día de la resistencia indígena' ], 
+                                            [datetime(year=  datetime.now().year, month = 12, day  = 25 ), 'Navidad' ],
+                                            [datetime(year=  datetime.now().year, month = 12, day  = 31 ), 'Fin de Año'  ]]
         
         for elem in diasFeriados:
             dia = DiasFeriados(elem[0], elem[1])
@@ -187,3 +191,7 @@ class DiasFeriadosEscogidos(models.Model):
     
     fecha   = models.DateTimeField()
     descripcion = models.CharField(max_length = 50)    
+    estacionamiento = models.ForeignKey(Estacionamiento) 
+    
+    def __str__(self):
+        return ' ('+str(self.fecha)+','+str(self.descripcion)+')'

@@ -86,10 +86,25 @@ def consultar_ingresos(rif):
 
     return listaIngresos, ingresoTotal
    
-def seleccionar_feriados(fechaFeriado, descFeriado): #una lista de objeto que contiene la fecha y la descripción del día feriado
+def seleccionar_feriados(feriados, id): #una lista de objeto que contiene la fecha y la descripción del día feriado
 	
-	diaferiado = DiasFeriadosEscogidos(fechaFeriado, descFeriado)
-	diaferiado.save()
+	diasFeriados = { 'AñoNuevo'  : datetime(year=  datetime.now().year, month = 1, day = 1), 
+                                        'DeclaracionIndependecia'  : datetime(year=  datetime.now().year, month = 4, day = 19), 
+                                        'DiaTrabajador'  : datetime(year=  datetime.now().year, month = 5, day  = 1),  
+                                        'BatallaCarabobo'  :  datetime(year=  datetime.now().year, month = 6, day  = 24),  
+                                        'DiaIndependecia'  : datetime(year=  datetime.now().year, month = 7, day  = 5 ), 
+                                        'NatalicioSimonBolivar '  :  datetime(year=  datetime.now().year, month = 7, day  = 24 ), 
+                                        'DiaResistenciaIndigena'  : datetime(year=  datetime.now().year, month = 10, day  = 12  ),
+                                        'Navidad'  : datetime(year=  datetime.now().year, month = 12, day  = 25 ), 
+                                        ' FinAño'  :  datetime(year=  datetime.now().year, month = 12, day  = 31 ) }
+
+	for dia in feriados:
+		
+		feriadosEscogidos = DiasFeriadosEscogidos(diasFeriados[ dia ] , dia, id )
+		feriadosEscogidos.save()
+			
+			
+		
 	
 		
 	

@@ -10,7 +10,7 @@ from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
 
-from datetime import datetime
+from datetime import datetime, date
 
 from reservas.controller import (
     validarHorarioReserva,
@@ -641,8 +641,6 @@ def Estacionamiento_Dias_Feriados(request, _id):
     except ObjectDoesNotExist:
         raise Http404
 
-    diasFeriados = DiasFeriados.objects.all() #obtiene todos los valores de la tabla
-
     # Si es un GET, mandamos un formulario vacio
     if request.method == 'GET':
          form = ElegirFechaForm()
@@ -654,7 +652,21 @@ def Estacionamiento_Dias_Feriados(request, _id):
         
         if form.is_valid():
             diaFeriado =  form.cleaned_data['esquema_diasFeriados']
-
+            diasFeriados = { 'AñoNuevo'  : datetime(year = datetime.now().year, month =1,   day  = 1), 
+                                        'DeclaracionIndependecia'  : datetime( year =  datetime.now().year, month =  4, day = 19), 
+                                        'DiaTrabajador'  : datetime(year=  datetime.now().year, month = 5, day  = 1),  
+                                        'BatallaCarabobo'  :  datetime(year=  datetime.now().year, month = 6, day  = 24),  
+                                        'DiaIndependecia'  : datetime(year=  datetime.now().year, month = 7, day  = 5 ), 
+                                        'NatalicioSimonBolivar '  :  datetime(year=  datetime.now().year, month = 7, day  = 24 ), 
+                                        'DiaResistenciaIndigena'  : datetime(year=  datetime.now().year, month = 10, day  = 12  ),
+                                        'Navidad'  : datetime(year=  datetime.now().year, month = 12, day  = 25 ), 
+                                        ' FinAño'  :  datetime(year=  datetime.now().year, month = 12, day  = 31 ) }
+            print(diasFeriados['AñoNuevo'])
+            print(id)
+            feriadosEscogidos = DiasFeriadosEscogidos(diasFeriados['AñoNuevo'], 'AñoNuevo' ,  id )
+                
+           # print(request.POST)
+            
     return render(
         request,
         'dias_feriados.html',

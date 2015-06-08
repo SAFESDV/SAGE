@@ -355,9 +355,8 @@ class ElegirFechaForm(forms.Form):
     
     dias_feriados = [
         ('AñoNuevo', '1 de Enero'),
-        ('DomingoResurreccion', '5 de Abril'),
         ('DeclaracionIndependencia', '19 de Abril'),
-        ('DiaTrabajor', '1 de Mayo'),
+        ('DiaTrabajador', '1 de Mayo'),
         ('BatallaCarabobo', '24 de Junio'),
         ('DiaIndependencia', '5 de Julio'),
         ('NatalicioSimonBolivar', '24 de Julio'),
@@ -368,7 +367,7 @@ class ElegirFechaForm(forms.Form):
         ]
 
     esquema_diasFeriados= forms.MultipleChoiceField(
-        required = True,
+        required = False,
         choices  = dias_feriados,
         label = '',
         widget   = forms.CheckboxSelectMultiple()
