@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Archivo con funciones de control para SAGE
-from estacionamientos.models import Estacionamiento
+from estacionamientos.models import Estacionamiento, DiasFeriadosEscogidos
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
@@ -86,21 +86,27 @@ def consultar_ingresos(rif):
 
     return listaIngresos, ingresoTotal
    
-def seleccionar_feriados(feriados, id): #una lista de objeto que contiene la fecha y la descripción del día feriado
+def seleccionar_feriados(diaFeriado, estacionamiento): #una lista de objeto que contiene la fecha y la descripción del día feriado
 	
-	diasFeriados = { 'AñoNuevo'  : datetime(year=  datetime.now().year, month = 1, day = 1), 
-                                        'DeclaracionIndependecia'  : datetime(year=  datetime.now().year, month = 4, day = 19), 
-                                        'DiaTrabajador'  : datetime(year=  datetime.now().year, month = 5, day  = 1),  
-                                        'BatallaCarabobo'  :  datetime(year=  datetime.now().year, month = 6, day  = 24),  
-                                        'DiaIndependecia'  : datetime(year=  datetime.now().year, month = 7, day  = 5 ), 
-                                        'NatalicioSimonBolivar '  :  datetime(year=  datetime.now().year, month = 7, day  = 24 ), 
-                                        'DiaResistenciaIndigena'  : datetime(year=  datetime.now().year, month = 10, day  = 12  ),
-                                        'Navidad'  : datetime(year=  datetime.now().year, month = 12, day  = 25 ), 
-                                        ' FinAño'  :  datetime(year=  datetime.now().year, month = 12, day  = 31 ) }
+	feriadosEscogidos = DiasFeriadosEscogidos.objects.all()
+	feriadosEscogidos.delete()
+	
+	diasFeriados = {'AñoNuevo'  : datetime(year = datetime.now().year, month = 1, day = 1), 
+                    'DeclaracionIndependencia'  : datetime(year =  datetime.now().year, month =  4, day = 19), 
+                    'DiaTrabajador'  : datetime(year=  datetime.now().year, month = 5, day  = 1),  
+                    'BatallaCarabobo'  :  datetime(year=  datetime.now().year, month = 6, day  = 24),  
+                    'DiaIndependencia'  : datetime(year=  datetime.now().year, month = 7, day  = 5 ), 
+                    'NatalicioSimonBolivar'  :  datetime(year=  datetime.now().year, month = 7, day  = 24 ), 
+                    'DiaResistenciaIndigena'  : datetime(year=  datetime.now().year, month = 10, day  = 12  ),
+                    'VisperaNavidad': datetime(year=  datetime.now().year, month = 12, day  = 24 ),
+                    'Navidad'  : datetime(year=  datetime.now().year, month = 12, day  = 25 ), 
+                    'FinAño'  :  datetime(year=  datetime.now().year, month = 12, day  = 31 ) }
 
-	for dia in feriados:
-		
-		feriadosEscogidos = DiasFeriadosEscogidos(diasFeriados[ dia ] , dia, id )
+	for dia in diaFeriado:
+		     
+		feriadosEscogidos = DiasFeriadosEscogidos(fecha = diasFeriados[dia],
+												descripcion = dia,
+												estacionamiento = estacionamiento)
 		feriadosEscogidos.save()
 			
 			

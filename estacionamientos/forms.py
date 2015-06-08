@@ -354,16 +354,16 @@ class CedulaForm(forms.Form):
 class ElegirFechaForm(forms.Form):
     
     dias_feriados = [
-        ('AñoNuevo', '1 de Enero'),
-        ('DeclaracionIndependencia', '19 de Abril'),
-        ('DiaTrabajador', '1 de Mayo'),
-        ('BatallaCarabobo', '24 de Junio'),
-        ('DiaIndependencia', '5 de Julio'),
-        ('NatalicioSimonBolivar', '24 de Julio'),
-        ('DiaResistenciaIndigena', '12 de Octubre'),
-        ('VisperaNavidad', '24 de Diciembre'),
-        ('Navidad', '25 de Diciembre'),
-        ('FinAño', '31 de Diciembre')
+        ('AñoNuevo', '1 de Enero - Año Nuevo'),
+        ('DeclaracionIndependencia', '19 de Abril - Declaracion de la Independencia'),
+        ('DiaTrabajador', '1 de Mayo - Dia del Trabajador'),
+        ('BatallaCarabobo', '24 de Junio - Batalla de Carabobo'),
+        ('DiaIndependencia', '5 de Julio - Dia de Independencia'),
+        ('NatalicioSimonBolivar', '24 de Julio - Natalicio de Simon Bolivar'),
+        ('DiaResistenciaIndigena', '12 de Octubre - Dia de la Resistencia Indigena'),
+        ('VisperaNavidad', '24 de Diciembre - Vispera de Navidad'),
+        ('Navidad', '25 de Diciembre - Navidad'),
+        ('FinAño', '31 de Diciembre - Fin de Año')
         ]
 
     esquema_diasFeriados= forms.MultipleChoiceField(

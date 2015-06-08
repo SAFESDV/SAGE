@@ -9,7 +9,7 @@
       Estacionamiento {{estacionamiento.nombre}}
     </h3>
     <hr>
-       <form  method="post" class="form form-vertical">
+      <form method="post" class="form form-vertical">
       {% csrf_token %}
       {% for choice in form.esquema_diasFeriados %}
       
@@ -19,13 +19,21 @@
           </div>
         </div>     
       {% endfor %}
+      <br>
       <div class="control-group">
         <label></label>
-        <div class="controls">
+
           <button type="submit" class="btn btn-primary">
-            Dias Feriados!!!!!!
+            Confirmar
           </button>
-        </div>
+
+          <button type="submit" class="btn btn-primary">
+            Feriados Extras
+          </button>
+
+          <button type="submit" class="btn btn-primary">
+            Volver
+          </button>
       </div>
     </form>
   </div>
