@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.core.validators import RegexValidator
-from django.forms.widgets import SplitDateTimeWidget, DateInput
 from logging import PlaceHolder
+from django.forms.widgets import DateInput
 
 class EstacionamientoForm(forms.Form):
 
@@ -371,7 +371,7 @@ class ElegirFechaForm(forms.Form):
         choices  = dias_feriados,
         widget   = forms.CheckboxSelectMultiple()
     )
-    
+
 class AgregarFeriadoForm(forms.Form):
     
     descripcion_validator = RegexValidator(

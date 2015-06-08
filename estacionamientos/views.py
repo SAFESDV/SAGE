@@ -24,6 +24,7 @@ from estacionamientos.controller import (
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
     seleccionar_feriados,
+    seleccionar_feriado_extra,
 )
 
 from billetera.forms import (
@@ -661,4 +662,32 @@ def Estacionamiento_Dias_Feriados(request, _id):
         { "form" : form }
     )
         
+def Estacionamiento_Dia_Feriado_Extra(request, _id):
     
+    _id = int(_id)
+    
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    # Si es un GET, mandamos un formulario vacio
+    if request.method == 'GET':
+         form = AgregarFeriadoForm()
+
+    # Si es POST, se verifica la información recibida
+    elif request.method == 'POST':
+        # Creamos un formulario con los datos que recibimos
+        form =  AgregarFeriadoForm(request.POST)
+        
+        if form.is_valid():
+            diaFecha =  form.cleaned_data['fecha']
+            diaDescripcion =  form.cleaned_data['descripcion']
+            seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
+            
+    return render(
+        request,
+        'dia_feriado_extra.html',
+        { "form" : form }
+    )
