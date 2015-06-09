@@ -608,7 +608,9 @@ def tasa_de_reservacion(request, _id):
             }
         )
     ocupacion = tasa_reservaciones(_id)
-    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre, estacionamiento.capacidad, ocupacion)
+    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
+                                estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos,
+                                ocupacion)
     datos_ocupacion = urlencode(ocupacion) # Se convierten los datos del diccionario en el formato key1=value1&key2=value2&...
     return render(
         request,
