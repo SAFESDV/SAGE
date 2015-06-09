@@ -22,7 +22,8 @@ class Estacionamiento(models.Model):
 
     content_type = models.ForeignKey(ContentType, null = True)
     object_id    = models.PositiveIntegerField(null = True)
-    tarifa       = GenericForeignKey()
+    tarifa       =  GenericForeignKey()
+    tarifaFeriado   =  GenericForeignKey(blank = True, null = True, max_digits=10, decimal_places=2)
     apertura     = models.TimeField(blank = True, null = True)
     cierre       = models.TimeField(blank = True, null = True)
     capacidad    = models.IntegerField(blank = True, null = True)
@@ -42,17 +43,12 @@ class ConfiguracionSMS(models.Model):
 class EsquemaTarifario(models.Model):
 
     # No se cuantos digitos deberiamos poner
-    tarifa         = models.DecimalField(max_digits=20, decimal_places=2)
-    tarifa2        = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
-    inicioEspecial = models.TimeField(blank = True, null = True)
-    finEspecial    = models.TimeField(blank = True, null = True)
+    tarifa                      = models.DecimalField(max_digits=20, decimal_places=2)
+    tarifaFeriado     = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
+    inicioEspecial     = models.TimeField(blank = True, null = True)
+    finEspecial            = models.TimeField(blank = True, null = True)
+    tipo = models.CharField(max_length = 50)
     
-    tarifa_feriado         = models.DecimalField(blank = True, null = True, max_digits=20, decimal_places=2)
-    tarifa2_feriado        = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
-    inicioEspecial_feriado = models.TimeField(blank = True, null = True)
-    finEspecial_feriado    = models.TimeField(blank = True, null = True)
-    
-
     class Meta:
         abstract = True
     def __str__(self):
