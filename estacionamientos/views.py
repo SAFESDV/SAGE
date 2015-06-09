@@ -313,9 +313,12 @@ def estacionamiento_reserva(request, _id):
             inicioReserva = form.cleaned_data['inicio']
             finalReserva = form.cleaned_data['final']
             tipo_vehiculo_tomado = form.cleaned_data['tipo_vehiculo']
-            
+            tipo_vehiculo_tomado = str(tipo_vehiculo_tomado)
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
+            
+            print(tipo_vehiculo_tomado)
+            
             m_validado = validarHorarioReserva(
                 inicioReserva,
                 finalReserva,
@@ -334,6 +337,7 @@ def estacionamiento_reserva(request, _id):
                 )
 
             if marzullo(_id, inicioReserva, finalReserva, tipo_vehiculo_tomado):
+                print("funciono marzullo!")
                 reservaFinal = Reserva(
                     estacionamiento = estacionamiento,
                     inicioReserva   = inicioReserva,
@@ -365,6 +369,7 @@ def estacionamiento_reserva(request, _id):
                 request.session['aniofinal']           = finalReserva.year
                 request.session['mesfinal']            = finalReserva.month
                 request.session['diafinal']            = finalReserva.day
+                request.session['tipo_vehiculo']       = tipo_vehiculo_tomado
                 return render(
                     request,
                     'confirmar.html',
@@ -428,7 +433,8 @@ def estacionamiento_pago(request,_id):
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
-                estado          = 'Válido'
+                estado          = 'Válido',
+                tipo_vehiculo   = request.session['tipo_vehiculo']
             )
 
             # Se guarda la reserva en la base de datos

@@ -21,7 +21,7 @@
 	  <li><a href="./diasFeriados"><i class="fa fa-wrench"></i>
              Escoger dias feriados
         </a></li>
-	{% if estacionamiento.capacidad %}
+	{% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos %}
 	  <li><a href="./"><i class="fa fa-wrench"></i>
 	       Parametrizar
 	  </a></li>

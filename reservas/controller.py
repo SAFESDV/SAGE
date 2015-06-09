@@ -44,17 +44,23 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
         ocupacion += [(reserva.inicioReserva, 1), (reserva.finalReserva, -1)]
     ocupacion += [(hIn, 1), (hOut, -1)]
 
-    if tipo == 'Livianos':
-        
+    if (tipo == 'Liviano'):
+        print('Entre a tipo livianos')
         count = 0
         for r in sorted(ocupacion):
             count += r[1]
+            print(count)
+            print( " , ")
+            print(capacidadLivianos)
             if count > capacidadLivianos:
+                print(count)
+                print( " > ")
+                print(capacidadLivianos)
                 return False
         return True
     
-    elif tipo == 'Pesados':
-        
+    elif (tipo == 'Pesado'):
+        print('Entre a tipo pesados')
         count = 0
         for r in sorted(ocupacion):
             count += r[1]
@@ -62,8 +68,8 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
                 return False
         return True
     
-    elif tipo == 'Motos':
-        
+    elif (tipo == 'Moto'):
+        print('Entre a tipo motos')
         count = 0
         for r in sorted(ocupacion):
             count += r[1]
@@ -72,4 +78,5 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
         return True
     
     else:
+        print("nope, nada")
         return False

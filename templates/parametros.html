@@ -2,7 +2,7 @@
 <table class="table table-striped">
   <thead></thead>
   <tbody>
-    {% if estacionamiento.capacidad %}
+    {% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos  %}
       <tr><td><b><i class="fa fa-car"></i> Puestos Livianos:</b></td></tr>
       <tr><td>{{estacionamiento.capacidadLivianos}}</td></tr>
       <tr><td><b><i class="fa fa-truck"></i> Puestos Pesados:</b></td></tr>
