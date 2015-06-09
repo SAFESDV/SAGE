@@ -3,8 +3,12 @@
   <thead></thead>
   <tbody>
     {% if estacionamiento.capacidad %}
-      <tr><td><b><i class="fa fa-car"></i> Puestos:</b></td></tr>
-      <tr><td>{{estacionamiento.capacidad}}</td></tr>
+      <tr><td><b><i class="fa fa-car"></i> Puestos Livianos:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadLivianos}}</td></tr>
+      <tr><td><b><i class="fa fa-truck"></i> Puestos Pesados:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadPesados}}</td></tr>
+      <tr><td><b><i class="fa fa-bicycle"></i> Puestos Motos:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadMotos}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Horario apertura:</b></td></tr>
       <tr><td>{{estacionamiento.apertura}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Horario cierre:</b></td></tr>
