@@ -271,7 +271,7 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )
-    
+    '''
     choices_esquema_feriado = [
         ('TarifaSinFeriado', 'Mantener tarifa para Dias feriados'),
         ('TarifaHoraDiaFeriado', 'Por hora en los Dias feriado'),
@@ -336,7 +336,7 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )
-
+'''
 
 
 class RifForm(forms.Form):

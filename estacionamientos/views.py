@@ -157,11 +157,11 @@ def estacionamiento_detail(request, _id):
                 'puestosPesados' : estacionamiento.capacidadPesados,
                 'puestosMotos' : estacionamiento.capacidadMotos,
                 'esquema' : estacionamiento.tarifa.__class__.__name__,
-                'tarifa_feriado' : estacionamiento.tarifa_feriado.tarifa_feriado,
-                'tarifa2_feriado' : estacionamiento.tarifa_feriado.tarifa2_feriado,
-                'inicioTarifa2_feriado' : estacionamiento.tarifa_feriado.inicioEspecial_feriado,
-                'finTarifa2_feriado' : estacionamiento.tarifa_feriado.finEspecial_feriado,
-                'esquema_feriado' : estacionamiento.tarifa_feriado.__class__.__name__
+                #'tarifa_feriado' : estacionamiento.tarifa_feriado.tarifa_feriado,
+                #'tarifa2_feriado' : estacionamiento.tarifa_feriado.tarifa2_feriado,
+                #'inicioTarifa2_feriado' : estacionamiento.tarifa_feriado.inicioEspecial_feriado,
+                #'finTarifa2_feriado' : estacionamiento.tarifa_feriado.finEspecial_feriado,
+                #'esquema_feriado' : estacionamiento.tarifa_feriado.__class__.__name__
             }
             form = EstacionamientoExtendedForm(data = form_data)
         else:
@@ -179,11 +179,11 @@ def estacionamiento_detail(request, _id):
             inicioTarifa2         = form.cleaned_data['inicioTarifa2']
             finTarifa2            = form.cleaned_data['finTarifa2']
             tarifa2               = form.cleaned_data['tarifa2']
-            tipo_feriado          = form.cleaned_data['esquema_feriado']
-            tarifa_feriado        = form.cleaned_data['tarifa_feriado']
-            inicioTarifa2_feriado = form.cleaned_data['inicioTarifa2_feriado']
-            finTarifa2_feriado    = form.cleaned_data['finTarifa2_feriado']
-            tarifa2_feriado       = form.cleaned_data['tarifa2_feriado']
+            #tipo_feriado          = form.cleaned_data['esquema_feriado']
+            #tarifa_feriado        = form.cleaned_data['tarifa_feriado']
+            #inicioTarifa2_feriado = form.cleaned_data['inicioTarifa2_feriado']
+            #finTarifa2_feriado    = form.cleaned_data['finTarifa2_feriado']
+            #tarifa2_feriado       = form.cleaned_data['tarifa2_feriado']
 
             esquemaTarifa = eval(tipo)(
                 tarifa         = tarifa,
@@ -194,14 +194,14 @@ def estacionamiento_detail(request, _id):
 
             esquemaTarifa.save()
             
-            esquemaTarifa_feriado = eval(tipo)(
-                tarifa_feriado         = tarifa_feriado,
-                tarifa2_feriado        = tarifa2_feriado,
-                inicioEspecial_feriado = inicioTarifa2_feriado,
-                finEspecial_feriado    = finTarifa2_feriado
-            )
+        #    esquemaTarifa_feriado = eval(tipo)(
+        #        tarifa_feriado         = tarifa_feriado,
+        #        tarifa2_feriado        = tarifa2_feriado,
+        #        inicioEspecial_feriado = inicioTarifa2_feriado,
+        #        finEspecial_feriado    = finTarifa2_feriado
+        #    )
 
-            esquemaTarifa_feriado.save()
+        #    esquemaTarifa_feriado.save()
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
             if not HorarioEstacionamiento(horaIn, horaOut):
@@ -214,7 +214,7 @@ def estacionamiento_detail(request, _id):
                 )
             # debería funcionar con excepciones
             estacionamiento.tarifa    = esquemaTarifa
-            estacionamiento.tarifa_feriado = esquemaTarifa_feriado
+            #estacionamiento.tarifa_feriado = esquemaTarifa_feriado
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
             estacionamiento.capacidadLivianos = form.cleaned_data['puestosLivianos']
