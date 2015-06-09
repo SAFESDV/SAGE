@@ -59,7 +59,6 @@ from estacionamientos.models import (
     TarifaHorayFraccion,
     TarifaFinDeSemana,
     TarifaHoraPico,
-    DiasFeriados,
     DiasFeriadosEscogidos,
 )
 

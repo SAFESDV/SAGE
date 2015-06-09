@@ -81,6 +81,7 @@ def consultar_ingresos(rif):
         
         for factura in listaFacturas:
             ingreso[1] += factura.monto
+            
         listaIngresos += [ingreso]
         ingresoTotal  += ingreso[1]
 
@@ -88,7 +89,7 @@ def consultar_ingresos(rif):
    
 def seleccionar_feriados(diaFeriado, estacionamiento): #una lista de objeto que contiene la fecha y la descripción del día feriado
 	
-	feriadosEscogidos = DiasFeriadosEscogidos.objects.all()
+	feriadosEscogidos = DiasFeriadosEscogidos.objects.all()  #arreglar....
 	feriadosEscogidos.delete()
 	
 	diasFeriados = {'AñoNuevo'  : datetime(year = datetime.now().year, month = 1, day = 1), 
@@ -117,8 +118,3 @@ def seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento): #una l
 											descripcion = diaDescripcion,
 											estacionamiento = estacionamiento)
 	feriadosEscogidos.save()
-	
-		
-	
-	
-	
