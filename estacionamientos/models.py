@@ -25,7 +25,9 @@ class Estacionamiento(models.Model):
     tarifa       = GenericForeignKey()
     apertura     = models.TimeField(blank = True, null = True)
     cierre       = models.TimeField(blank = True, null = True)
-    capacidad    = models.IntegerField(blank = True, null = True)
+    capacidadLivianos  = models.IntegerField(blank = True, null = True)
+    capacidadPesados   = models.IntegerField(blank = True, null = True)
+    capacidadMotos     = models.IntegerField(blank = True, null = True)
 
     def __str__(self):
         return self.nombre+' '+str(self.id)

@@ -153,7 +153,9 @@ def estacionamiento_detail(request, _id):
                 'tarifa2' : estacionamiento.tarifa.tarifa2,
                 'inicioTarifa2' : estacionamiento.tarifa.inicioEspecial,
                 'finTarifa2' : estacionamiento.tarifa.finEspecial,
-                'puestos' : estacionamiento.capacidad,
+                'puestosLivianos' : estacionamiento.capacidadLivianos,
+                'puestosPesados' : estacionamiento.capacidadPesados,
+                'puestosMotos' : estacionamiento.capacidadMotos,
                 'esquema' : estacionamiento.tarifa.__class__.__name__,
                 'tarifa_feriado' : estacionamiento.tarifa_feriado.tarifa_feriado,
                 'tarifa2_feriado' : estacionamiento.tarifa_feriado.tarifa2_feriado,
@@ -215,7 +217,9 @@ def estacionamiento_detail(request, _id):
             estacionamiento.tarifa_feriado = esquemaTarifa_feriado
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
-            estacionamiento.capacidad = form.cleaned_data['puestos']
+            estacionamiento.capacidadLivianos = form.cleaned_data['puestosLivianos']
+            estacionamiento.capacidadPesados = form.cleaned_data['puestosPesados']
+            estacionamiento.capacidadMotos = form.cleaned_data['puestosMotos']
 
             estacionamiento.save()
             form = EstacionamientoExtendedForm()
@@ -305,10 +309,11 @@ def estacionamiento_reserva(request, _id):
         form = ReservaForm(request.POST)
         # Verificamos si es valido con los validadores del formulario
         if form.is_valid():
-
+         
             inicioReserva = form.cleaned_data['inicio']
             finalReserva = form.cleaned_data['final']
-
+            tipo_vehiculo_tomado = form.cleaned_data['tipo_vehiculo']
+            
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
             m_validado = validarHorarioReserva(
@@ -328,12 +333,13 @@ def estacionamiento_reserva(request, _id):
                     }
                 )
 
-            if marzullo(_id, inicioReserva, finalReserva):
+            if marzullo(_id, inicioReserva, finalReserva, tipo_vehiculo_tomado):
                 reservaFinal = Reserva(
                     estacionamiento = estacionamiento,
                     inicioReserva   = inicioReserva,
                     finalReserva    = finalReserva,
-                    estado          = 'Válido'
+                    estado          = 'Válido',
+                    tipo_vehiculo   = tipo_vehiculo_tomado
                 )
 
                 monto = Decimal(
