@@ -25,4 +25,5 @@ urlpatterns = patterns('',
     url(r'^(?P<_id>\d+)/editar$', views.estacionamiento_editar, name = 'estacionamiento_editar'),
     url(r'^(?P<_id>\d+)/diasFeriados$', views.Estacionamiento_Dias_Feriados, name = 'Estacionamiento_Dias_Feriados'),
     url(r'^(?P<_id>\d+)/agregar_dia_extra$',views.Estacionamiento_Dia_Feriado_Extra, name = 'Dia_Feriado_Extra'),
+    url(r'^(?P<_id>\d+)/catalogo_dias_feriados$', views.Mostrar_Dias_Feriados, name = 'Estacionamiento_Dias_Feriados'),
 )

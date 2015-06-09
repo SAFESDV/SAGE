@@ -654,6 +654,7 @@ def Estacionamiento_Dias_Feriados(request, _id):
     # Verificamos que el objeto exista antes de continuar
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
+        DiasFeriados = DiasFeriadosEscogidos.objects.all()
     except ObjectDoesNotExist:
         raise Http404
 
@@ -669,13 +670,26 @@ def Estacionamiento_Dias_Feriados(request, _id):
         if form.is_valid():
             diaFeriado =  form.cleaned_data['esquema_diasFeriados']
             seleccionar_feriados(diaFeriado, estacionamiento)
-            
+        
+        # Arle
+        return render(
+                  request,
+                  'dias_feriados.html',
+                  { "form" : form 
+                   , "color"   : "green"
+                   ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
+                   }
+                )
+                    
     return render(
         request,
         'dias_feriados.html',
-        { "form" : form }
-    )
-        
+        { "form" : form 
+        }
+        )
+
+    # Fin Arle
+    
 def Estacionamiento_Dia_Feriado_Extra(request, _id):
     
     _id = int(_id)
@@ -683,6 +697,7 @@ def Estacionamiento_Dia_Feriado_Extra(request, _id):
     # Verificamos que el objeto exista antes de continuar
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
+        DiasFeriados = DiasFeriadosEscogidos.objects.all()
     except ObjectDoesNotExist:
         raise Http404
 
@@ -699,9 +714,40 @@ def Estacionamiento_Dia_Feriado_Extra(request, _id):
             diaFecha =  form.cleaned_data['fecha']
             diaDescripcion =  form.cleaned_data['descripcion']
             seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
-            
+        
+    # Arle  
+        return render(
+            request,
+            'dia_feriado_extra.html',
+            { "form" : form 
+            , "color"   : "green"
+            ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
+            }
+          )
+        
     return render(
-        request,
-        'dia_feriado_extra.html',
-        { "form" : form }
-    )
+                request,
+                'dia_feriado_extra.html',
+                { "form" : form }
+                )
+    
+    # Fin Arle
+def Mostrar_Dias_Feriados(request, _id):
+    
+    _id = int(_id)
+    
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+        DiasFeriados = DiasFeriadosEscogidos.objects.all()
+    except ObjectDoesNotExist:
+        raise Http404
+
+    print(DiasFeriados)
+    return render(
+                request,
+                'catalogo_dias_feriados.html',
+                {"estacionamientos": estacionamiento
+                ,"DiasFeriados" : DiasFeriados
+                }
+            )

@@ -32,9 +32,23 @@
       <tr><td>{{estacionamiento.tarifa.inicioEspecial}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Fin tarifa especial:</b></td></tr>
       <tr><td>{{estacionamiento.tarifa.finEspecial}}</td></tr>
-    {% elif estacionamiento.capacidad %}
+    {% elif estacionamiento.tarifa %}
       <tr><td><b><i class="fa fa-money"></i></i> Tarifa:</b></td></tr>
       <tr><td>BsF. {{estacionamiento.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
     {% endif %}
   </tbody>
 </table>
+<!-- Arle -->
+{% if estacionamiento.tarifa %}
+	<a href="./diasFeriados">
+	    <div class="control-group">
+	        <div class="controls">
+	          <button type="submit" class="btn btn-primary">
+	            Elegir Fechas Feriadas
+	          </button>
+	        </div>
+	      </div>
+	   </a>
+{% endif %}
+<!-- Fin Arle -->
+
