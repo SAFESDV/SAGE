@@ -33,6 +33,7 @@ def PropietarioAll(request):
                   
             obj = Propietario(
                 nomb_prop   = form.cleaned_data['nomb_prop'],
+                cedulaTipo  = form.cleaned_data['cedulaTipo'],
                 Cedula      = form.cleaned_data['Cedula'],
                 telefono3   = form.cleaned_data['telefono_prop'],
                 email2      = form.cleaned_data['email_prop'],
@@ -64,6 +65,7 @@ def propietario_editar(request, _id):
             
             form_data = {
                 'nomb_prop' : propietario.nomb_prop,
+                'cedulaTipo' : propietario.cedulaTipo,
                 'Cedula' : propietario.Cedula,
                 'telefono_prop' : propietario.telefono3,
                 'email_prop' : propietario.email2
@@ -79,6 +81,7 @@ def propietario_editar(request, _id):
         # Si el formulario
         if form.is_valid():
             propietario.nomb_prop = form.cleaned_data['nomb_prop']
+            propietario.cedulaTipo  = form.cleaned_data['cedulaTipo']
             propietario.Cedula = form.cleaned_data['Cedula']
             propietario.telefono3 = form.cleaned_data['telefono_prop']
             propietario.email2 = form.cleaned_data['email_prop']

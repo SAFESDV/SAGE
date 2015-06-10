@@ -8,6 +8,7 @@ from datetime import timedelta
 
 class Propietario(models.Model):
     
+    cedulaTipo       = models.CharField(max_length = 1)
     Cedula      = models.CharField(max_length = 50)
     nomb_prop   = models.CharField(max_length = 50)
     telefono3   = models.CharField(blank = True, null = True, max_length = 30)
