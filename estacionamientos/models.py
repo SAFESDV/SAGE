@@ -3,6 +3,7 @@ from django.db import models
 from math import ceil, floor
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from model_utils.managers import InheritanceManager
 from decimal import Decimal
 from datetime import timedelta
 from propietarios.models import Propietario
@@ -22,8 +23,6 @@ class Estacionamiento(models.Model):
 
     content_type = models.ForeignKey(ContentType, null = True)
     object_id    = models.PositiveIntegerField(null = True)
-    tarifa       =  GenericForeignKey()
-    tarifaFeriado   =  GenericForeignKey(blank = True, null = True, max_digits=10, decimal_places=2)
     apertura     = models.TimeField(blank = True, null = True)
     cierre       = models.TimeField(blank = True, null = True)
     capacidad    = models.IntegerField(blank = True, null = True)
@@ -44,16 +43,16 @@ class EsquemaTarifario(models.Model):
 
     # No se cuantos digitos deberiamos poner
     tarifa                      = models.DecimalField(max_digits=20, decimal_places=2)
-    tarifaFeriado     = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
+    estacionamiento = models.ForeignKey(Estacionamiento)
     inicioEspecial     = models.TimeField(blank = True, null = True)
     finEspecial            = models.TimeField(blank = True, null = True)
     tipo = models.CharField(max_length = 50)
     
     class Meta:
         abstract = True
+        
     def __str__(self):
         return str(self.tarifa)
-
 
 class TarifaHora(EsquemaTarifario):
     

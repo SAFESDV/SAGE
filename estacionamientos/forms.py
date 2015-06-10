@@ -243,34 +243,19 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )
+
+    choices_esquema_feriado = [
+        ('TarifaSinFeriado', 'Mantener tarifa para Dias feriados'),
+        ('TarifaHoraDiaFeriado', 'Por hora en los Dias feriado'),
+        ('TarifaMinutoDiaFeriado', 'Por minuto en los Dias feriado'),
+        ('TarifaHorayFraccionDiaFeriado', 'Por hora y fracción en los Dias feriado'),
+        ('TarifaHoraPicoDiaFeriado', 'Diferenciada por horario pico en los Dias feriado'),
+        ('TarifaFinDeSemanaDiaFeriado', 'Diferenciada para fines de semana en los Dias feriado')
+    ]
     
-    horarioinFeriado = forms.TimeField(
-        required = True,
-        label    = 'Horario Apertura',
-        widget   = forms.TextInput(attrs =
-            { 'class':'form-control'
-            , 'placeholder' : 'Horario Apertura'
-            , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
-            , 'message'     : 'La entrada debe ser una hora válida.'
-            }
-        )
-    )
-
-    horariooutFeriado = forms.TimeField(
-        required = True,
-        label    = 'Horario Cierre',
-        widget   = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Cierre'
-            , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
-            , 'message'     : 'La entrada debe ser una hora válida.'
-            }
-        )
-    )
-
     esquemaFeriado = forms.ChoiceField(
         required = True,
-        choices  = choices_esquema,
+        choices  = choices_esquema_feriado,
         widget   = forms.Select(attrs =
             { 'class' : 'form-control' }
         )
@@ -281,7 +266,7 @@ class EstacionamientoExtendedForm(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa'
+            , 'placeholder' : 'Tarifa Feriado'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -293,7 +278,7 @@ class EstacionamientoExtendedForm(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa 2',
+                'placeholder' : 'Tarifa Feriado 2',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -305,7 +290,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Inicio Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Inicio Reserva'
+            , 'placeholder' : 'Horario Inicio Reserva Feriado'
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
@@ -314,7 +299,7 @@ class EstacionamientoExtendedForm(forms.Form):
 
     finTarifaFeriado2 = forms.TimeField(
         required = False,
-        label    = 'Fin Horario Especial',
+        label    = 'Fin Horario Especial Feriado',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
             , 'placeholder' : 'Horario Fin Reserva'
@@ -323,15 +308,6 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )    
-    choices_esquema_feriado = [
-        ('TarifaSinFeriado', 'Mantener tarifa para Dias feriados'),
-        ('TarifaHoraDiaFeriado', 'Por hora en los Dias feriado'),
-        ('TarifaMinutoDiaFeriado', 'Por minuto en los Dias feriado'),
-        ('TarifaHorayFraccionDiaFeriado', 'Por hora y fracción en los Dias feriado'),
-        ('TarifaHoraPicoDiaFeriado', 'Diferenciada por horario pico en los Dias feriado'),
-        ('TarifaFinDeSemanaDiaFeriado', 'Diferenciada para fines de semana en los Dias feriado')
-    ]
-    
 class RifForm(forms.Form):
     
     rif_validator = RegexValidator(

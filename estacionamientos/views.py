@@ -5,6 +5,7 @@ from django.shortcuts import render
 import urllib
 from django.http import HttpResponse, Http404
 from django.utils.dateparse import parse_datetime
+from model_utils.managers import InheritanceManager
 from urllib.parse import urlencode
 from matplotlib import pyplot
 from decimal import Decimal
@@ -54,6 +55,7 @@ from pagos.forms import (
 
 from estacionamientos.models import (
     Estacionamiento,
+    EsquemaTarifario,
     TarifaHora,
     TarifaMinuto,
     TarifaHorayFraccion,
@@ -143,26 +145,26 @@ def estacionamiento_detail(request, _id):
         raise Http404
 
     if request.method == 'GET':
-        if estacionamiento.tarifa:
+        estacionamientotarifa = TarifaHora.objects.filter( estacionamiento = _id) #areglaaaaaaaaaaaaaar
+        
+        if estacionamientotarifa:
             
             form_data = {
                 'horarioin' : estacionamiento.apertura,
                 'horarioout' : estacionamiento.cierre,
-                'tarifa' : estacionamiento.tarifa.tarifa,
-                'tarifa2' : estacionamiento.tarifa.tarifa2,
-                'inicioTarifa2' : estacionamiento.tarifa.inicioEspecial,
-                'finTarifa2' : estacionamiento.tarifa.finEspecial,
-                
-                'tarifaFeriado' : estacionamiento.tarifa.tarifa,
-                'tarifaFeriado2' : estacionamiento.tarifa.tarifa2,
-                'inicioTarifaFeriado2' : estacionamiento.tarifa.inicioEspecial,
-                'finTarifaFeriado2' : estacionamiento.tarifa.finEspecial,
-                
-                
+                'tarifa' : TarifaHora.tarifa,
+                'tarifa2' : TarifaHora.tarifa2,
+                'inicioTarifa2' : TarifaHora.inicioEspecial,
+                'finTarifa2' : TarifaHora.finEspecial,
+                'tarifaFeriado' : TarifaHora.tarifa,
+                'tarifaFeriado2' : TarifaHora.tarifa2,
+                'inicioTarifaFeriado2' : TarifaHora.inicioEspecial,
+                'finTarifaFeriado2' : TarifaHora.finEspecial,
                 'puestos' : estacionamiento.capacidad,
-                'esquema' : estacionamiento.tarifa.__class__.__name__,
+                'esquema' : tarifa.__class__.__name__,
             }
             form = EstacionamientoExtendedForm(data = form_data)
+            
         else:
             form = EstacionamientoExtendedForm()
 
@@ -174,22 +176,19 @@ def estacionamiento_detail(request, _id):
             horaIn                                 = form.cleaned_data['horarioin']
             horaOut                             = form.cleaned_data['horarioout']
             tarifa                                   = form.cleaned_data['tarifa']
+            tarifa2                                 = form.cleaned_data['tarifa2']
             esquema                            = form.cleaned_data['esquema']
             inicioTarifa2                     = form.cleaned_data['inicioTarifa2']
             finTarifa2                           = form.cleaned_data['finTarifa2']
-            tarifa2                                 = form.cleaned_data['tarifa2']
-            horaInFeriado                 = form.cleaned_data['horarioin']
-            horaOutFeriado             = form.cleaned_data['horarioout']
-            tarifaFeriado                   = form.cleaned_data['tarifa']
-            esquemaFeriado           = form.cleaned_data['esquema']
-            inicioTarifa2Feriado    = form.cleaned_data['inicioTarifa2']
-            finTarifa2Feriado          = form.cleaned_data['finTarifa2']
-            tarifa2Feriado                = form.cleaned_data['tarifa2']
-            
+            tarifaFeriado                   = form.cleaned_data['tarifaFeriado']
+            tarifaFeriado2                = form.cleaned_data['tarifaFeriado2']
+            esquemaFeriado           = form.cleaned_data['esquemaFeriado']
+            inicioTarifaFeriado2    = form.cleaned_data['inicioTarifaFeriado2']
+            finTarifaFeriado2          = form.cleaned_data['finTarifaFeriado2']
             
             esquemaTarifa = eval(esquema)(
                 tarifa         = tarifa,
-                tarifa2        = tarifa2,
+                estacionamiento =  estacionamiento,
                 inicioEspecial = inicioTarifa2,
                 finEspecial    = finTarifa2,
                 tipo = 'Dia Normal'
@@ -198,9 +197,9 @@ def estacionamiento_detail(request, _id):
             
             esquemaTarifaFeriado = eval(esquema)(
                 tarifa         = tarifaFeriado,
-                tarifa2        = tarifa2Feriado,
-                inicioEspecial = inicioTarifa2Feriado,
-                finEspecial    = finTarifa2Feriado,
+                estacionamiento =  estacionamiento,
+                inicioEspecial = inicioTarifaFeriado2,
+                finEspecial    = finTarifaFeriado2,
                 tipo = 'Dia Feriado'
             )
             esquemaTarifaFeriado.save()
@@ -217,7 +216,6 @@ def estacionamiento_detail(request, _id):
                 )
                 
             # debería funcionar con excepciones
-            estacionamiento.tarifa    = esquemaTarifa
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
             estacionamiento.capacidad = form.cleaned_data['puestos']
