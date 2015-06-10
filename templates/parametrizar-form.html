@@ -76,73 +76,73 @@
     }
   }
   
-  esquema_feriado  = document.getElementById('id_esquema_feriado');
-  tarifa1_feriado  = document.getElementById('id_tarifa_feriado');
-  tarifa2_feriado  = document.getElementById('id_tarifa2_feriado');
-  inicio_feriado   = document.getElementById('id_inicioTarifa2_feriado');
-  fin_feriado      = document.getElementById('id_finTarifa2_feriado');
+  esquemaFeriado  = document.getElementById('id_esquemaFeriado');
+  tarifaFeriado  = document.getElementById('id_tarifaFeriado');
+  tarifaFeriado2  = document.getElementById('id_tarifaFeriado2');
+  inicioFeriado2   = document.getElementById('id_inicioTarifaFeriado2');
+  finFeriado      = document.getElementById('id_finTarifaFeriado2');
   
-  tarifa1_feriado.style.display='none'; 
-  tarifa2_feriado.style.display='none';
-  inicio_feriado.style.display='none';
-  fin_feriado.style.display='none';
+  tarifaFeriado.style.display='none'; 
+  tarifaFeriado2.style.display='none';
+  inicioFeriado2.style.display='none';
+  finFeriado2.style.display='none';
   
-  if (esquema_feriado) {
-    esquema_feriado.onchange=function() {
+  if (esquemaFeriado) {
+    esquemaFeriado.onchange=function() {
       if (this.value == "TarifaSinFeriado") {
-        inicio_feriado.style.display='none';
-        inicio_feriado.placeholder =""
-        fin_feriado.style.display='none';
-        fin_feriado.placeholder =""
-        tarifa2_feriado.style.display ='none';
-        tarifa1_feriado.style,display ='none';
-        tarifa1_feriado.placeholder="";
-        tarifa2_feriado.placeholder="";
+        inicioFeriado2.style.display='none';
+        inicioFeriado2.placeholder =""
+        finFeriado2.style.display='none';
+        finFeriado2.placeholder =""
+        tarifaferiado2.style.display ='none';
+        tarifaFeriado.style,display ='none';
+        tarifaFeriado.placeholder="";
+        tarifaFeriado2.placeholder="";
       } else if (this.value == "TarifaHoraDiaFeriado") {
-        inicio_feriado.style.display='none';
-        inicio_feriado.value = ""
-        fin_feriado.style.display='none';
-        fin_feriado.value = ""
-        tarifa1_feriado.style.display = '';
-        tarifa1_feriado.placeholder="Tarifa dias feriados";
-        tarifa2_feriado.style.display = 'none';
-        tarifa2_feriado.placeholder="";
+        inicioFeriado.style.display='none';
+        inicioFeriado.value = ""
+        finFeriado.style.display='none';
+        finFeriado.value = ""
+        tarifaFeriado.style.display = '';
+        tarifaFeriado.placeholder="Tarifa dias feriados";
+        tarifaFeriado2.style.display = 'none';
+        tarifaFeriado2.placeholder="";
       } else if (this.value == "TarifaMinutoDiaFeriado") {
-        inicio_feriado.style.display='none';
-        inicio_feriado.value = ""
-        fin_feriado.style.display='none';
-        fin_feriado.value = ""
-        tarifa1_feriado.style.display = '';
-        tarifa1_feriado.placeholder="Tarifa dias feriados";
-        tarifa2_feriado.style.display = 'none';
-        tarifa2_feriado.placeholder=" ";
+        inicioFeriado.style.display='none';
+        inicioFeriado.value = ""
+        finFeriado.style.display='none';
+        finFeriado.value = ""
+        tarifaFeriado.style.display = '';
+        tarifaFeriado.placeholder="Tarifa dias feriados";
+        tarifaFeriado2.style.display = 'none';
+        tarifaFeriado2.placeholder=" ";
       } else if (this.value == "TarifaHorayFraccionDiaFeriado") {
-        inicio_feriado.style.display='none';
-        inicio_feriado.value = ""
-        fin_feriado.style.display='none';
-        fin_feriado.value = ""
-        tarifa1_feriado.style.display = '';
-        tarifa1_feriado.placeholder="Tarifa dias feriados";
-        tarifa2_feriado.style.display = 'none';
-        tarifa2_feriado.placeholder="";
+        inicioFeriado.style.display='none';
+        inicioFeriado.value = ""
+        finFeriado.style.display='none';
+        finFeriado.value = ""
+        tarifaFeriado.style.display = '';
+        tarifaFeriado.placeholder="Tarifa dias feriados";
+        tarifaFeriado2.style.display = 'none';
+        tarifaFeriado2.placeholder="";
       } else if (this.value == "TarifaHoraPicoDiaFeriado") {
-        inicio_feriado.style.display='';
-        inicio_feriado.placeholder = "Inicio horario pico"
-        fin_feriado.style.display='';
-        fin_feriado.placeholder = "Fin horario pico"
-        tarifa1_feriado.style.display = '';
-        tarifa2_feriado.style.display = '';
-        tarifa1_feriado.placeholder="Tarifa dias feriado";
-        tarifa2_feriado.placeholder="Tarifa pico dias feriados";
+        inicioFeriado.style.display='';
+        inicioFeriado.placeholder = "Inicio horario pico"
+        finFeriado.style.display='';
+        finFeriado.placeholder = "Fin horario pico"
+        tarifaFeriado.style.display = '';
+        tarifaFeriado2.style.display = '';
+        tarifaFeriado.placeholder="Tarifa dias feriado";
+        tarifaFeriado2.placeholder="Tarifa pico dias feriados";
       } else {
-      	inicio_feriado.style.display='none';
-        inicio_feriado.placeholder = ""
-        fin_feriado.style.display='none';
-        fin_feriado.placeholder = ""
-        tarifa1_feriado.style.display = '';
-        tarifa2_feriado.style.display = '';
-        tarifa1_feriado.placeholder="Tarifa dias feriados";
-        tarifa2_feriado.placeholder="Tarifa fin de semana feriados";
+      	inicioFeriado.style.display='none';
+        inicioFeriado.placeholder = ""
+        finFeriado.style.display='none';
+        finFeriado.placeholder = ""
+        tarifaFeriado.style.display = '';
+        tarifaFeriado2.style.display = '';
+        tarifaFeriado.placeholder="Tarifa dias feriados";
+        tarifaFeriado2.placeholder="Tarifa fin de semana feriados";
       }
     } 
   }

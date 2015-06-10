@@ -21,8 +21,6 @@ class Estacionamiento(models.Model):
 
     # Campos para referenciar al esquema de tarifa
 
-    content_type = models.ForeignKey(ContentType, null = True)
-    object_id    = models.PositiveIntegerField(null = True)
     apertura     = models.TimeField(blank = True, null = True)
     cierre       = models.TimeField(blank = True, null = True)
     capacidad    = models.IntegerField(blank = True, null = True)
@@ -38,10 +36,17 @@ class ConfiguracionSMS(models.Model):
 
     def __str__(self):
         return self.estacionamiento.nombre+' ('+str(self.inicioReserva)+','+str(self.finalReserva)+')'
+
+class EsquemaTarifarioM2M(models.Model):  
+    #Relaciona estacionamiento con el esquema tarifario con estacionamiento (Many to Many)
+    
+    estacionamiento = models.ForeignKey(Estacionamiento)
+    content_type = models.ForeignKey(ContentType, null = True)
+    object_id    = models.PositiveIntegerField(null = True)
+    tarifa = GenericForeignKey()    
     
 class EsquemaTarifario(models.Model):
 
-    # No se cuantos digitos deberiamos poner
     tarifa                      = models.DecimalField(max_digits=20, decimal_places=2)
     tarifa2 = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
     estacionamiento = models.ForeignKey(Estacionamiento)

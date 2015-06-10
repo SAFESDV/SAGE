@@ -5,7 +5,6 @@ from django.shortcuts import render
 import urllib
 from django.http import HttpResponse, Http404
 from django.utils.dateparse import parse_datetime
-from model_utils.managers import InheritanceManager
 from urllib.parse import urlencode
 from matplotlib import pyplot
 from decimal import Decimal
@@ -56,6 +55,7 @@ from pagos.forms import (
 from estacionamientos.models import (
     Estacionamiento,
     EsquemaTarifario,
+    EsquemaTarifarioM2M,
     TarifaHora,
     TarifaMinuto,
     TarifaHorayFraccion,
@@ -145,51 +145,43 @@ def estacionamiento_detail(request, _id):
         raise Http404
 
     if request.method == 'GET':
-        estacionamientotarifa = TarifaHora.objects.filter( estacionamiento = _id ).values_list('tarifa' ,'tarifa2' ,'inicioEspecial', 'finEspecial', 'tipo')#quiero obtener todos los atributos de la tabla
-        
-        for elem in  estacionamientotarifa:
-            print(elem[0])
-            if elem[4] =='Dia Normal':
+        try:
+            estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
             
-                form_data = {
-                    'horarioin' : estacionamiento.apertura,
-                    'horarioout' : estacionamiento.cierre,
-                    'tarifa' : elem[0],
-                    'tarifa2' : elem[1],
-                    'inicioTarifa2' : elem[3],
-                    #'finTarifa2' : estacionamientotarifa.finEspecial,
-                    #'tarifaFeriado' : estacionamientotarifa.tarifa,
-                    #'tarifaFeriado2' : estacionamientotarifa.tarifa2,
-                    #'inicioTarifaFeriado2' : estacionamientotarifa.inicioEspecial,
-                    #'finTarifaFeriado2' : estacionamientotarifa.finEspecial,
-                    'puestos' : estacionamiento.capacidad,
-                    'esquema' : estacionamientotarifa.__class__.__name__,
-                }
-                form = EstacionamientoExtendedForm(data = form_data)
-            
-            elif elem[4] == 'Dia Feriado':
-                 
-                 form_data = {
-                    'horarioin' : estacionamiento.apertura,
-                    'horarioout' : estacionamiento.cierre,
-                    'tarifa' : estacionamientotarifa,
-                    #'tarifa2' : estacionamientotarifa.tarifa2,
-                    #'inicioTarifa2' : estacionamientotarifa.inicioEspecial,
-                    #'finTarifa2' : estacionamientotarifa.finEspecial,
-                    #'tarifaFeriado' : estacionamientotarifa.tarifa,
-                    #'tarifaFeriado2' : estacionamientotarifa.tarifa2,
-                    #'inicioTarifaFeriado2' : estacionamientotarifa.inicioEspecial,
-                    #'finTarifaFeriado2' : estacionamientotarifa.finEspecial,
-                    'puestos' : estacionamiento.capacidad,
-                    'esquema' : estacionamientotarifa.__class__.__name__,
-                 }
-                 form = EstacionamientoExtendedForm(data = form_data)
-            
-        else:
+            for elem in  estacionamientotarifa:
+                if elem.tarifa.tipo =='Dia Normal':
+                
+                    form_data = {
+                        'horarioin' : estacionamiento.apertura,
+                        'horarioout' : estacionamiento.cierre,
+                        'tarifa' : elem.tarifa.tarifa,
+                        'tarifa2' : elem.tarifa.tarifa2,
+                        'inicioTarifa2' : elem.tarifa.inicioTarifa2,
+                        'finTarifa2' : elem.tarifa.finTarifa2,
+                        'puestos' : estacionamiento.capacidad,
+                        'esquema' : estacionamientotarifa.__class__.__name__,
+                    }
+                    form = EstacionamientoExtendedForm(data = form_data)
+                
+                elif elem.tarifa.tipo == 'Dia Feriado':
+                     
+                     form_data = {
+                        'horarioin' : estacionamiento.apertura,
+                        'horarioout' : estacionamiento.cierre,
+                        'tarifaFeriado' : elem.tarifa.tarifa,
+                        'tarifaFeriado2' : elem.tarifa.tarifa2,
+                        'inicioTarifaFeriado2' : elem.inicioTarifa2,
+                        'finTarifaFeriado2' : elem.finTarifa2,
+                        'puestos' : estacionamiento.capacidad,
+                        'esquema' : estacionamientotarifa.__class__.__name__,
+                     }
+                     form = EstacionamientoExtendedForm(data = form_data)
+                     
+        except:
             form = EstacionamientoExtendedForm()
-
+            
     elif request.method == 'POST':
-        estacionamientotarifa = TarifaHora.objects.get( estacionamiento = _id ) 
+        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id ) 
         estacionamientotarifa.delete()
         
         # Leemos el formulario
@@ -239,6 +231,18 @@ def estacionamiento_detail(request, _id):
                 )
                 
             # debería funcionar con excepciones
+            estacionamientoTarifa = EsquemaTarifarioM2M(
+                                                                    estacionamiento= estacionamiento,
+                                                                    tarifa = esquemaTarifa
+                                                                    )
+            estacionamientoTarifa.save()
+            
+            estacionamientoTarifaFeriado = EsquemaTarifarioM2M(
+                                                                    estacionamiento= estacionamiento,
+                                                                    tarifa = esquemaTarifaFeriado
+                                                                    )
+            estacionamientoTarifaFeriado.save()
+            
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
             estacionamiento.capacidad = form.cleaned_data['puestos']
