@@ -145,8 +145,8 @@ def estacionamiento_detail(request, _id):
         raise Http404
 
     if request.method == 'GET':
-        try:
             estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
+            form = EstacionamientoExtendedForm()
             
             for elem in  estacionamientotarifa:
                 if elem.tarifa.tipo =='Dia Normal':
@@ -177,9 +177,6 @@ def estacionamiento_detail(request, _id):
                      }
                      form = EstacionamientoExtendedForm(data = form_data)
                      
-        except:
-            form = EstacionamientoExtendedForm()
-            
     elif request.method == 'POST':
         estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id ) 
         estacionamientotarifa.delete()
