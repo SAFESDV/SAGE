@@ -5,6 +5,7 @@ from estacionamientos.controller import *
 from estacionamientos.forms import *
 from estacionamientos.models import *
 from reservas.models import *
+from django.core.exceptions import ValidationError
 '''
 
     CASOS DE PRUEBA PARAMETRIZANDO Y RESERVANDO CON DISTINTOS TIPOS DE VEHICULOS
@@ -30,10 +31,9 @@ class TiposDeVehiculoTestCase(TestCase):
         e.save()
         return e
 
-    '''def testEstacionamientoSinPuestos(self):
-        e=self.crearEstacionamientoNuevo(0,0,0)
-        self.assertTrue(e == None)
-    '''
+    def testEstacionamientoSinPuestos(self):
+        self.assertRaises(ValidationError,crearEstacionamientoNuevo(0,0,0))
+    
     #Borde
     def testEstacionamientoSoloDeLivianos(self):
         e=self.crearEstacionamientoNuevo(1,0,0)
@@ -69,7 +69,7 @@ class TiposDeVehiculoTestCase(TestCase):
                     estacionamiento = e,
                     inicioReserva   = fecha_inicio,
                     finalReserva    = fecha_fin,
-                    estado          = 'Válido',
+                    estado          = 'Vï¿½lido',
                     tipo_vehiculo   = 'Liviano'
                     )
         
