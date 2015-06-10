@@ -86,7 +86,7 @@ class ExtendedFormTestCase(TestCase):
                       'tarifa': '12',
                       'esquema':'TarifaHora'}
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertTrue(form.is_valid())
+        self.assertRaises(Exception,form.is_valid())
 
     # caso borde
     def test_estacionamiento_extended_form_hora_inicio_igual_hora_cierre(self):

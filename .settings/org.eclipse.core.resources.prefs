@@ -34,6 +34,7 @@ encoding//reservas/views.py=utf-8
 encoding//tests/test_billetera_electronica_form.py=utf-8
 encoding//tests/test_operaciones_billetera.py=utf-8
 encoding//tests/test_propietario_form.py=utf-8
+encoding//tests/test_tipos_de_vehiculos.py=utf-8
 encoding//tests/tests_consulta_reserva.py=utf-8
 encoding//tests/tests_editar_estacionamiento_form.py=utf-8
 encoding//tests/tests_estacionamiento_form.py=utf-8
