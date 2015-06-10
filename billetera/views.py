@@ -239,7 +239,7 @@ def billetera_pagar(request, _id):
     
 def billetera_recargar(request):
     form = BilleteraElectronicaRecargaForm()
-    
+    Valido = 0
     if request.method == 'POST':
         form = BilleteraElectronicaRecargaForm(request.POST)
         if form.is_valid():
@@ -250,6 +250,7 @@ def billetera_recargar(request):
                         request,
                         'billetera_recargar.html',
                         { "form"    : form
+                        , "valido": Valido
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
                         }
@@ -261,23 +262,28 @@ def billetera_recargar(request):
                         request,
                         'billetera_recargar.html',
                         { "form"    : form
+                        , "valido": Valido
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
                         }
                     )
-            
+            Valido = 1
             return render(
                 request,
                 'billetera_recargar.html',
                 { "color"   : "green"
+                , "valido": Valido
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
                 }
             )
     return render(
         request,
         'billetera_recargar.html',
-        { 'form' : form }
+        { 'form' : form 
+        , "valido": Valido
+        }
     )     
+    
 
 def recarga_pago(request):
     form = PagoRecargaForm()
