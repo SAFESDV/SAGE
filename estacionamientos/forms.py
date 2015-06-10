@@ -262,7 +262,7 @@ class EstacionamientoExtendedForm(forms.Form):
     )
 
     tarifaFeriado = forms.DecimalField(
-        required   = True,
+        required   = False,
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'

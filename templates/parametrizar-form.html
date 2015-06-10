@@ -32,9 +32,8 @@
     </form>
   </div>
 </div>
+
 {% include "validator.js.html" %}
-
-
 <script type="text/javascript">
   esquema = document.getElementById('id_esquema');
   tarifa1 = document.getElementById('id_tarifa');
@@ -74,13 +73,12 @@
         tarifa2.value = ""
       }
     }
-  }
   
   esquemaFeriado  = document.getElementById('id_esquemaFeriado');
   tarifaFeriado  = document.getElementById('id_tarifaFeriado');
   tarifaFeriado2  = document.getElementById('id_tarifaFeriado2');
   inicioFeriado2   = document.getElementById('id_inicioTarifaFeriado2');
-  finFeriado      = document.getElementById('id_finTarifaFeriado2');
+  finFeriado2      = document.getElementById('id_finTarifaFeriado2');
   
   tarifaFeriado.style.display='none'; 
   tarifaFeriado2.style.display='none';
@@ -95,9 +93,9 @@
         finFeriado2.style.display='none';
         finFeriado2.placeholder =""
         tarifaferiado2.style.display ='none';
-        tarifaFeriado.style,display ='none';
+        tarifaFeriado2.style,display ='none';
         tarifaFeriado.placeholder="";
-        tarifaFeriado2.placeholder="";
+        tarifaFeriado.placeholder="";
       } else if (this.value == "TarifaHoraDiaFeriado") {
         inicioFeriado.style.display='none';
         inicioFeriado.value = ""
