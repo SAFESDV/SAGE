@@ -763,6 +763,7 @@ def Mostrar_Dias_Feriados(request, _id):
             Comprobacion = "true"
             break
 
+
     print(DiasFeriados)
     return render(
                 request,
