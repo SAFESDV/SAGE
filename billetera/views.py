@@ -203,7 +203,8 @@ def billetera_pagar(request, _id):
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
-                estado          = 'Válido'
+                estado          = 'Válido',
+                tipo_vehiculo   = request.session['tipo_vehiculo']
             )
             
             # Se guarda la reserva en la base de datos

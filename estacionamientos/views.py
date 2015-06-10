@@ -471,6 +471,7 @@ def estacionamiento_pago(request,_id):
                 , "pago"    : pago
                 , "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
+            
                 }
             )
     return render(
