@@ -192,6 +192,7 @@ class TiposDeVehiculoTestCase(TestCase):
         fecha_fin=fecha_inicio.replace(hour=16,minute=15)
         self.hacerReservaNueva(e,'Liviano',fecha_inicio,fecha_fin)
         self.hacerReservaNueva(e,'Pesado',fecha_inicio,fecha_fin)
+        
         self.assertTrue(marzullo(e.id, fecha_inicio, fecha_fin,'Moto'))
         
     def testLlenarMotosyPesadosNoBloqueaLivianos(self):
