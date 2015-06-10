@@ -145,23 +145,23 @@ def estacionamiento_detail(request, _id):
         raise Http404
 
     if request.method == 'GET':
-        estacionamientotarifa = TarifaHora.objects.filter( estacionamiento = _id) #areglaaaaaaaaaaaaaar
+        estacionamientotarifa = TarifaHora.objects.get( estacionamiento = _id ) #quiero obtener todos los atributos de la tabla
         
         if estacionamientotarifa:
             
             form_data = {
                 'horarioin' : estacionamiento.apertura,
                 'horarioout' : estacionamiento.cierre,
-                'tarifa' : TarifaHora.tarifa,
-                'tarifa2' : TarifaHora.tarifa2,
-                'inicioTarifa2' : TarifaHora.inicioEspecial,
-                'finTarifa2' : TarifaHora.finEspecial,
-                'tarifaFeriado' : TarifaHora.tarifa,
-                'tarifaFeriado2' : TarifaHora.tarifa2,
-                'inicioTarifaFeriado2' : TarifaHora.inicioEspecial,
-                'finTarifaFeriado2' : TarifaHora.finEspecial,
+                'tarifa' : estacionamientotarifa.tarifa,
+                #'tarifa2' : estacionamientotarifa.tarifa2,
+                #'inicioTarifa2' : estacionamientotarifa.inicioEspecial,
+                #'finTarifa2' : estacionamientotarifa.finEspecial,
+                'tarifaFeriado' : estacionamientotarifa.tarifa,
+                #'tarifaFeriado2' : estacionamientotarifa.tarifa2,
+                #'inicioTarifaFeriado2' : estacionamientotarifa.inicioEspecial,
+                #'finTarifaFeriado2' : estacionamientotarifa.finEspecial,
                 'puestos' : estacionamiento.capacidad,
-                'esquema' : tarifa.__class__.__name__,
+                'esquema' : estacionamientotarifa.tarifa.__class__.__name__,
             }
             form = EstacionamientoExtendedForm(data = form_data)
             
@@ -169,6 +169,9 @@ def estacionamiento_detail(request, _id):
             form = EstacionamientoExtendedForm()
 
     elif request.method == 'POST':
+        estacionamientotarifa = TarifaHora.objects.get( estacionamiento = _id ) 
+        estacionamientotarifa.delete()
+        
         # Leemos el formulario
         form = EstacionamientoExtendedForm(request.POST)
         # Si el formulario
