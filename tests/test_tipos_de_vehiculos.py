@@ -195,6 +195,7 @@ class TiposDeVehiculoTestCase(TestCase):
         self.assertTrue(marzullo(e.id, fecha_inicio, fecha_fin,'Moto'))
         
     def testLlenarMotosyPesadosNoBloqueaLivianos(self):
+        
         e = self.crearEstacionamientoNuevo(1,1,1)
         ahora=datetime.now().replace(second=0,microsecond=0)
         fecha_inicio=(ahora+timedelta(1)).replace(hour=15,minute=15)
