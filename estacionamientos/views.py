@@ -742,6 +742,13 @@ def Mostrar_Dias_Feriados(request, _id):
         DiasFeriados = DiasFeriadosEscogidos.objects.all()
     except ObjectDoesNotExist:
         raise Http404
+    
+    Comprobacion = "false"
+    
+    for dia in DiasFeriados:
+        if(dia.estacionamiento == estacionamiento):
+            Comprobacion = "true"
+            break
 
     print(DiasFeriados)
     return render(
@@ -749,5 +756,6 @@ def Mostrar_Dias_Feriados(request, _id):
                 'catalogo_dias_feriados.html',
                 {"estacionamientos": estacionamiento
                 ,"DiasFeriados" : DiasFeriados
+                , "Comprobacion" : Comprobacion
                 }
             )
