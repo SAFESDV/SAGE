@@ -204,6 +204,9 @@ def estacionamiento_detail(request, _id):
         #    esquemaTarifa_feriado.save()
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
+            
+
+            
             if not HorarioEstacionamiento(horaIn, horaOut):
                 return render(
                     request,
@@ -220,6 +223,15 @@ def estacionamiento_detail(request, _id):
             estacionamiento.capacidadLivianos = form.cleaned_data['puestosLivianos']
             estacionamiento.capacidadPesados = form.cleaned_data['puestosPesados']
             estacionamiento.capacidadMotos = form.cleaned_data['puestosMotos']
+
+            if (estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos <= 0):
+                return render(
+                    request,
+                    'template-mensaje.html',
+                    { 'color':'red'
+                    , 'mensaje': 'El estacionamiento debe tener al menos un puesto'
+                    }
+                )
 
             estacionamiento.save()
             form = EstacionamientoExtendedForm()

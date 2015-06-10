@@ -137,6 +137,17 @@ class EditarEstacionamientoForm(forms.Form):
 
 class EstacionamientoExtendedForm(forms.Form):
     
+    def clean(self):
+        cleaned_data = super(EstacionamientoExtendedForm, self).clean()
+        puestosLivianos = cleaned_data.get("puestosLivianos")
+        puestosPesados = cleaned_data.get("puestosPesados")
+        puestosMotos = cleaned_data.get("puestosMotos")
+
+        if puestosLivianos and puestosPesados and puestosMotos:
+            # Only do something if both fields are valid so far.
+            if (puestosLivianos + puestosPesados + puestosMotos <= 0):
+                raise forms.ValidationError("Debe haber al menos un puesto en el estacionamiento")
+    
     tarifa_validator = RegexValidator(
         regex   = '^([0-9]+(\.[0-9]+)?)$',
         message = 'Sólo debe contener dígitos.'
@@ -183,7 +194,7 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )
-
+    
     horarioin = forms.TimeField(
         required = True,
         label    = 'Horario Apertura',
@@ -271,6 +282,8 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )
+    
+    
     '''
     choices_esquema_feriado = [
         ('TarifaSinFeriado', 'Mantener tarifa para Dias feriados'),

@@ -24,7 +24,9 @@ class consultaReservaTestCase(TestCase):
             nombre      = "nom",
             direccion   = "dir",
             rif         = "J-123456789",
-            capacidad   = 20,
+            capacidadLivianos = 20,
+            capacidadPesados  = 20,
+            capacidadMotos    = 20,
             apertura    = time(0,0),
             cierre      = time(23,59),
         )
@@ -38,7 +40,9 @@ class consultaReservaTestCase(TestCase):
             nombre      = "nom",
             direccion   = "dir",
             rif         = "J-123456789",
-            capacidad   = 20,
+            capacidadLivianos = 20,
+            capacidadPesados  = 20,
+            capacidadMotos    = 20,
             apertura    = time(0,0),
             cierre      = time(23,59),
         )
@@ -47,7 +51,8 @@ class consultaReservaTestCase(TestCase):
                 estacionamiento = e,
                 inicioReserva = datetime(2015,3,10,3,0),
                 finalReserva  = datetime(2015,3,10,5,0),
-                estado = "Válido"
+                estado = "Válido",
+                tipo_vehiculo = "Liviano"
             )
         r.save()
         p = Pago(
@@ -69,7 +74,9 @@ class consultaReservaTestCase(TestCase):
             nombre      = "nom",
             direccion   = "dir",
             rif         = "J-123456789",
-            capacidad   = n,
+            capacidadPesados   = n,
+            capacidadLivianos   = n,
+            capacidadMotos   = n,
             apertura    = time(0,0),
             cierre      = time(23,59),
         )
@@ -79,7 +86,8 @@ class consultaReservaTestCase(TestCase):
                     estacionamiento = e,
                     inicioReserva = datetime(2015,3,10,3,0),
                     finalReserva  = datetime(2015,3,10,5,0),
-                    estado = "Válido"
+                    estado = "Válido",
+                    tipo_vehiculo = "Liviano"
                 )
             r.save()
             p = Pago(
@@ -101,7 +109,9 @@ class consultaReservaTestCase(TestCase):
             nombre      = "nom1",
             direccion   = "dir1",
             rif         = "J-123456789",
-            capacidad   = n,
+            capacidadLivianos = n,
+            capacidadPesados  = n,
+            capacidadMotos    = n,
             apertura    = time(0,0),
             cierre      = time(23,59),
         )
@@ -109,7 +119,9 @@ class consultaReservaTestCase(TestCase):
             nombre      = "nom2",
             direccion   = "dir3",
             rif         = "J-123456789",
-            capacidad   = n,
+            capacidadLivianos = n,
+            capacidadPesados  = n,
+            capacidadMotos    = n,
             apertura    = time(0,0),
             cierre      = time(23,59),
         )
@@ -120,7 +132,8 @@ class consultaReservaTestCase(TestCase):
                     estacionamiento = e1,
                     inicioReserva = datetime(2015,3,10,3,0),
                     finalReserva  = datetime(2015,3,10,5,0),
-                    estado = "Válido"
+                    estado = "Válido",
+                    tipo_vehiculo = "Liviano"
                 )
             r.save()
             p = Pago(
@@ -137,7 +150,8 @@ class consultaReservaTestCase(TestCase):
                     estacionamiento = e2,
                     inicioReserva = datetime(2015,3,10,3,0),
                     finalReserva  = datetime(2015,3,10,5,0),
-                    estado = "Válido"
+                    estado = "Válido",
+                    tipo_vehiculo = "Liviano"
                 )
             r.save()
             p = Pago(
@@ -161,7 +175,9 @@ class consultaReservaTestCase(TestCase):
                 nombre      = "nom%d"%i,
                 direccion   = "dir1",
                 rif         = "J-123456789",
-                capacidad   = m,
+                capacidadLivianos = m,
+                capacidadPesados  = m,
+                capacidadMotos    = m,
                 apertura    = time(0,0),
                 cierre      = time(23,59),
             )
@@ -169,7 +185,9 @@ class consultaReservaTestCase(TestCase):
                 nombre      = "no%d"%i,
                 direccion   = "dir3",
                 rif         = "J-123456789",
-                capacidad   = m,
+                capacidadLivianos = m,
+                capacidadPesados  = m,
+                capacidadMotos    = m,
                 apertura    = time(0,0),
                 cierre      = time(23,59),
             )
@@ -180,7 +198,8 @@ class consultaReservaTestCase(TestCase):
                         estacionamiento = e1,
                         inicioReserva = datetime(2015,3,10,3,0),
                         finalReserva  = datetime(2015,3,10,5,0),
-                        estado = "Válido"
+                        estado = "Válido",
+                        tipo_vehiculo = "Liviano"
                     )
                 r.save()
                 p = Pago(
@@ -203,7 +222,9 @@ class consultaReservaTestCase(TestCase):
                 nombre      = "nom%d"%i,
                 direccion   = "dir1",
                 rif         = "J-123456789",
-                capacidad   = n,
+                capacidadLivianos = n,
+                capacidadPesados  = n,
+                capacidadMotos    = n,
                 apertura    = time(0,0),
                 cierre      = time(23,59),
             )
@@ -218,7 +239,9 @@ class consultaReservaTestCase(TestCase):
                 nombre      = "nom%d"%i,
                 direccion   = "dir1",
                 rif         = "J-%i"%(123456789-i),
-                capacidad   = n,
+                capacidadLivianos = n,
+                capacidadPesados  = n,
+                capacidadMotos    = n,
                 apertura    = time(0,0),
                 cierre      = time(23,59),
             )
@@ -227,7 +250,8 @@ class consultaReservaTestCase(TestCase):
                     estacionamiento = e1,
                     inicioReserva = datetime(2015,3,10,3,0),
                     finalReserva  = datetime(2015,3,10,5,0),
-                    estado = "Válido"
+                    estado = "Válido",
+                    tipo_vehiculo = "Liviano"
                 )
             r.save()
             p = Pago(
