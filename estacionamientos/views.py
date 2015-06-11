@@ -47,12 +47,6 @@ from reservas.forms import (
     CancelarReservaForm,
 )
 
-from pagos.forms import (
-    PagoForm,
-    ModoPagoForm,
-    BilleteraElectronicaPagoForm
-)
-
 from estacionamientos.models import (
     Estacionamiento,
     EsquemaTarifario,
@@ -66,12 +60,12 @@ from estacionamientos.models import (
 )
 
 from propietarios.models import Propietario
-from reservas.models import Reserva
-from pagos.models import Pago
+from reservas.models import *
 
 from django.template.context_processors import request
 from django.forms.forms import Form
 from unittest.case import _id
+from transacciones.models import *
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -236,7 +230,7 @@ def estacionamiento_detail(request, _id):
                 
             # debería funcionar con excepciones
             estacionamientoTarifa = EsquemaTarifarioM2M(
-                                                                    estacionamiento= estacionamiento,
+                                                        estacionamiento= estacionamiento,
                                                                     tarifa = esquemaTarifa
                                                                     )
             estacionamientoTarifa.save()
@@ -483,22 +477,30 @@ def estacionamiento_pago(request,_id):
             reservaFinal.save()
 
             monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))
-            pago = Pago(
-                fechaTransaccion = datetime.now(),
-                cedula           = form.cleaned_data['cedula'],
-                cedulaTipo       = form.cleaned_data['cedulaTipo'],
-                monto            = monto,
-                tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
-                reserva          = reservaFinal,
+            
+            trans = Transaccion(
+                fecha = datetime.now(),
+                cedulaTipo = form.cleaned_data['cedulaTipo'],
+                cedula     = form.cleaned_data['cedula'],
+                modoPago   = 'UK',
+                monto      = monto,
+                estado     = 'Válido'
             )
-            # Se guarda el recibo de pago en la base de datos
-            pago.save()
+            
+            trans.save()
+            
+            transReser = TransReser(
+                transaccion = trans,
+                reserva = reservaFinal
+            )
+            
+            transReser.save()
 
             return render(
                 request,
                 'pago.html',
                 { "id"      : _id
-                , "pago"    : pago
+                , "pago"    : transReser
                 , "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
             
@@ -510,9 +512,7 @@ def estacionamiento_pago(request,_id):
         { 'form' : form }
     )
 
-def estacionamiento_modo_pago(request, _id):
-    form = ModoPagoForm()
-    
+def estacionamiento_modo_pago(request, _id):    
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
     except ObjectDoesNotExist:
@@ -521,11 +521,9 @@ def estacionamiento_modo_pago(request, _id):
     if (estacionamiento.apertura is None):
         return HttpResponse(status = 403) # No esta permitido acceder a esta vista aun
     
-    
     return render(
         request,
-        'ModoPago.html',
-        { 'form' : form }
+        'ModoPago.html'
     )
 
 def estacionamiento_reserva(request, _id):
@@ -778,8 +776,7 @@ def estacionamiento_ingreso(request):
         'consultar-ingreso.html',
         { "form" : form }
     )
-
-
+    
 def estacionamiento_consulta_reserva(request):
     form = CedulaForm()
     if request.method == 'POST':
@@ -787,12 +784,12 @@ def estacionamiento_consulta_reserva(request):
         if form.is_valid():
 
             cedula        = form.cleaned_data['cedula']
-            facturas      = Pago.objects.filter(cedula = cedula)
+            facturas      = Reserva.objects.filter(cedula = cedula)
             listaFacturas = []
 
             listaFacturas = sorted(
                 list(facturas),
-                key = lambda r: r.reserva.inicioReserva
+                key = lambda r: r.inicioReserva
             )
             return render(
                 request,
@@ -1030,3 +1027,4 @@ def Mostrar_Dias_Feriados(request, _id):
                 , "Comprobacion" : Comprobacion
                 }
             )
+

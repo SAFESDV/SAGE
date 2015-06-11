@@ -14,13 +14,9 @@ from collections import OrderedDict
 
 from billetera.forms import (
     BilleteraElectronicaForm,
-    BilleteraElectronicaRecargaForm,
 )
 
-from billetera.models import (
-    BilleteraElectronica,
-    PagoRecargaBilletera
-)
+from billetera.models import *
 
 from billetera.controller import (
     consultar_saldo,
@@ -38,16 +34,38 @@ from reservas.forms import (
     CancelarReservaForm,
 )
 
-from pagos.forms import (
-    PagoForm,
-    ModoPagoForm,
-    BilleteraElectronicaPagoForm
-)
-
 from reservas.models import Reserva
-from pagos.models import Pago
+from transacciones.models import *
 
-def estacionamiento_cancelar_reserva(request):
+def reserva_detalle(request, _id):
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        reserva = Reserva.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+    
+    relation = TransReser.objects.get(reserva = reserva.id)
+    transaccion = relation.transaccion
+    
+
+    if request.method == 'GET':
+        pass
+
+    elif request.method == 'POST':
+        pass
+    return render(
+        request,
+        'reserva_detalle.html',
+        {
+          'reservacion': reserva
+        , 'transaccion' : transaccion
+        }
+    )
+
+def estacionamiento_cancelar_reserva(request, _id):
+    id = int(_id)
+    
     form = CancelarReservaForm()
     if request.method == 'POST':
         form = CancelarReservaForm(request.POST)

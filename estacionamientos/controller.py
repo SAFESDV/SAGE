@@ -15,7 +15,8 @@ from estacionamientos.models import (
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
-from pagos.models import Pago
+from transacciones.models import *
+from transacciones.controller import *
 
 # chequeo de horarios de extended
 def HorarioEstacionamiento(HoraInicio, HoraFin):
@@ -80,18 +81,22 @@ def consultar_ingresos(rif):
     listaEstacionamientos = Estacionamiento.objects.filter(rif = rif)
     ingresoTotal = 0
     listaIngresos = []
+    listaTransacciones = []
 
     for estacionamiento in listaEstacionamientos:
-        listaFacturas = Pago.objects.filter(
+        transreser = TransReser.objects.filter(
             reserva__estacionamiento__nombre = estacionamiento.nombre,
             reserva__estado = 'Válido'
         )
         
+
+        for	tr in transreser:
+            listaTransacciones += [tr.transaccion]
+		
         ingreso = [estacionamiento.nombre, 0]
-        
-        for factura in listaFacturas:
-            ingreso[1] += factura.monto
-            
+		
+        for trans in listaTransacciones:
+            ingreso[1] += transaccion_monto(trans.id)
         listaIngresos += [ingreso]
         ingresoTotal  += ingreso[1]
 
@@ -101,7 +106,6 @@ def seleccionar_feriados(diaFeriado, estacionamiento): #una lista de objeto que 
 	
 
 	feriadosEscogidos = DiasFeriadosEscogidos.objects.all()
-	#feriadosEscogidos.delete()
 	
 	
 	

@@ -43,7 +43,7 @@ INSTALLED_APPS = (
     'index',
     'propietarios',
     'reservas',
-    'pagos'
+    'transacciones'
 )
 
 MIDDLEWARE_CLASSES = (
