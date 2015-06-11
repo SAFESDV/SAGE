@@ -148,7 +148,7 @@ def estacionamiento_detail(request, _id):
 
     if request.method == 'GET':
         estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
-            
+        
         if len(estacionamientotarifa) == 2:
             estacionamientoTarifa = estacionamientotarifa[0]
             estacionamientoTarifaFeriado = estacionamientotarifa[1]   
@@ -169,7 +169,6 @@ def estacionamiento_detail(request, _id):
                     'esquema' : estacionamientoTarifa.tarifa.__class__.__name__,
                     'esquemaFeriado': estacionamientoTarifaFeriado.tarifa.__class__.__name__
                 }
-                
                 form = EstacionamientoExtendedForm(data = form_data)
                 
         else:
@@ -204,7 +203,7 @@ def estacionamiento_detail(request, _id):
                 estacionamiento =  estacionamiento,
                 inicioEspecial = inicioTarifa2,
                 finEspecial    = finTarifa2,
-                tipo = 'Dia Normal'
+                tipoDia = 'Dia Normal'
             )
             esquemaTarifa.save()
             
@@ -214,7 +213,7 @@ def estacionamiento_detail(request, _id):
                 estacionamiento =  estacionamiento,
                 inicioEspecial = inicioTarifaFeriado2,
                 finEspecial    = finTarifaFeriado2,
-                tipo = 'Dia Feriado'
+                tipoDia = 'Dia Feriado'
             )
             esquemaTarifaFeriado.save()
             
