@@ -130,6 +130,7 @@ class ExtendedFormTestCase(TestCase):
 #                CASOS AGREGADOS CON LA IMPLEMENTACION DE TARIFA PARA DIAS FERIADOS
 #---------------------------------------------------------------------------------------------------
 
+    #malicia
     def test_estacionamiento_extended_form_esquemaFeriado_esquemaNoValido(self):
         form_data = { 'puestos': 2,
                       'horarioin': time(hour = 6,  minute = 0),
@@ -141,4 +142,32 @@ class ExtendedFormTestCase(TestCase):
         
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
+        
+    #borde
+    def test_estacionamiento_extended_form_tarifaFeriado_NoValido(self):
+        form_data = { 'puestos': 2,
+                      'horarioin': time(hour = 6,  minute = 0),
+                      'horarioout': time(hour = 19,  minute = 0),
+                      'tarifa': '12',
+                      'esquema':'TarifaMinuto',
+                      'esquemaFeriado' : 'TarifaHoraDiaFeriado',
+                      'tarifaFeriado' : -1.001
+                    }
+        
+        form = EstacionamientoExtendedForm(data = form_data)
+        self.assertFalse(form.is_valid())
+        
+    #borde todos los campos bien     
+    def test_estacionamiento_extended_form_valido_con_esquemaFeriado(self):
+        form_data = { 'puestos': 2,
+                      'horarioin': time(hour = 6,  minute = 0),
+                      'horarioout': time(hour = 19,  minute = 0),
+                      'tarifa': '12',
+                      'esquema':'TarifaMinuto',
+                      'esquemaFeriado' : 'TarifaHoraDiaFeriado',
+                      'tarifaFeriado' : 5.05
+                    }
+        form = EstacionamientoExtendedForm(data = form_data)
+        self.assertTrue(form.is_valid())
+        
         

@@ -2,6 +2,7 @@
 from django.db import models
 from math import ceil, floor
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 from datetime import timedelta
 from propietarios.models import Propietario
