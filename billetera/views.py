@@ -203,6 +203,7 @@ def billetera_pagar(request, _id):
                 'billetera_pagar.html',
                 { "id"      : _id
                 , "pago"    : form
+                , "relacion" : relation
                 , "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
                 }
