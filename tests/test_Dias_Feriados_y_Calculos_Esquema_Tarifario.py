@@ -59,9 +59,7 @@ class DiasFeriadosTestCase(TestCase):
             tarifa = Tarifa
         )
 
-        valor = esquemaParaFeriado.tarifa.calcularPrecio(time(year = 2015, month = 12, day = 31, 23, 0),
-                                                         time(year = 2015, month = 12, day = 31, 23, 59)
-                                                        ) 
+        valor = esquemaParaFeriado.tarifa.calcularPrecio(time(year = 2015, month = 12, day = 31, 23, 0),time(year = 2015, month = 12, day = 31, 23, 59)) 
         
         self.assertEqual(valor,2) #Deberia cobrarse 2 
     
