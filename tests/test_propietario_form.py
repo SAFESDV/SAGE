@@ -27,6 +27,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     # caso borde
     def test_todos_los_campos_necesarios(self):
         form_data = {
+            'cedulaTipo' : 'V',
             'Cedula': '19564959',
             'nomb_prop': 'Francisco Sucre'
         }
@@ -72,6 +73,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     # malicia
     def test_Nombre_propietario_invalido_caracteres_especiales(self):
         form_data = {
+            'cedulaTipo' : 'V',
             'Cedula': '19564959',
             'nomb_prop': 'Frañcíscó Sùcrë'
         }
@@ -81,6 +83,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     # malicia
     def test_agregar_telefonos(self):
         form_data = {
+            'cedulaTipo' : 'V',
             'Cedula': '19564959',
             'nomb_prop': 'Francisco Sucre',
             'telefono_prop': '02129322878'
@@ -91,6 +94,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     # malicia
     def test_formato_invalido_telefono(self):
         form_data = {
+            'cedulaTipo' : 'V',
             'Cedula': '19564959',
             'nomb_prop': 'Francisco Sucre',
             'telefono_prop': '02459322878'
@@ -101,6 +105,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     # malicia
     def test_agregar_correos_electronicos(self):
         form_data = {
+            'cedulaTipo' : 'V',
             'Cedula': '19564959',
             'nomb_prop': 'Francisco Sucre',
             'telefono_prop': '02129322878',
@@ -112,6 +117,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     # malicia
     def test_correo_electronico_invalido(self):
         form_data = {
+            'cedulaTipo' : 'V',
             'Cedula': '19564959',
             'nomb_prop': 'Francisco Sucre',
             'telefono_prop': '02459322878',
