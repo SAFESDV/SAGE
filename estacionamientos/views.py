@@ -465,64 +465,99 @@ def estacionamiento_reserva(request, _id):
                     
                     listaDiasReserva.append(iniReserva)
                     iniReserva += timedelta(days = 1) 
+                
+                estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
+            
+                if len(estacionamientotarifa) == 2:
+                    esquema_no_feriado = estacionamientotarifa[0]
+                    esquema_feriado = estacionamientotarifa[1]
                     
                 numDias = len(listaDiasReserva)
-                cont = 1
+                
+                # CASO 1: RESERVA EN UN SOLO DIA
+                
+                if (numDias == 1):
                     
-                for diaReserva in listaDiasReserva:
-                    
-                    if (cont == 1):
-                        inicioDia = inicioReserva
-                        finalDia = datetime(inicioReserva.year, inicioReserva.month, 
-                                            inicioReserva.day, 23, 59)
-                    elif (cont == numDias):
-                        inicioDia = datetime(finalReserva.year, finalReserva.month, 
-                                             finalReserva.day, 0, 0)
-                        finalDia = finalReserva
-                    else:
-                        inicioDia = datetime(diaReserva.year, diaReserva.month, 
-                                             diaReserva.day, 0, 0)
-                        
-                        finalDia  = datetime(diaReserva.year, diaReserva.month, 
-                                             diaReserva.day, 23, 59)
-                        
                     for diaFeriado in diasFeriados:
-                            
-                        if (diaReserva.days == diaFeriado.days and 
-                            diaReserva.month == diaFeriado.month):
-
-                            monto = Decimal(
-                                estacionamiento.tarifa.calcularPrecio(
-                                    inicioDia,finalDia
+                                
+                            if (listaDiasReserva[0].days == diaFeriado.days and 
+                                listaDiasReserva[0].month == diaFeriado.month):
+    
+                                monto = Decimal(
+                                    esquema_feriado.calcularPrecio(inicioReserva,finalReserva)
                                 )
+                
+                                request.session['monto'] = float(
+                                    esquema_feriado.calcularPrecio(inicioReserva,finalReserva)
+                                )
+                                break
+                            
+                    if (listaDiasReserva[0].days != diaFeriado.days and 
+                            listaDiasReserva[0].month != diaFeriado.month):
+                            
+                            monto = Decimal(
+                                esquema_no_feriado.calcularPrecio(inicioReserva,finalReserva)
                             )
             
                             request.session['monto'] = float(
-                                estacionamiento.tarifa.calcularPrecio(
-                                    inicioDia,
-                                    finalDia
+                                esquema_no_feriado.calcularPrecio(inicioReserva,finalReserva)
+                            )
+                
+                # CASO 2: RESERVA DE MULTIPLES DIAS
+                    
+                elif (numDias > 1):
+                    
+                    cont = 1
+                    
+                    # Se define el inicio y el final de cada dia
+                        
+                    for diaReserva in listaDiasReserva:
+                        
+                        if (cont == 1):
+                            inicioDia = inicioReserva
+                            finalDia = datetime(inicioReserva.year, inicioReserva.month, 
+                                                inicioReserva.day, 23, 59)
+                        elif (cont == numDias):
+                            inicioDia = datetime(finalReserva.year, finalReserva.month, 
+                                                 finalReserva.day, 0, 0)
+                            finalDia = finalReserva
+                        else:
+                            inicioDia = datetime(diaReserva.year, diaReserva.month, 
+                                                 diaReserva.day, 0, 0)
+                            
+                            finalDia  = datetime(diaReserva.year, diaReserva.month, 
+                                                 diaReserva.day, 23, 59)
+                            
+                        # Se Calcula la tarifa de los dias que coinciden con los dias feriados    
+                            
+                        for diaFeriado in diasFeriados:
+                                
+                            if (diaReserva.days == diaFeriado.days and 
+                                diaReserva.month == diaFeriado.month):
+    
+    
+                                monto = Decimal(
+                                    esquema_feriado.calcularPrecio(inicioDia,finalDia)
                                 )
+                
+                                request.session['monto'] = float(
+                                    esquema_feriado.calcularPrecio(inicioDia,finalDia)
+                                )
+                                break
+                                 
+                        if (diaReserva.days != diaFeriado.days and 
+                            diaReserva.month != diaFeriado.month):
+                            
+                            monto = Decimal(
+                                    esquema_no_feriado.calcularPrecio(inicioDia,finalDia)
                             )
-                            break
-                             
-                    if (diaReserva.days != diaFeriado.days and 
-                        diaReserva.month != diaFeriado.month):
-                        
-                        monto = Decimal(
-                            estacionamiento.tarifa.calcularPrecio(
-                                inicioDia,finalDia
+            
+                            request.session['monto'] = float(
+                                esquema_no_feriado.calcularPrecio(inicioDia,finalDia)
                             )
-                        )
-        
-                        request.session['monto'] = float(
-                            estacionamiento.tarifa.calcularPrecio(
-                                inicioDia,
-                                finalDia
-                            )
-                        )
-                        
-                    monto += monto
-                    cont += cont
+                            
+                        monto += monto
+                        cont += cont
                     
                 request.session['finalReservaHora']    = finalReserva.hour
                 request.session['finalReservaMinuto']  = finalReserva.minute
