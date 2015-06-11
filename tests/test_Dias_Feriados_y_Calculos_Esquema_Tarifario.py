@@ -37,11 +37,11 @@ class DiasFeriadosTestCase(TestCase):
         e.save()
         
         Dia1 = DiasFeriadosEscogidos(fecha   = datetime(year = 2015, month = 6, day = 24), 
-                                               descripcion = "Fin de año",  
+                                               descripcion = "Batalla de carabobo",  
                                                estacionamiento = e)
         Dia1.save()
-        Dia2 = DiasFeriadosEscogidos(fecha   = datetime(year = 2016, month = 6, day = 24), 
-                                               descripcion = "Fin de año",  
+        Dia2 = DiasFeriadosEscogidos(fecha   = datetime(year = 2015, month = 7, day = 24), 
+                                               descripcion = "Natalicio del libertador",  
                                                estacionamiento = e)
         Dia2.save()           
         Tarifa = TarifaHora(
@@ -54,10 +54,14 @@ class DiasFeriadosTestCase(TestCase):
             estacionamiento = e,
             tarifa = Tarifa
         )
-        esquemaParaFeriado.save()
-        valor = esquemaParaFeriado.tarifa.calcularPrecio(datetime(year = 2015, month = 12, day = 31, hour = 23, minute= 0), datetime(year = 2015, month = 12, day = 31, hour = 23, minute = 59)) 
         
-        self.assertEqual(valor,2) #Deberia cobrarse 2 
+        
+        esquemaParaFeriado.save()
+        inicioReserva = datetime(year = 2015, month = 6, day = 24, hour = 0, minute= 0)
+        finalReserva = datetime(year = 2015, month = 6, day = 24, hour = 23, minute = 59)
+        valor = esquemaParaFeriado.tarifa.calcularPrecio(inicioReserva,finalReserva ) 
+        
+        self.assertEqual(valor,48) #Deberia cobrarse 48
     
     def testReservarHastaLas000DeUnDiaFeriado(self):
         e = Estacionamiento( 
@@ -185,12 +189,12 @@ class DiasFeriadosTestCase(TestCase):
             capacidadMotos = 100)
         e.save()
         
-        Dia1 = DiasFeriadosEscogidos(fecha   = datetime(year = 2015, month = 12, day = 31), 
-                                               descripcion = "Fin de año",  
+        Dia1 = DiasFeriadosEscogidos(fecha   = datetime(year = 2015, month = 6, day = 24), 
+                                               descripcion = "Batalla de carabobo",  
                                                estacionamiento = e)
         Dia1.save()
-        Dia2 = DiasFeriadosEscogidos(fecha   = datetime(year = 2015, month = 6, day = 11), 
-                                               descripcion = "Fin de año",  
+        Dia2 = DiasFeriadosEscogidos(fecha   = datetime(year = 2015, month = 7, day = 24), 
+                                               descripcion = "Natalicio del libertador",  
                                                estacionamiento = e)
         Dia2.save()           
         
@@ -207,7 +211,7 @@ class DiasFeriadosTestCase(TestCase):
         )
         Tarifa.save()
         
-        Tarifa2 = TarifaHorayFraccion(
+        Tarifa2 = TarifaHora(
             tarifa = 1,
             estacionamiento = e,
             tipoDia = 'Dia Normal',
@@ -220,9 +224,12 @@ class DiasFeriadosTestCase(TestCase):
             tarifa = Tarifa
         )
         esquemaParaFeriado.save()
-        valor = esquemaParaFeriado.tarifa.calcularPrecio(datetime(year = 2016, month = 1, day = 1, hour = 23, minute= 30), datetime(year = 2016, month = 1, day = 2, hour = 0, minute = 30)) 
         
-        self.assertEqual(valor,15) 
+        inicioReserva = datetime(year = 2015, month = 6, day = 24, hour = 23, minute= 0)
+        finalReserva = datetime(year = 2015, month = 6, day = 24, hour = 23, minute = 59)
+        valor = esquemaParaFeriado.tarifa.calcularPrecio(inicioReserva,finalReserva )   
+              
+        self.assertEqual(valor,10) 
     
     def testReservarEnFinDeSemanaUnDiaFeriado(self):
         

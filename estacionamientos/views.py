@@ -464,13 +464,15 @@ def estacionamiento_pago(request,_id):
                 day    = request.session['diafinal'],
                 hour   = request.session['finalReservaHora'],
                 minute = request.session['finalReservaMinuto']
+                
             )
 
             reservaFinal = Reserva(
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
-                estado          = 'Válido'
+                estado          = 'Válido',
+                tipo_vehiculo = request.session['tipo_vehiculo']
             )
 
             # Se guarda la reserva en la base de datos
@@ -504,16 +506,19 @@ def estacionamiento_pago(request,_id):
             )
             
             transReser.save()
+            
 
             return render(
                 request,
                 'pago.html',
                 { "id"      : _id
                 , "pago"    : transReser
+                , "pago2"   : transTdc
                 , "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
             
                 }
+                          
             )
     return render(
         request,
