@@ -317,108 +317,7 @@ def estacionamiento_editar(request, _id):
     )
 
 
-def estacionamiento_reserva(request, _id):
-    _id = int(_id)
-    # Verificamos que el objeto exista antes de continuar
-    try:
-        estacionamiento = Estacionamiento.objects.get(id = _id)
-    except ObjectDoesNotExist:
-        raise Http404
 
-    # Verificamos que el estacionamiento este parametrizado
-    if (estacionamiento.apertura is None):
-        return HttpResponse(status = 403) # Esta prohibido entrar aun
-
-    # Si se hace un GET renderizamos los estacionamientos con su formulario
-    if request.method == 'GET':
-        form = ReservaForm()
-
-    # Si es un POST estan mandando un request
-    elif request.method == 'POST':
-        form = ReservaForm(request.POST)
-        # Verificamos si es valido con los validadores del formulario
-        if form.is_valid():
-
-            inicioReserva = form.cleaned_data['inicio']
-            finalReserva = form.cleaned_data['final']
-
-            # debería funcionar con excepciones, y el mensaje debe ser mostrado
-            # en el mismo formulario
-            m_validado = validarHorarioReserva(
-                inicioReserva,
-                finalReserva,
-                estacionamiento.apertura,
-                estacionamiento.cierre,
-            )
-
-            # Si no es valido devolvemos el request
-            if not m_validado[0]:
-                return render(
-                    request,
-                    'template-mensaje.html',
-                    { 'color'  :'red'
-                    , 'mensaje': m_validado[1]
-                    }
-                )
-
-            if marzullo(_id, inicioReserva, finalReserva):
-                reservaFinal = Reserva(
-                    estacionamiento = estacionamiento,
-                    inicioReserva   = inicioReserva,
-                    finalReserva    = finalReserva,
-                    estado          = 'Válido'
-                )
-
-                monto = Decimal(
-                    estacionamiento.tarifa.calcularPrecio(
-                        inicioReserva,finalReserva
-                    )
-                )
-
-                request.session['monto'] = float(
-                    estacionamiento.tarifa.calcularPrecio(
-                        inicioReserva,
-                        finalReserva
-                    )
-                )
-                
-                request.session['finalReservaHora']    = finalReserva.hour
-                request.session['finalReservaMinuto']  = finalReserva.minute
-                request.session['inicioReservaHora']   = inicioReserva.hour
-                request.session['inicioReservaMinuto'] = inicioReserva.minute
-                request.session['anioinicial']         = inicioReserva.year
-                request.session['mesinicial']          = inicioReserva.month
-                request.session['diainicial']          = inicioReserva.day
-                request.session['aniofinal']           = finalReserva.year
-                request.session['mesfinal']            = finalReserva.month
-                request.session['diafinal']            = finalReserva.day
-                return render(
-                    request,
-                    'confirmar.html',
-                    { 'id'      : _id
-                    , 'monto'   : monto
-                    , 'reserva' : reservaFinal
-                    , 'color'   : 'green'
-                    , 'mensaje' : 'Existe un puesto disponible'
-                    }
-                )
-            else:
-                # Cambiar mensaje
-                return render(
-                    request,
-                    'template-mensaje.html',
-                    {'color'   : 'red'
-                    , 'mensaje' : 'No hay un puesto disponible para ese horario'
-                    }
-                )
-
-    return render(
-        request,
-        'reserva.html',
-        { 'form': form
-        , 'estacionamiento': estacionamiento
-        }
-    )
 
 def estacionamiento_pago(request,_id):
     form = PagoForm()
@@ -506,7 +405,163 @@ def estacionamiento_modo_pago(request, _id):
         { 'form' : form }
     )
 
-    
+def estacionamiento_reserva(request, _id):
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+        diasFeriados = DiasFeriadosEscogidos.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    # Verificamos que el estacionamiento este parametrizado
+    if (estacionamiento.apertura is None):
+        return HttpResponse(status = 403) # Esta prohibido entrar aun
+
+    # Si se hace un GET renderizamos los estacionamientos con su formulario
+    if request.method == 'GET':
+        form = ReservaForm()
+
+    # Si es un POST estan mandando un request
+    elif request.method == 'POST':
+        form = ReservaForm(request.POST)
+        # Verificamos si es valido con los validadores del formulario
+        if form.is_valid():
+
+            inicioReserva = form.cleaned_data['inicio']
+            finalReserva = form.cleaned_data['final']
+
+            # debería funcionar con excepciones, y el mensaje debe ser mostrado
+            # en el mismo formulario
+            m_validado = validarHorarioReserva(
+                inicioReserva,
+                finalReserva,
+                estacionamiento.apertura,
+                estacionamiento.cierre,
+            )
+
+            # Si no es valido devolvemos el request
+            if not m_validado[0]:
+                return render(
+                    request,
+                    'template-mensaje.html',
+                    { 'color'  :'red'
+                    , 'mensaje': m_validado[1]
+                    }
+                )
+
+            if marzullo(_id, inicioReserva, finalReserva):
+                reservaFinal = Reserva(
+                    estacionamiento = estacionamiento,
+                    inicioReserva   = inicioReserva,
+                    finalReserva    = finalReserva,
+                    estado          = 'Válido'
+                )
+
+                iniReserva = inicioReserva
+                listaDiasReserva = []
+            
+                while (iniReserva <= finalReserva):
+                    
+                    listaDiasReserva.append(iniReserva)
+                    iniReserva += timedelta(days = 1) 
+                    
+                numDias = len(listaDiasReserva)
+                cont = 1
+                    
+                for diaReserva in listaDiasReserva:
+                    
+                    if (cont == 1):
+                        inicioDia = inicioReserva
+                        finalDia = datetime(inicioReserva.year, inicioReserva.month, 
+                                            inicioReserva.day, 23, 59)
+                    elif (cont == numDias):
+                        inicioDia = datetime(finalReserva.year, finalReserva.month, 
+                                             finalReserva.day, 0, 0)
+                        finalDia = finalReserva
+                    else:
+                        inicioDia = datetime(diaReserva.year, diaReserva.month, 
+                                             diaReserva.day, 0, 0)
+                        
+                        finalDia  = datetime(diaReserva.year, diaReserva.month, 
+                                             diaReserva.day, 23, 59)
+                        
+                    for diaFeriado in diasFeriados:
+                            
+                        if (diaReserva.days == diaFeriado.days and 
+                            diaReserva.month == diaFeriado.month):
+
+                            monto = Decimal(
+                                estacionamiento.tarifa.calcularPrecio(
+                                    inicioDia,finalDia
+                                )
+                            )
+            
+                            request.session['monto'] = float(
+                                estacionamiento.tarifa.calcularPrecio(
+                                    inicioDia,
+                                    finalDia
+                                )
+                            )
+                            break
+                             
+                    if (diaReserva.days != diaFeriado.days and 
+                        diaReserva.month != diaFeriado.month):
+                        
+                        monto = Decimal(
+                            estacionamiento.tarifa.calcularPrecio(
+                                inicioDia,finalDia
+                            )
+                        )
+        
+                        request.session['monto'] = float(
+                            estacionamiento.tarifa.calcularPrecio(
+                                inicioDia,
+                                finalDia
+                            )
+                        )
+                        
+                    monto += monto
+                    cont += cont
+                    
+                request.session['finalReservaHora']    = finalReserva.hour
+                request.session['finalReservaMinuto']  = finalReserva.minute
+                request.session['inicioReservaHora']   = inicioReserva.hour
+                request.session['inicioReservaMinuto'] = inicioReserva.minute
+                request.session['anioinicial']         = inicioReserva.year
+                request.session['mesinicial']          = inicioReserva.month
+                request.session['diainicial']          = inicioReserva.day
+                request.session['aniofinal']           = finalReserva.year
+                request.session['mesfinal']            = finalReserva.month
+                request.session['diafinal']            = finalReserva.day
+                return render(
+                    request,
+                    'confirmar.html',
+                    { 'id'      : _id
+                    , 'monto'   : monto
+                    , 'reserva' : reservaFinal
+                    , 'color'   : 'green'
+                    , 'mensaje' : 'Existe un puesto disponible'
+                    }
+                )
+            else:
+                # Cambiar mensaje
+                return render(
+                    request,
+                    'template-mensaje.html',
+                    {'color'   : 'red'
+                    , 'mensaje' : 'No hay un puesto disponible para ese horario'
+                    }
+                )
+
+    return render(
+        request,
+        'reserva.html',
+        { 'form': form
+        , 'estacionamiento': estacionamiento
+        }
+    )
+
 def estacionamiento_ingreso(request):
     form = RifForm()
     if request.method == 'POST':
