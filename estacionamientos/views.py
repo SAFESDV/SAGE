@@ -145,36 +145,44 @@ def estacionamiento_detail(request, _id):
         raise Http404
 
     if request.method == 'GET':
-            estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
-            form = EstacionamientoExtendedForm()
+        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
+            
+        if len(estacionamientotarifa) == 2:
             estacionamiento0 = estacionamientotarifa[0]
             estacionamiento1 = estacionamientotarifa[1]   
             
-            form_data = {
-                'horarioin' : estacionamiento.apertura,
-                'horarioout' : estacionamiento.cierre,
-                'tarifa' : estacionamiento0.tarifa.tarifa,
-                'tarifa2' : estacionamiento0.tarifa.tarifa2,
-                'inicioTarifa2' : estacionamiento0.tarifa.inicioEspecial,
-                'finTarifa2' : estacionamiento0.tarifa.finEspecial,
-                'tarifaFeriado' : estacionamiento1.tarifa.tarifa,
-                'tarifaFeriado2' : estacionamiento1.tarifa.tarifa2,
-                'inicioTarifaFeriado2' :estacionamiento1.tarifa.inicioEspecial,
-                'finTarifaFeriado2' : estacionamiento1.tarifa.finEspecial,
-                'puestos' : estacionamiento.capacidad,
-                'esquema' : estacionamiento0.tarifa.__class__.__name__,
-                'esquemaFeriado': estacionamiento1.tarifa.__class__.__name__
-            }
-            
-            form = EstacionamientoExtendedForm(data = form_data)
-             
+            if estacionamiento0 and estacionamiento1:
+                form_data = {
+                    'horarioin' : estacionamiento.apertura,
+                    'horarioout' : estacionamiento.cierre,
+                    'tarifa' : estacionamiento0.tarifa.tarifa,
+                    'tarifa2' : estacionamiento0.tarifa.tarifa2,
+                    'inicioTarifa2' : estacionamiento0.tarifa.inicioEspecial,
+                    'finTarifa2' : estacionamiento0.tarifa.finEspecial,
+                    'tarifaFeriado' : estacionamiento1.tarifa.tarifa,
+                    'tarifaFeriado2' : estacionamiento1.tarifa.tarifa2,
+                    'inicioTarifaFeriado2' :estacionamiento1.tarifa.inicioEspecial,
+                    'finTarifaFeriado2' : estacionamiento1.tarifa.finEspecial,
+                    'puestos' : estacionamiento.capacidad,
+                    'esquema' : estacionamiento0.tarifa.__class__.__name__,
+                    'esquemaFeriado': estacionamiento1.tarifa.__class__.__name__
+                }
+                
+                form = EstacionamientoExtendedForm(data = form_data)
+                
+        else:
+             form = EstacionamientoExtendedForm()
+             estacionamiento0 = None
+             estacionamiento1 = None
+    
     elif request.method == 'POST':
-        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id ) 
+        #limpiando la base de datos
+        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
         estacionamientotarifa.delete()
-        
         # Leemos el formulario
         form = EstacionamientoExtendedForm(request.POST)
         # Si el formulario
+
         if form.is_valid(): 
             horaIn                                 = form.cleaned_data['horarioin']
             horaOut                             = form.cleaned_data['horarioout']
@@ -231,14 +239,18 @@ def estacionamiento_detail(request, _id):
                                                                     )
             estacionamientoTarifaFeriado.save()
             
+            estacionamiento0 = esquemaTarifa 
+            estacionamiento1 = esquemaTarifaFeriado
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
             estacionamiento.capacidad = form.cleaned_data['puestos']
 
             estacionamiento.save()
-            
             form = EstacionamientoExtendedForm()
-    
+            
+        else:
+            estacionamiento0 = None
+            estacionamiento1 = None    
     return render(
         request,
         'detalle-estacionamiento.html',
