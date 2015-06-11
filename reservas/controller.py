@@ -74,3 +74,32 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
     
     else:
         return False
+    
+def cancelar_reserva(idReserva):
+    
+    try:
+        reser = Reserva.objects.get(id = idReserva)
+    except:
+        raise
+    
+    reser.estado = 'Inválido'
+    reser.save()
+    relacion = TransReser.objects.get(reserva = reser)
+    trans = relacion.transaccion
+    trans.estado = 'Inválido'
+    
+def reservas_activas(idEstacionamiento):
+    reservasAct = Reserva.objects.filter(estado = 'Válido')
+    return reservaAct
+
+def reservas_inactivas(idEstacionamiento):
+    reservasIna = Reserva.objects.filter(estado = 'Inválido')
+    return reservaIna
+    
+    
+    
+    
+    
+    
+    
+    

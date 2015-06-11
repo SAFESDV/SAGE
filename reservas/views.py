@@ -74,7 +74,7 @@ def estacionamiento_cancelar_reserva(request, _id):
             numeroTransaccion   = form.cleaned_data['numTransac']
             numeroCedula        = form.cleaned_data['cedula']
             try:
-                factura      = Pago.objects.get(id = numeroTransaccion, cedula = numeroCedula)
+                factura      = transaccion.objects.get(id = numeroTransaccion, cedula = numeroCedula)
             except:
                 return render(
                     request,
