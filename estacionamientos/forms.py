@@ -245,12 +245,11 @@ class EstacionamientoExtendedForm(forms.Form):
     )
 
     choices_esquema_feriado = [
-        ('TarifaSinFeriado', 'Mantener tarifa para Dias feriados'),
-        ('TarifaHoraDiaFeriado', 'Por hora en los Dias feriado'),
-        ('TarifaMinutoDiaFeriado', 'Por minuto en los Dias feriado'),
-        ('TarifaHorayFraccionDiaFeriado', 'Por hora y fracción en los Dias feriado'),
-        ('TarifaHoraPicoDiaFeriado', 'Diferenciada por horario pico en los Dias feriado'),
-        ('TarifaFinDeSemanaDiaFeriado', 'Diferenciada para fines de semana en los Dias feriado')
+        ('TarifaHora', 'Por hora en los Dias feriado'),
+        ('TarifaMinuto', 'Por minuto en los Dias feriado'),
+        ('TarifaHorayFraccion', 'Por hora y fracción en los Dias feriado'),
+        ('TarifaHoraPico', 'Diferenciada por horario pico en los Dias feriado'),
+        ('TarifaFinDeSemana', 'Diferenciada para fines de semana en los Dias feriado')
     ]
     
     esquemaFeriado = forms.ChoiceField(
