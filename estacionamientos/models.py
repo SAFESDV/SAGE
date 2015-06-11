@@ -51,7 +51,7 @@ class EsquemaTarifario(models.Model):
     estacionamiento = models.ForeignKey(Estacionamiento)
     inicioEspecial     = models.TimeField(blank = True, null = True)
     finEspecial            = models.TimeField(blank = True, null = True)
-    tipo = models.CharField(max_length = 50)
+    tipoDia = models.CharField(max_length = 50)
     
     class Meta:
         abstract = True

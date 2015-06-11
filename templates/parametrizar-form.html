@@ -75,29 +75,22 @@
     }
   }
   
+
   esquemaFeriado   = document.getElementById('id_esquemaFeriado');
+  
   tarifaFeriado    = document.getElementById('id_tarifaFeriado');
   tarifaFeriado2   = document.getElementById('id_tarifaFeriado2');
   inicioFeriado2   = document.getElementById('id_inicioTarifaFeriado2');
   finFeriado2      = document.getElementById('id_finTarifaFeriado2');
   
-  tarifaFeriado.style.display='none'; 
   tarifaFeriado2.style.display='none';
   inicioFeriado2.style.display='none';
   finFeriado2.style.display='none';
   
   if (esquemaFeriado) {
     esquemaFeriado.onchange=function() {
-      if (this.value == "TarifaSinFeriado") {
-     	tarifaFeriado.style.display = 'none'
-     	tarifaFeriado.placeholder = ""
-     	tarifaFeriado2.style.display = 'none'
-     	tarifaFeriado2.placeholder = ""
-     	inicioFeriado2.style.display = 'none'
-     	inicioFeriado2.placeholder = ""
-     	finFeriado2.style.display = 'none'
-     	finFeriado2.placeholder = ""
-      } else if (this.value == "TarifaHoraDiaFeriado") {
+
+      if (this.value == "TarifaHora") {
       	tarifaFeriado.style.display = ''
      	tarifaFeriado.placeholder = "Tarifa Dia Feriado"
      	tarifaFeriado2.style.display = 'none'
@@ -106,7 +99,7 @@
      	inicioFeriado2.placeholder = ""
      	finFeriado2.style.display = 'none'
      	finFeriado2.placeholder = ""
-      } else if (this.value == "TarifaMinutoDiaFeriado") {
+      } else if (this.value == "TarifaMinuto") {
       	tarifaFeriado.style.display = ''
      	tarifaFeriado.placeholder = "Tarifa Dia Feriado"
      	tarifaFeriado2.style.display = 'none'
@@ -115,7 +108,7 @@
      	inicioFeriado2.placeholder = ""
      	finFeriado2.style.display = 'none'
      	finFeriado2.placeholder = ""
-      } else if (this.value == "TarifaHorayFraccionDiaFeriado") {
+      } else if (this.value == "TarifaHorayFraccion") {
         tarifaFeriado.style.display = ''
      	tarifaFeriado.placeholder = "Tarifa Dia Feriado"
      	tarifaFeriado2.style.display = 'none'
@@ -125,7 +118,7 @@
      	finFeriado2.style.display = 'none'
      	finFeriado2.placeholder = ""
         tarifaFeriado2.placeholder="";
-      } else if (this.value == "TarifaHoraPicoDiaFeriado") {
+      } else if (this.value == "TarifaHoraPico") {
         tarifaFeriado.style.display = ''
      	tarifaFeriado.placeholder = "Tarifa Dia Feriado"
      	tarifaFeriado2.style.display = ''
