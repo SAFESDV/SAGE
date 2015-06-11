@@ -148,37 +148,48 @@ def estacionamiento_detail(request, _id):
         estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
             
         if len(estacionamientotarifa) == 2:
-            estacionamiento0 = estacionamientotarifa[0]
-            estacionamiento1 = estacionamientotarifa[1]   
+            estacionamientoTarifa = estacionamientotarifa[0]
+            estacionamientoTarifaFeriado = estacionamientotarifa[1]   
             
-            if estacionamiento0 and estacionamiento1:
+            if estacionamientoTarifa and estacionamientoTarifaFeriado:
                 form_data = {
                     'horarioin' : estacionamiento.apertura,
                     'horarioout' : estacionamiento.cierre,
-                    'tarifa' : estacionamiento0.tarifa.tarifa,
-                    'tarifa2' : estacionamiento0.tarifa.tarifa2,
-                    'inicioTarifa2' : estacionamiento0.tarifa.inicioEspecial,
-                    'finTarifa2' : estacionamiento0.tarifa.finEspecial,
-                    'tarifaFeriado' : estacionamiento1.tarifa.tarifa,
-                    'tarifaFeriado2' : estacionamiento1.tarifa.tarifa2,
-                    'inicioTarifaFeriado2' :estacionamiento1.tarifa.inicioEspecial,
-                    'finTarifaFeriado2' : estacionamiento1.tarifa.finEspecial,
+                    'tarifa' : estacionamientoTarifa.tarifa.tarifa,
+                    'tarifa2' : estacionamientoTarifa.tarifa.tarifa2,
+                    'inicioTarifa2' : estacionamientoTarifa.tarifa.inicioEspecial,
+                    'finTarifa2' : estacionamientoTarifa.tarifa.finEspecial,
+                    'tarifaFeriado' : estacionamientoTarifaFeriado.tarifa.tarifa,
+                    'tarifaFeriado2' : estacionamientoTarifaFeriado.tarifa.tarifa2,
+                    'inicioTarifaFeriado2' :estacionamientoTarifaFeriado.tarifa.inicioEspecial,
+                    'finTarifaFeriado2' : estacionamientoTarifaFeriado.tarifa.finEspecial,
                     'puestos' : estacionamiento.capacidad,
-                    'esquema' : estacionamiento0.tarifa.__class__.__name__,
-                    'esquemaFeriado': estacionamiento1.tarifa.__class__.__name__
+                    'esquema' : estacionamientoTarifa.tarifa.__class__.__name__,
+                    'esquemaFeriado': estacionamientoTarifaFeriado.tarifa.__class__.__name__
                 }
                 
                 form = EstacionamientoExtendedForm(data = form_data)
                 
         else:
              form = EstacionamientoExtendedForm()
-             estacionamiento0 = None
-             estacionamiento1 = None
+             estacionamientoTarifa = None
+             estacionamientoTarifaFeriado = None
     
     elif request.method == 'POST':
         #limpiando la base de datos
         estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
         estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaHora.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaHoraPico.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaFinDeSemana.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaHorayFraccion.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaMinuto.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+
         # Leemos el formulario
         form = EstacionamientoExtendedForm(request.POST)
         # Si el formulario
@@ -199,6 +210,7 @@ def estacionamiento_detail(request, _id):
             
             esquemaTarifa = eval(esquema)(
                 tarifa         = tarifa,
+                tarifa2     =  tarifa2,
                 estacionamiento =  estacionamiento,
                 inicioEspecial = inicioTarifa2,
                 finEspecial    = finTarifa2,
@@ -206,8 +218,9 @@ def estacionamiento_detail(request, _id):
             )
             esquemaTarifa.save()
             
-            esquemaTarifaFeriado = eval(esquema)(
+            esquemaTarifaFeriado = eval(esquemaFeriado)(
                 tarifa         = tarifaFeriado,
+                tarifa2     =  tarifaFeriado2,
                 estacionamiento =  estacionamiento,
                 inicioEspecial = inicioTarifaFeriado2,
                 finEspecial    = finTarifaFeriado2,
@@ -239,8 +252,8 @@ def estacionamiento_detail(request, _id):
                                                                     )
             estacionamientoTarifaFeriado.save()
             
-            estacionamiento0 = esquemaTarifa 
-            estacionamiento1 = esquemaTarifaFeriado
+            estacionamientoTarifa = esquemaTarifa 
+            estacionamientoTarifaFeriado = esquemaTarifaFeriado
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
             estacionamiento.capacidad = form.cleaned_data['puestos']
@@ -249,15 +262,16 @@ def estacionamiento_detail(request, _id):
             form = EstacionamientoExtendedForm()
             
         else:
-            estacionamiento0 = None
-            estacionamiento1 = None    
+            estacionamientoTarifa = None
+            estacionamientoTarifaFeriado = None
+                
     return render(
         request,
         'detalle-estacionamiento.html',
         { 'form': form
          , 'estacionamiento' : estacionamiento
-        , 'estacionamiento0' : estacionamiento0
-        , 'estacionamiento1' : estacionamiento1
+        , 'estacionamientoTarifa' : estacionamientoTarifa
+        , 'estacionamientoTarifaFeriado' : estacionamientoTarifaFeriado
         }
     )
     
