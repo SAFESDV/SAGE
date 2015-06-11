@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 
 # Archivo con funciones de control para SAGE
-from estacionamientos.models import Estacionamiento, DiasFeriadosEscogidos
+from estacionamientos.models import (
+    Estacionamiento,
+    EsquemaTarifario,
+    EsquemaTarifarioM2M,
+    TarifaHora,
+    TarifaMinuto,
+    TarifaHorayFraccion,
+    TarifaFinDeSemana,
+    TarifaHoraPico,
+    DiasFeriadosEscogidos,
+)
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
@@ -118,3 +128,19 @@ def seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento): #una l
 											descripcion = diaDescripcion,
 											estacionamiento = estacionamiento)
 	feriadosEscogidos.save()
+
+def limpiarEsquemasTarifarios(_id):
+	
+	#limpiando la base de datos
+        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaHora.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaHoraPico.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaFinDeSemana.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaHorayFraccion.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()
+        estacionamientotarifa = TarifaMinuto.objects.filter(estacionamiento = _id)
+        estacionamientotarifa.delete()

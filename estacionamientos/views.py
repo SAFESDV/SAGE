@@ -25,6 +25,7 @@ from estacionamientos.controller import (
     consultar_ingresos,
     seleccionar_feriados,
     seleccionar_feriado_extra,
+    limpiarEsquemasTarifarios
 )
 
 from billetera.forms import (
@@ -70,6 +71,7 @@ from pagos.models import Pago
 
 from django.template.context_processors import request
 from django.forms.forms import Form
+from unittest.case import _id
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -176,20 +178,8 @@ def estacionamiento_detail(request, _id):
              estacionamientoTarifaFeriado = None
     
     elif request.method == 'POST':
-        #limpiando la base de datos
-        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
-        estacionamientotarifa.delete()
-        estacionamientotarifa = TarifaHora.objects.filter(estacionamiento = _id)
-        estacionamientotarifa.delete()
-        estacionamientotarifa = TarifaHoraPico.objects.filter(estacionamiento = _id)
-        estacionamientotarifa.delete()
-        estacionamientotarifa = TarifaFinDeSemana.objects.filter(estacionamiento = _id)
-        estacionamientotarifa.delete()
-        estacionamientotarifa = TarifaHorayFraccion.objects.filter(estacionamiento = _id)
-        estacionamientotarifa.delete()
-        estacionamientotarifa = TarifaMinuto.objects.filter(estacionamiento = _id)
-        estacionamientotarifa.delete()
-
+        
+        limpiarEsquemasTarifarios(_id)
         # Leemos el formulario
         form = EstacionamientoExtendedForm(request.POST)
         # Si el formulario
