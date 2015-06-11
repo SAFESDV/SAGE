@@ -31,6 +31,7 @@ encoding//reservas/forms.py=utf-8
 encoding//reservas/models.py=utf-8
 encoding//reservas/tests.py=utf-8
 encoding//reservas/views.py=utf-8
+encoding//tests/test_Dias_Feriados_y_Calculos_Esquema_Tarifario.py=utf-8
 encoding//tests/test_billetera_electronica_form.py=utf-8
 encoding//tests/test_operaciones_billetera.py=utf-8
 encoding//tests/test_propietario_form.py=utf-8

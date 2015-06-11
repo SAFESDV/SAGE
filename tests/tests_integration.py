@@ -21,9 +21,9 @@ class IntegrationTest(TestCase):
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
-            #capacidad = puestos,
-            #apertura       = hora_apertura,
-            #cierre         = hora_cierre,
+            capacidad = puestos,
+            apertura       = hora_apertura,
+            cierre         = hora_cierre,
         )
         e.save()
         return e
