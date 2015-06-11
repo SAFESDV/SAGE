@@ -27,10 +27,13 @@
             {% for factura in listaFacturas%}
               <tr>
                 <td></td>
-                <td>{{factura.reserva.inicioReserva}}</td>
-                <td>{{factura.reserva.finalReserva}}</td>
-                <td>{{factura.reserva.estacionamiento.nombre}}</td>
-                <td>{{factura.reserva.estado}}</td>
+                <td>{{factura.inicioReserva}}</td>
+                <td>{{factura.finalReserva}}</td>
+                <td>{{factura.estacionamiento.nombre}}</td>
+                <td>{{factura.estado}}</td>
+                <td><a href="./consulta_reserva/{{factura.id}}">
+                  <i class="fa fa-search"></i>
+                </a></td>
                 </td>
               </tr>
             {% endfor %}

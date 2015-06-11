@@ -57,78 +57,18 @@
               {{ form.monto.errors }}{% endcomment %}-->
             </div>
           </div>
-		
-          	<a href="./pagarrecarga" onClick="popup(this, 'Pago Tarjeta')">
-            	<button class="btn btn-primary">
-               		Pagar con Tarjeta de Credito
-            	</button>
-          	</a>
-        
+          <button class="btn btn-primary">
+            Confirmar
+          </button>
         </form>
       {% endif %}
       <div class="row">
-          
-      {% if pago %}
-        <div class="col-md-7" style="color:{{color}}">
-            {{mensaje}}
-            <hr>
-          </div>
-          <div class="col-md-4">
-            <table class="table table-striped">
-              <tbody>
-                <tr><td><b><i class="fa fa-circle"></i>
-                  Numero de Transaccion:
-                </b></td></tr>
-                <tr><td>
-                  {{pago.id}}
-                </td></tr>
-
-                <tr><td><b><i class="fa fa-clock-o"></i>
-                  Fecha de Transaccion:
-                </b></td></tr>
-                <tr><td>
-                  {{pago.fechaTransaccion}}
-                </td></tr>
-
-                <tr><td><b><i class="fa fa-user"></i>
-                  Cedula:
-                </b></td></tr>
-                <tr><td>
-                  {{pago.cedulaTipo}}-{{pago.cedula}}
-                </td></tr>
-
-                <tr><td><b><i class="fa fa-money"></i>
-                  Tarjeta de Credito:
-                </b></td></tr>
-                <tr><td>
-                  {{pago.tarjetaTipo}} </td></tr>
-
-                <tr><td><b><i class="fa fa-money"></i>
-                  Monto:
-                </b></td></tr>
-                <tr><td>
-                  BsF. {{pago.monto|floatformat:2|intcomma }}
-                </td></tr>
-              </tbody>
-            </table>
-            <div>
-              <input
-                type="button"
-                value="Volver"
-                onclick="javascript: closepopup();"
-                class="btn btn-primary"
-              >
-            </div>
-          </div>
-        </div>
-      {% endif %}
-      {% if formIns %}
-        <div class="row">
-          <div class="col-md-7" style="color:{{color}}">
-            {{mensaje}}
-            <hr>
-          </div>
-         
+      {% if valido %}
+        <a href="./pagarrecarga" onClick="return popup(this, 'Pago Tarjeta')">
+          <button class="btn btn-primary">
+            Pagar con Tarjeta de Credito
+          </button>
+        </a>
       {% endif %}
     </div>
   </div>
@@ -154,16 +94,13 @@
     function popuponclick(){
       my_window = window.open("",
        "mywindow","status=1,width=350,height=150");
-
       my_window.document.write('<h1>The Popup Window</h1>');
     }
-
     function closepopup(){
       window.close();
     }
-
     function openlink(){
-      opener.location='/estacionamientos/{{ id }}/pagarrecarga';
+      opener.location='./billeterarecargar';
     }
   </script>
 {% endblock %}

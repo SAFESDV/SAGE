@@ -126,47 +126,7 @@ class BilleteraElectronicaForm(forms.Form):
             }
         )
     )
-    
-class BilleteraElectronicaRecargaForm(forms.Form):
-        
-    pin_validator = RegexValidator(
-        regex   = '^[0-9]{4}$',
-        message = 'El PIN solo puede contener cuatro caracteres numéricos.'
-    )
-    
-    id_validator = RegexValidator(
-        regex   = '^[0-9]+$',
-        message = 'La cédula solo puede contener caracteres numéricos.'
-    )
-    
-    id = forms.CharField(
-        required   = True,
-        label      = "ID de la Billetera a recargar",
-        validators = [id_validator],
-        widget = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'ID'
-            , 'pattern'     : id_validator.regex.pattern
-            , 'message'     : id_validator.message
-            }
-        )
-    )
-    
-    pin = forms.CharField(
-        required   = True,
-        label      = "PIN del la Billetera a recargar",
-        validators = [pin_validator],
-        widget = forms.PasswordInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'PIN'
-            , 'pattern'     : pin_validator.regex.pattern
-            , 'message'     : pin_validator.message
-            }
-        )
-    ) 
-    
-    
-    
+
 class PagoRecargaForm(forms.Form):
     
     monto_validator = RegexValidator(
@@ -325,19 +285,6 @@ class BilleteraRecargaForm(forms.Form):
     card_validator = RegexValidator(
         regex   = '^[0-9]{16}$',
         message = 'Introduzca un número de tarjeta válido de 16 dígitos.'
-    )
-        
-    ID_Billetera = forms.CharField(
-        required   = True,
-        label      = "ID de la Billetera a recargar",
-        validators = [id_validator],
-        widget = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'ID'
-            , 'pattern'     : id_validator.regex.pattern
-            , 'message'     : id_validator.message
-            }
-        )
     )
     
     nombre = forms.CharField(

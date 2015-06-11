@@ -1,0 +1,74 @@
+{% extends "base-estacionamiento.html" %}
+
+{% block title %}
+  SAGE - Estacionamiento {{estacionamiento.nombre}}
+{% endblock %}
+{% block innerContents%}
+  <div class="col-sm-10">
+    <h3><i class="fa fa-bus"></i>
+      Estacionamiento {{estacionamiento.nombre}}
+    </h3>
+    <hr>
+      <form method="post" class="form form-vertical">
+      {% csrf_token %}
+      {% for choice in form.esquema_diasFeriados %}
+      
+        <div class="control-group">
+          <div class="controls">
+            {{ choice }}
+          </div>
+        </div>     
+      {% endfor %}
+      <br>
+      <div class="control-group">
+        <label></label>
+
+          <button type="submit" class="btn btn-primary">
+            Confirmar
+          </button>
+      </div>
+      <br>
+      	<label></label>
+      <a href="./agregar_dia_extra" onClick="popup(this, 'Dias Feriados Extras')">
+         <button class="btn btn-primary">
+             Feriados Extras 		
+         </button>
+      </a>
+      
+    </form>
+  </div>
+{% endblock %} 
+{% block scripts %}
+  {% include "validator.js.html" %}
+  
+  <script type="text/javascript">
+    function popup(mylink, windowname) {
+      if (! window.focus)
+        return true;
+      var href;
+      if (typeof(mylink) == 'string')
+        href=mylink;
+      else
+        href=mylink.href;
+      window.open(href, windowname, 'width=800,height=600,scrollbars=yes');
+      return false;
+    }
+  </script>
+
+  <script type="text/javascript">
+    function popuponclick(){
+      my_window = window.open("",
+       "mywindow","status=1,width=350,height=150");
+
+      my_window.document.write('<h1>The Popup Window</h1>');
+    }
+
+    function closepopup(){
+      window.close();
+    }
+
+    function openlink(){
+      opener.location='/estacionamientos/{{ id }}/diasFeriados';
+    }
+  </script>
+{% endblock %}

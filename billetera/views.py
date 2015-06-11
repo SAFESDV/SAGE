@@ -25,11 +25,7 @@ from billetera.models import (
     BilleteraElectronica
 )
 
-from billetera.controller import (
-    consultar_saldo,
-    recargar_saldo,
-    consumir_saldo,
-)
+from billetera.controller import *
 
 from estacionamientos.models import (
     Estacionamiento,
@@ -68,6 +64,7 @@ def billetera_crear(request):
                 request,
                 'crearbilletera.html',
                 { "billetera"    : billetera
+                , "saldo"   : consultar_saldo(billetera.id)
                 , "color"   : "green"
                 , 'mensaje' : "Se ha creado la billetera satisfactoriamente."
                 }
@@ -88,9 +85,8 @@ def Consultar_Saldo(request):
     if request.method == 'POST':
         form = BilleteraLogin(request.POST)
         if form.is_valid():
-            saldo = consultar_saldo(form.cleaned_data['id'])
             
-            if(saldo == -1):
+            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
                 return render(
                         request,
                         'consultar_saldo.html',
@@ -100,7 +96,8 @@ def Consultar_Saldo(request):
                         }
                     )
                 
-                
+            
+            saldo = consultar_saldo(form.cleaned_data['id'])
             noSaldo = 1
             if saldo > 0:
                 noSaldo = 0
@@ -113,7 +110,7 @@ def Consultar_Saldo(request):
                          "color" : "red",
                          "mensaje" : "Se recomienda recargar."
                          }
-                        )
+            )
                                    
     return render(
                 request,
@@ -122,7 +119,7 @@ def Consultar_Saldo(request):
                 )
     
 def billetera_pagar(request, _id):
-    form = BilleteraElectronicaPagoForm()
+    form = BilleteraLogin()
     
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
@@ -133,21 +130,13 @@ def billetera_pagar(request, _id):
         return HttpResponse(status = 403) # No esta permitido acceder a esta vista aun
     
     if request.method == 'POST':
-        form = BilleteraElectronicaPagoForm(request.POST)
+        form = BilleteraLogin(request.POST)
         if form.is_valid():
             try:
-                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
-                if (BE.PIN != form.cleaned_data['pin']):
-                    return render(
-                        request,
-                        'billetera_pagar.html',
-                        { "form"    : form
-                        , "color"   : "red"
-                        ,'mensaje'  : "Autenticación denegada."
-                        }
-                    )
-                    
-                
+                BE = BilleteraElectronica.objects.get(
+                    id = form.cleaned_data['id'],
+                    PIN = form.cleaned_data['pin']
+                )                
             except ObjectDoesNotExist:
                 return render(
                         request,
@@ -159,7 +148,8 @@ def billetera_pagar(request, _id):
                     )
             
             monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))
-            if (monto > BE.saldo):
+            
+            if (monto > consultar_saldo(form.cleaned_data['id'])):
                 return render(
                         request,
                         'billetera_pagar.html',
@@ -168,8 +158,6 @@ def billetera_pagar(request, _id):
                         ,'mensaje'  : "Saldo es insuficiente."
                         }
                     )
-            else:
-                consumir_saldo(BE.id, monto)
                 
             inicioReserva = datetime(
                 year   = request.session['anioinicial'],
@@ -188,32 +176,32 @@ def billetera_pagar(request, _id):
             )
 
             reservaFinal = Reserva(
+                cedulaTipo      = BE.cedulaTipo,
+                cedula          = BE.cedula,
+                nombre          = BE.nombreUsuario,
+                apellido        = BE.apellidoUsuario,
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
                 estado          = 'Válido'
             )
-            
             # Se guarda la reserva en la base de datos
             reservaFinal.save()
-            pago = Pago(
-                fechaTransaccion = datetime.now(),
-                cedula           = BE.cedula,
-                cedulaTipo       = BE.cedulaTipo,
-                monto            = monto,
-                tarjetaTipo      = "BE",
-                reserva          = reservaFinal,
+            
+            transId = consumir_saldo(BE.id, monto)
+            
+            relation = TransReser(
+                transaccion = Transaccion.objects.get(id = transId),
+                reserva     = reservaFinal
             )
             
-            
-            # Se guarda el recibo de pago en la base de datos
-            pago.save()
+            relation.save()
 
             return render(
                 request,
                 'billetera_pagar.html',
                 { "id"      : _id
-                , "pago"    : pago
+                , "pago"    : form
                 , "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
                 }
@@ -230,40 +218,33 @@ def billetera_recargar(request):
     if request.method == 'POST':
         form = BilleteraLogin(request.POST)
         if form.is_valid():
-            try:
-                BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
-                if (BE.PIN != form.cleaned_data['pin']):
-                    return render(
-                        request,
-                        'billetera_recargar.html',
-                        { "form"    : form
-                        , "color"   : "red"
-                        ,'mensaje'  : "Autenticación denegada."
-                        }
-                    )
-                    
-                
-            except ObjectDoesNotExist:
+            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
                 return render(
                         request,
                         'billetera_recargar.html',
                         { "form"    : form
+                        , "valido"  : 0
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
                         }
                     )
             
+            request.session['passbillid'] = form.cleaned_data['id']
+            
             return render(
                 request,
                 'billetera_recargar.html',
                 { "color"   : "green"
+                , "valido"  : 1
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
                 }
             )
     return render(
         request,
         'billetera_recargar.html',
-        { 'form' : form }
+        { 'form'   : form
+        , "valido" : 0
+        }
     )     
 
 def recarga_pago(request):
@@ -272,38 +253,16 @@ def recarga_pago(request):
     if request.method == 'POST':
         form = BilleteraRecargaForm(request.POST)
         if form.is_valid():
-            
-            BE = BilleteraElectronica.objects.get(id = form.cleaned_data['ID_Billetera'])
-            
-            if form.cleaned_data['monto'] + consultar_saldo(BE.id) <= Decimal(10000.00):
-                           
-                trans = Transaccion(
-                    fecha  = datetime.now(),
-                    tipo   = 'Recarga',
-                    estado = 'Válido'
-                )
-                
-                trans.save()
-                
-                transTdc = TransTDC(
-                    nombre           = form.cleaned_data['nombre'],
-                    cedulaTipo       = form.cleaned_data['cedulaTipo'],
-                    cedula           = form.cleaned_data['cedula'],
-                    tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
-                    tarjeta           = form.cleaned_data['tarjeta'][-4:],
-                    monto            = form.cleaned_data['monto'],
-                    transaccion      = trans
-                )
-                
-                transBill = TransBilletera(
-                    billetera   = BilleteraElectronica.objects.get(id = form.cleaned_data['ID_Billetera']),
-                    transaccion = trans,
-                    monto       = form.cleaned_data['monto']
-                )
-
-                transBill.save()
-                transTdc.save()
-                
+            if recargar_saldo(request.session['passbillid'], form):
+                return render(
+                    request,
+                    'pago_recarga.html',
+                    {
+                     "pago"   : form,
+                    "color"   : "green",
+                    'mensaje' : "Se realizo la recarga satisfactoriamente."
+                    }
+                )        
             else:
                 return render(request,
                         'pago_recarga.html',
@@ -312,19 +271,7 @@ def recarga_pago(request):
                         "color"   : "red",
                         'mensaje' : "Saldo resultante excede el monto maximo"
                         }
-                    )          
-            
-            
-            # Se guarda el recibo de pago en la base de datos
-            return render(
-                request,
-                'pago_recarga.html',
-                {
-                 "pago"   : form,
-                "color"   : "green",
-                'mensaje' : "Se realizo la recarga satisfactoriamente."
-                }
-            )
+                    )
     return render(
         request,
         'pago_recarga.html',

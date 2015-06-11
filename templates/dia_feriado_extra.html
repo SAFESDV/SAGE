@@ -1,0 +1,73 @@
+{% extends "base-estacionamiento.html" %}
+
+{% block title %}
+  SAGE - Estacionamiento {{estacionamiento.nombre}}
+{% endblock %}
+{% block innerContents%}
+{% block menu %}{% endblock %}
+  <div class="col-sm-10">
+    <h3><i class="fa fa-bus"></i>
+      Estacionamiento {{estacionamiento.nombre}}
+    </h3>
+    <hr>
+    
+    <!-- Arle -->
+    <div class="col-md-10" style="color:{{color}}">
+        {{ mensaje }}
+         <br>
+         </br>
+    </div>
+    <!-- Fin Arle -->
+    
+      <form method="post" class="form form-vertical">
+      {% csrf_token %}
+      {% for field in form %}
+      
+        <div class="control-group">
+          <div class="controls">
+            {{ field }}
+            <br>
+            <span class='error' id='{{field.name}}_error' aria-live="polite">
+               {{ field.errors }}
+            </span>
+          </div>
+        </div>     
+      {% endfor %}
+      <br>
+      <div class="control-group">
+        <label></label>
+
+          <button type="submit" class="btn btn-primary">
+            Confirmar
+          </button>
+           <input
+                type="button"
+                value="Volver"
+                onclick="javascript: closepopup();"
+                class="btn btn-primary"
+              >
+      </div>
+    </form>
+  </div>
+{% endblock %} 
+{% block scripts %}
+  {% include "validator.js.html" %}
+ 
+
+  <script type="text/javascript">
+    function popuponclick(){
+      my_window = window.open("",
+       "mywindow","status=1,width=350,height=150");
+
+      my_window.document.write('<h1>The Popup Window</h1>');
+    }
+
+    function closepopup(){
+      window.close();
+    }
+
+    function openlink(){
+      opener.location='/estacionamientos/{{ id }}/reserva';
+    }
+  </script>
+{% endblock %}

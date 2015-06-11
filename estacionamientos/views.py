@@ -23,6 +23,8 @@ from estacionamientos.controller import (
     tasa_reservaciones,
     calcular_porcentaje_de_tasa,
     consultar_ingresos,
+    seleccionar_feriados,
+    seleccionar_feriado_extra,
 )
 
 from billetera.forms import (
@@ -35,6 +37,8 @@ from estacionamientos.forms import (
     EditarEstacionamientoForm,
     RifForm,
     CedulaForm,
+    ElegirFechaForm,
+    AgregarFeriadoForm,
 )
 
 from reservas.forms import (
@@ -49,10 +53,12 @@ from estacionamientos.models import (
     TarifaHorayFraccion,
     TarifaFinDeSemana,
     TarifaHoraPico,
+    DiasFeriados,
+    DiasFeriadosEscogidos,
 )
 
 from propietarios.models import Propietario
-from reservas.models import Reserva
+from reservas.models import *
 
 from django.template.context_processors import request
 from django.forms.forms import Form
@@ -143,7 +149,12 @@ def estacionamiento_detail(request, _id):
                 'inicioTarifa2' : estacionamiento.tarifa.inicioEspecial,
                 'finTarifa2' : estacionamiento.tarifa.finEspecial,
                 'puestos' : estacionamiento.capacidad,
-                'esquema' : estacionamiento.tarifa.__class__.__name__
+                'esquema' : estacionamiento.tarifa.__class__.__name__,
+                'tarifa_feriado' : estacionamiento.tarifa_feriado.tarifa_feriado,
+                'tarifa2_feriado' : estacionamiento.tarifa_feriado.tarifa2_feriado,
+                'inicioTarifa2_feriado' : estacionamiento.tarifa_feriado.inicioEspecial_feriado,
+                'finTarifa2_feriado' : estacionamiento.tarifa_feriado.finEspecial_feriado,
+                'esquema_feriado' : estacionamiento.tarifa_feriado.__class__.__name__
             }
             form = EstacionamientoExtendedForm(data = form_data)
         else:
@@ -153,23 +164,37 @@ def estacionamiento_detail(request, _id):
         # Leemos el formulario
         form = EstacionamientoExtendedForm(request.POST)
         # Si el formulario
-        if form.is_valid():
-            horaIn        = form.cleaned_data['horarioin']
-            horaOut       = form.cleaned_data['horarioout']
-            tarifa        = form.cleaned_data['tarifa']
-            tipo          = form.cleaned_data['esquema']
-            inicioTarifa2 = form.cleaned_data['inicioTarifa2']
-            finTarifa2    = form.cleaned_data['finTarifa2']
-            tarifa2       = form.cleaned_data['tarifa2']
+        if form.is_valid(): 
+            horaIn                = form.cleaned_data['horarioin']
+            horaOut               = form.cleaned_data['horarioout']
+            tarifa                = form.cleaned_data['tarifa']
+            tipo                  = form.cleaned_data['esquema']
+            inicioTarifa2         = form.cleaned_data['inicioTarifa2']
+            finTarifa2            = form.cleaned_data['finTarifa2']
+            tarifa2               = form.cleaned_data['tarifa2']
+            tipo_feriado          = form.cleaned_data['esquema_feriado']
+            tarifa_feriado        = form.cleaned_data['tarifa_feriado']
+            inicioTarifa2_feriado = form.cleaned_data['inicioTarifa2_feriado']
+            finTarifa2_feriado    = form.cleaned_data['finTarifa2_feriado']
+            tarifa2_feriado       = form.cleaned_data['tarifa2_feriado']
 
             esquemaTarifa = eval(tipo)(
                 tarifa         = tarifa,
                 tarifa2        = tarifa2,
                 inicioEspecial = inicioTarifa2,
-                finEspecial    = finTarifa2
+                finEspecial    = finTarifa2,
             )
 
             esquemaTarifa.save()
+            
+            esquemaTarifa_feriado = eval(tipo)(
+                tarifa_feriado         = tarifa_feriado,
+                tarifa2_feriado        = tarifa2_feriado,
+                inicioEspecial_feriado = inicioTarifa2_feriado,
+                finEspecial_feriado    = finTarifa2_feriado
+            )
+
+            esquemaTarifa_feriado.save()
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
             if not HorarioEstacionamiento(horaIn, horaOut):
@@ -182,6 +207,7 @@ def estacionamiento_detail(request, _id):
                 )
             # debería funcionar con excepciones
             estacionamiento.tarifa    = esquemaTarifa
+            estacionamiento.tarifa_feriado = esquemaTarifa_feriado
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
             estacionamiento.capacidad = form.cleaned_data['puestos']
@@ -206,6 +232,7 @@ def estacionamiento_editar(request, _id):
         raise Http404
 
     if request.method == 'GET':
+        
         if estacionamiento.CI_prop:
             
             form_data = {
@@ -221,6 +248,21 @@ def estacionamiento_editar(request, _id):
         
         # Si el formulario
         if form.is_valid():
+            
+            try:
+                propietario = Propietario.objects.get(Cedula = form.cleaned_data['CI_prop'])
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'editar-datos-estacionamiento.html',
+                        { "form"    : form
+                        , 'estacionamientos': estacionamiento
+                        , 'estacionamiento': estacionamiento
+                        , "color"   : "red"
+                        ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
+                        }
+                    )
+                
             estacionamiento.CI_prop = form.cleaned_data['CI_prop']
                                                
             estacionamiento.save()
@@ -416,9 +458,7 @@ def estacionamiento_pago(request,_id):
         { 'form' : form }
     )
 
-def estacionamiento_modo_pago(request, _id):
-    form = ModoPagoForm()
-    
+def estacionamiento_modo_pago(request, _id):    
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
     except ObjectDoesNotExist:
@@ -427,11 +467,9 @@ def estacionamiento_modo_pago(request, _id):
     if (estacionamiento.apertura is None):
         return HttpResponse(status = 403) # No esta permitido acceder a esta vista aun
     
-    
     return render(
         request,
-        'ModoPago.html',
-        { 'form' : form }
+        'ModoPago.html'
     )
 
     
@@ -458,8 +496,7 @@ def estacionamiento_ingreso(request):
         'consultar-ingreso.html',
         { "form" : form }
     )
-
-
+    
 def estacionamiento_consulta_reserva(request):
     form = CedulaForm()
     if request.method == 'POST':
@@ -467,12 +504,12 @@ def estacionamiento_consulta_reserva(request):
         if form.is_valid():
 
             cedula        = form.cleaned_data['cedula']
-            facturas      = Pago.objects.filter(cedula = cedula)
+            facturas      = Reserva.objects.filter(cedula = cedula)
             listaFacturas = []
 
             listaFacturas = sorted(
                 list(facturas),
-                key = lambda r: r.reserva.inicioReserva
+                key = lambda r: r.inicioReserva
             )
             return render(
                 request,
@@ -593,3 +630,62 @@ def grafica_tasa_de_reservacion(request):
     pyplot.close()
     
     return response
+
+def Estacionamiento_Dias_Feriados(request, _id):
+    
+    _id = int(_id)
+    
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    # Si es un GET, mandamos un formulario vacio
+    if request.method == 'GET':
+         form = ElegirFechaForm()
+
+    # Si es POST, se verifica la información recibida
+    elif request.method == 'POST':
+        # Creamos un formulario con los datos que recibimos
+        form =  ElegirFechaForm(request.POST)
+        
+        if form.is_valid():
+            diaFeriado =  form.cleaned_data['esquema_diasFeriados']
+            seleccionar_feriados(diaFeriado, estacionamiento)
+            
+    return render(
+        request,
+        'dias_feriados.html',
+        { "form" : form }
+    )
+        
+def Estacionamiento_Dia_Feriado_Extra(request, _id):
+    
+    _id = int(_id)
+    
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+
+    # Si es un GET, mandamos un formulario vacio
+    if request.method == 'GET':
+         form = AgregarFeriadoForm()
+
+    # Si es POST, se verifica la información recibida
+    elif request.method == 'POST':
+        # Creamos un formulario con los datos que recibimos
+        form =  AgregarFeriadoForm(request.POST)
+        
+        if form.is_valid():
+            diaFecha =  form.cleaned_data['fecha']
+            diaDescripcion =  form.cleaned_data['descripcion']
+            seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
+            
+    return render(
+        request,
+        'dia_feriado_extra.html',
+        { "form" : form }
+    )

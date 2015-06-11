@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.core.validators import RegexValidator
-from django.forms.widgets import SplitDateTimeWidget
+from logging import PlaceHolder
+from django.forms.widgets import DateInput
 
 class EstacionamientoForm(forms.Form):
 
@@ -242,6 +243,71 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )
+    
+    choices_esquema_feriado = [
+        ('TarifaSinFeriado', 'Mantener tarifa para Dias feriados'),
+        ('TarifaHoraDiaFeriado', 'Por hora en los Dias feriado'),
+        ('TarifaMinutoDiaFeriado', 'Por minuto en los Dias feriado'),
+        ('TarifaHorayFraccionDiaFeriado', 'Por hora y fracción en los Dias feriado'),
+        ('TarifaHoraPicoDiaFeriado', 'Diferenciada por horario pico en los Dias feriado'),
+        ('TarifaFinDeSemanaDiaFeriado', 'Diferenciada para fines de semana en los Dias feriado')
+    ]
+
+    esquema_feriado = forms.ChoiceField(
+        required = True,
+        choices  = choices_esquema_feriado,
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )
+    
+    tarifa_feriado = forms.DecimalField(
+        required   = False,
+        validators = [tarifa_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Tarifa Dia Feriado'
+            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
+            , 'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    tarifa2_feriado = forms.DecimalField(
+            required   = False,
+            validators = [tarifa_validator],
+            widget     = forms.TextInput(attrs = {
+                'class'       : 'form-control',
+                'placeholder' : 'Tarifa 2 Dia Feriado',
+                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
+                'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    inicioTarifa2_feriado = forms.TimeField(
+        required = False,
+        label    = 'Inicio Horario Especial',
+        widget   = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Horario Inicio Reserva para los Dias Feriados'
+            , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
+            , 'message'     : 'La entrada debe ser una hora válida.'
+            }
+        )
+    )
+
+    finTarifa2_feriado = forms.TimeField(
+        required = False,
+        label    = 'Fin Horario Especial',
+        widget   = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Horario Fin Reserva para los Dias Feriados'
+            , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
+            , 'message'     : 'La entrada debe ser una hora válida.'
+            }
+        )
+    )
 
 
 
@@ -284,3 +350,54 @@ class CedulaForm(forms.Form):
             }
         )
     )
+    
+class ElegirFechaForm(forms.Form):
+    
+    dias_feriados = [
+        ('AñoNuevo', '1 de Enero - Año Nuevo'),
+        ('DeclaracionIndependencia', '19 de Abril - Declaracion de la Independencia'),
+        ('DiaTrabajador', '1 de Mayo - Dia del Trabajador'),
+        ('BatallaCarabobo', '24 de Junio - Batalla de Carabobo'),
+        ('DiaIndependencia', '5 de Julio - Dia de Independencia'),
+        ('NatalicioSimonBolivar', '24 de Julio - Natalicio de Simon Bolivar'),
+        ('DiaResistenciaIndigena', '12 de Octubre - Dia de la Resistencia Indigena'),
+        ('VisperaNavidad', '24 de Diciembre - Vispera de Navidad'),
+        ('Navidad', '25 de Diciembre - Navidad'),
+        ('FinAño', '31 de Diciembre - Fin de Año')
+        ]
+
+    esquema_diasFeriados= forms.MultipleChoiceField(
+        required = False,
+        choices  = dias_feriados,
+        widget   = forms.CheckboxSelectMultiple()
+    )
+
+class AgregarFeriadoForm(forms.Form):
+    
+    descripcion_validator = RegexValidator(
+        regex   = '^[-A-Za-z0-9!"#$%&()*,./:;?@\\\[\]_`{|}¡©®°µ·¸¿ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöùúûüýÿ\' ]+$',
+        message = 'La descripción del Día feriado debe estar escrita en Español y sin símbolos especiales.'
+    )
+    
+    fecha = forms.DateField(
+        required = True,
+        label = 'Fecha del Día Feriado',
+        widget = forms.DateInput( attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Fecha del Día Feriado'
+             }
+        )
+     )
+    
+    descripcion = forms.CharField(
+        required = True,
+        label = 'Descripción del Día Feriado',
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Descripción del Día Feriado'
+            , 'pattern'     : descripcion_validator.regex.pattern
+            , 'message'     : descripcion_validator.message
+            }
+        )
+    )
+                                  
