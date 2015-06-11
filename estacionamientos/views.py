@@ -410,7 +410,7 @@ def estacionamiento_reserva(request, _id):
     # Verificamos que el objeto exista antes de continuar
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
-        diasFeriados = DiasFeriadosEscogidos.objects.get(id = _id)
+        diasFeriados = DiasFeriadosEscogidos.objects.filter(id = _id)
     except ObjectDoesNotExist:
         raise Http404
 
@@ -484,11 +484,11 @@ def estacionamiento_reserva(request, _id):
                                 listaDiasReserva[0].month == diaFeriado.month):
     
                                 monto = Decimal(
-                                    esquema_feriado.calcularPrecio(inicioReserva,finalReserva)
+                                    esquema_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                                 )
                 
                                 request.session['monto'] = float(
-                                    esquema_feriado.calcularPrecio(inicioReserva,finalReserva)
+                                    esquema_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                                 )
                                 break
                             
@@ -496,11 +496,11 @@ def estacionamiento_reserva(request, _id):
                             listaDiasReserva[0].month != diaFeriado.month):
                             
                             monto = Decimal(
-                                esquema_no_feriado.calcularPrecio(inicioReserva,finalReserva)
+                                esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
             
                             request.session['monto'] = float(
-                                esquema_no_feriado.calcularPrecio(inicioReserva,finalReserva)
+                                esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
                 
                 # CASO 2: RESERVA DE MULTIPLES DIAS
@@ -537,11 +537,11 @@ def estacionamiento_reserva(request, _id):
     
     
                                 monto = Decimal(
-                                    esquema_feriado.calcularPrecio(inicioDia,finalDia)
+                                    esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                                 )
                 
                                 request.session['monto'] = float(
-                                    esquema_feriado.calcularPrecio(inicioDia,finalDia)
+                                    esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                                 )
                                 break
                                  
@@ -549,11 +549,11 @@ def estacionamiento_reserva(request, _id):
                             diaReserva.month != diaFeriado.month):
                             
                             monto = Decimal(
-                                    esquema_no_feriado.calcularPrecio(inicioDia,finalDia)
+                                    esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                             )
             
                             request.session['monto'] = float(
-                                esquema_no_feriado.calcularPrecio(inicioDia,finalDia)
+                                esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                             )
                             
                         monto += monto
