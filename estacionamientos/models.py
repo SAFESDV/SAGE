@@ -42,18 +42,18 @@ class EsquemaTarifarioM2M(models.Model):
     #Relaciona estacionamiento con el esquema tarifario con estacionamiento (Many to Many)
     
     estacionamiento = models.ForeignKey(Estacionamiento)
-    content_type = models.ForeignKey(ContentType, null = True)
-    object_id    = models.PositiveIntegerField(null = True)
-    tarifa = GenericForeignKey()    
+    content_type    = models.ForeignKey(ContentType, null = True)
+    object_id       = models.PositiveIntegerField(null = True)
+    tarifa          = GenericForeignKey()    
     
 class EsquemaTarifario(models.Model):
 
-    tarifa                      = models.DecimalField(max_digits=20, decimal_places=2)
-    tarifa2 = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
-    estacionamiento = models.ForeignKey(Estacionamiento)
-    inicioEspecial     = models.TimeField(blank = True, null = True)
-    finEspecial            = models.TimeField(blank = True, null = True)
-    tipoDia = models.CharField(max_length = 50)
+    tarifa              = models.DecimalField(max_digits=20, decimal_places=2)
+    tarifa2             = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
+    estacionamiento     = models.ForeignKey(Estacionamiento)
+    inicioEspecial      = models.TimeField(blank = True, null = True)
+    finEspecial         = models.TimeField(blank = True, null = True)
+    tipoDia             = models.CharField(max_length = 50)
     
     class Meta:
         abstract = True
