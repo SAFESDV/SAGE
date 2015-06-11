@@ -69,7 +69,9 @@ class MarzulloTestCase(TestCase):
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
-            capacidad = puestos,
+            capacidadPesados   = puestos,
+            capacidadLivianos   = puestos,
+            capacidadMotos   = puestos,
             apertura       = "06:00",
             cierre         = "18:00",
         )
@@ -78,124 +80,124 @@ class MarzulloTestCase(TestCase):
 
     def testOneReservationMax(self): #borde, ocupaci�n = capacidad
         e = self.crear_estacionamiento(1)
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,15)))
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,15),'Liviano'))
 
     def testOneReservationEarly(self): #borde, inicio = aprtura
         e = self.crear_estacionamiento(2)
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,10)))
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,10),'Liviano'))
 
     def testOneReservationLate(self): #borde, fin = cierre
         e = self.crear_estacionamiento(2)
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,15), datetime(2015,1,20,18)))
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,15), datetime(2015,1,20,18),'Liviano'))
 
     def testOneReservationFullDay(self): #esquina, inicio = aprtura y fin = cierre
         e = self.crear_estacionamiento(1)
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,18)))
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,18),'Liviano'))
 
     def testSmallestReservation(self): #borde, fin - inicio = 1hora
         e = self.crear_estacionamiento(1)
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,8), datetime(2015,1,20,9)))
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,8), datetime(2015,1,20,9),'Liviano'))
 
     def testAllSmallestReservations(self): #malicia, fin - inicio = 1hora, doce veces
         e = self.crear_estacionamiento(1)
         for i in range(12):
-            Reserva(estacionamiento = e, inicioReserva = datetime(2015, 1, 20, 6+i), finalReserva = datetime(2015, 1, 20, 7+i), estado = "Válido").save()
+            Reserva(estacionamiento = e, inicioReserva = datetime(2015, 1, 20, 6+i), finalReserva = datetime(2015, 1, 20, 7+i), estado = "Válido", tipo_vehiculo ='Liviano').save()
         for i in range(12):
-            self.assertFalse(marzullo(e.id, datetime(2015,1,20,6+i), datetime(2015,1,20,7+i)))
+            self.assertFalse(marzullo(e.id, datetime(2015,1,20,6+i), datetime(2015,1,20,7+i),'Liviano'))
 
     def testFullPlusOne(self): #malicia, fin - inicio = 1hora, doce veces + una reserva FullDay
         e = self.crear_estacionamiento(1)
         for i in range(12):
-            Reserva(estacionamiento = e, inicioReserva = datetime(2015, 1, 20, 6+i), finalReserva = datetime(2015, 1, 20, 7+i), estado = "Válido" ).save()
-        self.assertFalse(marzullo(e.id, datetime(2015, 1, 20, 6), datetime(2015, 1, 20, 18)))
+            Reserva(estacionamiento = e, inicioReserva = datetime(2015, 1, 20, 6+i), finalReserva = datetime(2015, 1, 20, 7+i), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertFalse(marzullo(e.id, datetime(2015, 1, 20, 6), datetime(2015, 1, 20, 18),'Liviano'))
 
     def testNoSpotParking(self): #borde, capacidad = 0
         e = self.crear_estacionamiento(0)
-        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,15)))
+        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,15),'Liviano'))
 
     def testTenSpotsOneReservation(self): #malicia
         e = self.crear_estacionamiento(10)
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,15)))
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,15),'Liviano'))
 
     def testAddTwoReservation(self): #esquina, dos reservaciones con fin = cierre estac.
         e = self.crear_estacionamiento(10)
-        Reserva(estacionamiento = e, inicioReserva = datetime(2015, 1, 20, 9), finalReserva = datetime(2015, 1, 20, 18), estado = "Válido").save()
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,12), datetime(2015,1,20,18)))
+        Reserva(estacionamiento = e, inicioReserva = datetime(2015, 1, 20, 9), finalReserva = datetime(2015, 1, 20, 18), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,12), datetime(2015,1,20,18),'Liviano'))
 
     def testAddTwoReservation2(self): #esquina, dos reservaciones con incio = apertura estac.
         e = self.crear_estacionamiento(10)
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,14)))
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,14),'Liviano'))
 
     def testAddThreeReservations(self): #malicia, reserva cubre todo el horario, y ocupaci�n = capacidad
         e = self.crear_estacionamiento(3)
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,18)))
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,18),'Liviano'))
 
     def testFiveSpotsFiveReservation(self): #borde, ocupaci�n = capacidad
         e = self.crear_estacionamiento(5)
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,10), datetime(2015,1,20,18)))
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,10), datetime(2015,1,20,18),'Liviano'))
 
     def testFiveSpotsSixReservation(self): #borde, ocupacion = capacidad antes de intentar hacer reservas nuevas
         e = self.crear_estacionamiento(5)
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,18)))
-        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,15)))
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,18),'Liviano'))
+        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,15),'Liviano'))
 
     def testFiveSpotsSixReservationNoOverlapping(self): #Dos esquinas, 1. count = capacidad, inicio=apertura
                                                         #              2. count = capacidad, fin=cierre
         e = self.crear_estacionamiento(5)
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido").save()
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,10)))
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 12), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 17), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,6), datetime(2015,1,20,10), 'Liviano'))
         #La reserva de arriba NO se concreta, puesto que s�lo se verific� si era v�lida, sin agregar su objeto
-        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,18)))
+        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,18), 'Liviano'))
         #De todos modos, la segunda falla, porque count = capacidad+1 a partir de las 12m
 
     def testManyReservationsMaxOverlapping(self): #esquina, count = capacidad en una hora (10am - 11am), algunas reservas tienen inicio = apertura
         e = self.crear_estacionamiento(10)
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  7), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  8), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  7), finalReserva=datetime(2015, 1, 20, 11), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  8), finalReserva=datetime(2015, 1, 20, 12), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 13), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20,  9), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido").save()
-        self.assertTrue(marzullo(e.id, datetime(2015,1,20,10), datetime(2015,1,20,15)))
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  7), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  8), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  7), finalReserva=datetime(2015, 1, 20, 11), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  8), finalReserva=datetime(2015, 1, 20, 12), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  9), finalReserva=datetime(2015, 1, 20, 13), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20,  9), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20,  6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 10), finalReserva=datetime(2015, 1, 20, 15), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertTrue(marzullo(e.id, datetime(2015,1,20,10), datetime(2015,1,20,15),'Liviano'))
 
     def testManyReservationsOneOverlap(self): #malicia, count = (capacidad+1) en la hora (9am - 10am), algunas reservas tienen inicio = apertura
         e = self.crear_estacionamiento(10)
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 7), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 8), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 9), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 7), finalReserva=datetime(2015, 1, 20, 11), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 8), finalReserva=datetime(2015, 1, 20, 12), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 9), finalReserva=datetime(2015, 1, 20, 13), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20,  9), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido").save()
-        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,10)))
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 7), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 8), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 9), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 7), finalReserva=datetime(2015, 1, 20, 11), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 8), finalReserva=datetime(2015, 1, 20, 12), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 9), finalReserva=datetime(2015, 1, 20, 13), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20,  9), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        Reserva(estacionamiento = e, inicioReserva=datetime(2015, 1, 20, 6), finalReserva=datetime(2015, 1, 20, 10), estado = "Válido", tipo_vehiculo = 'Liviano').save()
+        self.assertFalse(marzullo(e.id, datetime(2015,1,20,9), datetime(2015,1,20,10), 'Liviano'))

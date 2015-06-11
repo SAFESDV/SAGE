@@ -18,10 +18,10 @@
 	  <li><a href="./editar"><i class="fa fa-pencil"></i>
 	       Editar
 	  </a></li>
-	  <li><a href="./diasFeriados"><i class="fa fa-wrench"></i>
-             Escoger dias feriados
+	  <li><a href="./catalogo_dias_feriados"><i class="fa fa-wrench"></i>
+             Ver dias feriados
         </a></li>
-	{% if estacionamiento.capacidad %}
+	{% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos %}
 	  <li><a href="./"><i class="fa fa-wrench"></i>
 	       Parametrizar
 	  </a></li>

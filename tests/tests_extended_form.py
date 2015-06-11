@@ -14,20 +14,26 @@ class ExtendedFormTestCase(TestCase):
 
     # malicia
     def test_estacionamiento_extended_form_un_campo(self):
-        form_data = { 'puestos': 2}
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos' : 2}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
 
     # malicia
     def test_estacionamiento_extended_form_dos_campos(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos' : 2,
                       'horarioin': time(hour = 6,  minute = 0)}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
 
     # malicia
     def test_estacionamiento_extended_form_tres_campos(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos' : 2,
                       'horarioin': time( hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0)}
         form = EstacionamientoExtendedForm(data = form_data)
@@ -35,7 +41,9 @@ class ExtendedFormTestCase(TestCase):
         
     # caso borde
     def test_estacionamiento_extended_form_cuatro_bien(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos' : 2,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12'                    
@@ -45,7 +53,9 @@ class ExtendedFormTestCase(TestCase):
 
     # caso borde
     def test_estacionamiento_extended_form_todos_campos_bien(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos' : 2,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
@@ -57,7 +67,9 @@ class ExtendedFormTestCase(TestCase):
         
     # caso borde
     def test_estacionamiento_extended_form_puestos_1(self):
-        form_data = { 'puestos': 1,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos' : 2,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
@@ -68,18 +80,22 @@ class ExtendedFormTestCase(TestCase):
 
     # caso borde
     def test_estacionamiento_extended_form_puestos_0(self):
-        form_data = { 'puestos': 0,
+        form_data = { 'puestosLivianos': 0,
+                      'puestosPesados': 0,
+                      'puestosMotos' : 0,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaSinFeriado'}
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertFalse(form.is_valid())
+        self.assertRaises(Exception,form.is_valid())
 
     # caso borde
     def test_estacionamiento_extended_form_hora_inicio_igual_hora_cierre(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos' : 2,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 6,  minute = 0),
                       'tarifa': '12',
@@ -91,7 +107,9 @@ class ExtendedFormTestCase(TestCase):
 
     # malicia
     def test_estacionamiento_extended_form_string_en_campo_puesto(self):
-        form_data = { 'puestos': 'hola',
+        form_data = { 'puestosLivianos': 'hola',
+                      'puestosPesados': 'hola',
+                      'puestosMotos': 'hola',
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
@@ -103,7 +121,9 @@ class ExtendedFormTestCase(TestCase):
 
     # malicia
     def test_estacionamiento_extended_form_string_hora_inicio(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos': 2,
                       'horarioin': 'holaa',
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
@@ -115,7 +135,9 @@ class ExtendedFormTestCase(TestCase):
 
     # malicia
     def test_estacionamiento_extended_form_none_en_tarifa(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos': 2,
                       'horarioin': time( hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': None,

@@ -137,18 +137,33 @@ class EditarEstacionamientoForm(forms.Form):
 
 class EstacionamientoExtendedForm(forms.Form):
     
+    def clean(self):
+        
+        cleaned_data = super(EstacionamientoExtendedForm, self).clean()
+        puestosLivianos = cleaned_data.get("puestosLivianos")
+        puestosPesados = cleaned_data.get("puestosPesados")
+        puestosMotos = cleaned_data.get("puestosMotos")
+
+        if puestosLivianos and puestosPesados and puestosMotos:
+            
+            # Only do something if both fields are valid so far.
+            if (puestosLivianos + puestosPesados + puestosMotos <= 0):
+                
+                raise forms.ValidationError("Debe haber al menos un puesto en el estacionamiento")
+            
+        
     tarifa_validator = RegexValidator(
         regex   = '^([0-9]+(\.[0-9]+)?)$',
         message = 'Sólo debe contener dígitos.'
     )
     
-    puestos = forms.IntegerField(
+    puestosLivianos = forms.IntegerField(
         required  = True,
-        min_value = 1,
+        min_value = 0,
         label     = 'Número de Puestos',
         widget    = forms.NumberInput(attrs=
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Número de Puestos'
+            , 'placeholder' : 'Número de Puestos livianos'
             , 'min'         : "0"
             , 'pattern'     : '^[0-9]+'
             , 'message'     : 'La entrada debe ser un número entero no negativo.'
@@ -156,6 +171,34 @@ class EstacionamientoExtendedForm(forms.Form):
         )
     )
 
+    puestosPesados = forms.IntegerField(
+        required  = True,
+        min_value = 0,
+        label     = 'Número de Puestos',
+        widget    = forms.NumberInput(attrs=
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Número de Puestos pesados'
+            , 'min'         : "0"
+            , 'pattern'     : '^[0-9]+'
+            , 'message'     : 'La entrada debe ser un número entero no negativo.'
+            }
+        )
+    )
+
+    puestosMotos = forms.IntegerField(
+        required  = True,
+        min_value = 0,
+        label     = 'Número de Puestos para Motos',
+        widget    = forms.NumberInput(attrs=
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Número de Puestos Motos'
+            , 'min'         : "0"
+            , 'pattern'     : '^[0-9]+'
+            , 'message'     : 'La entrada debe ser un número entero no negativo.'
+            }
+        )
+    )
+    
     horarioin = forms.TimeField(
         required = True,
         label    = 'Horario Apertura',
@@ -307,6 +350,7 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )    
+
 class RifForm(forms.Form):
     
     rif_validator = RegexValidator(

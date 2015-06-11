@@ -10,7 +10,7 @@ from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from reservas.controller import (
     validarHorarioReserva,
@@ -165,7 +165,9 @@ def estacionamiento_detail(request, _id):
                     'tarifaFeriado2' : estacionamientoTarifaFeriado.tarifa.tarifa2,
                     'inicioTarifaFeriado2' :estacionamientoTarifaFeriado.tarifa.inicioEspecial,
                     'finTarifaFeriado2' : estacionamientoTarifaFeriado.tarifa.finEspecial,
-                    'puestos' : estacionamiento.capacidad,
+                    'puestosLivianos' : estacionamiento.capacidadLivianos,
+                    'puestosPesados' : estacionamiento.capacidadPesados,
+                    'puestosMotos' : estacionamiento.capacidadMotos,
                     'esquema' : estacionamientoTarifa.tarifa.__class__.__name__,
                     'esquemaFeriado': estacionamientoTarifaFeriado.tarifa.__class__.__name__
                 }
@@ -182,6 +184,7 @@ def estacionamiento_detail(request, _id):
         # Leemos el formulario
         form = EstacionamientoExtendedForm(request.POST)
         # Si el formulario
+
 
         if form.is_valid(): 
             horaIn                                 = form.cleaned_data['horarioin']
@@ -219,6 +222,9 @@ def estacionamiento_detail(request, _id):
             
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
+            
+
+            
             if not HorarioEstacionamiento(horaIn, horaOut):
                 return render(
                     request,
@@ -243,9 +249,21 @@ def estacionamiento_detail(request, _id):
             
             estacionamientoTarifa = esquemaTarifa 
             estacionamientoTarifaFeriado = esquemaTarifaFeriado
+
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
-            estacionamiento.capacidad = form.cleaned_data['puestos']
+            estacionamiento.capacidadLivianos = form.cleaned_data['puestosLivianos']
+            estacionamiento.capacidadPesados = form.cleaned_data['puestosPesados']
+            estacionamiento.capacidadMotos = form.cleaned_data['puestosMotos']
+
+            if (estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos <= 0):
+                return render(
+                    request,
+                    'template-mensaje.html',
+                    { 'color':'red'
+                    , 'mensaje': 'El estacionamiento debe tener al menos un puesto'
+                    }
+                )
 
             estacionamiento.save()
             form = EstacionamientoExtendedForm()
@@ -319,8 +337,108 @@ def estacionamiento_editar(request, _id):
         }
     )
 
+    # Verificamos que el estacionamiento este parametrizado
+    if (estacionamiento.apertura is None):
+        return HttpResponse(status = 403) # Esta prohibido entrar aun
 
+    # Si se hace un GET renderizamos los estacionamientos con su formulario
+    if request.method == 'GET':
+        form = ReservaForm()
 
+    # Si es un POST estan mandando un request
+    elif request.method == 'POST':
+        form = ReservaForm(request.POST)
+        # Verificamos si es valido con los validadores del formulario
+        if form.is_valid():
+         
+            inicioReserva = form.cleaned_data['inicio']
+            finalReserva = form.cleaned_data['final']
+            tipo_vehiculo_tomado = form.cleaned_data['tipo_vehiculo']
+            tipo_vehiculo_tomado = str(tipo_vehiculo_tomado)
+            
+            # debería funcionar con excepciones, y el mensaje debe ser mostrado
+            # en el mismo formulario
+            
+            print(tipo_vehiculo_tomado)
+            
+            m_validado = validarHorarioReserva(
+                inicioReserva,
+                finalReserva,
+                estacionamiento.apertura,
+                estacionamiento.cierre,
+            )
+
+            # Si no es valido devolvemos el request
+            if not m_validado[0]:
+                return render(
+                    request,
+                    'template-mensaje.html',
+                    { 'color'  :'red'
+                    , 'mensaje': m_validado[1]
+                    }
+                )
+
+            if marzullo(_id, inicioReserva, finalReserva, tipo_vehiculo_tomado):
+                print("funciono marzullo!")
+                reservaFinal = Reserva(
+                    estacionamiento = estacionamiento,
+                    inicioReserva   = inicioReserva,
+                    finalReserva    = finalReserva,
+                    estado          = 'Válido',
+                    tipo_vehiculo   = tipo_vehiculo_tomado
+                )
+
+                monto = Decimal(
+                    estacionamiento.tarifa.calcularPrecio(
+                        inicioReserva,finalReserva
+                    )
+                )
+
+                request.session['monto'] = float(
+                    estacionamiento.tarifa.calcularPrecio(
+                        inicioReserva,
+                        finalReserva
+                    )
+                )
+                
+                request.session['finalReservaHora']    = finalReserva.hour
+                request.session['finalReservaMinuto']  = finalReserva.minute
+                request.session['inicioReservaHora']   = inicioReserva.hour
+                request.session['inicioReservaMinuto'] = inicioReserva.minute
+                request.session['anioinicial']         = inicioReserva.year
+                request.session['mesinicial']          = inicioReserva.month
+                request.session['diainicial']          = inicioReserva.day
+                request.session['aniofinal']           = finalReserva.year
+                request.session['mesfinal']            = finalReserva.month
+                request.session['diafinal']            = finalReserva.day
+                request.session['tipo_vehiculo']       = tipo_vehiculo_tomado
+                return render(
+                    request,
+                    'confirmar.html',
+                    { 'id'      : _id
+                    , 'monto'   : monto
+                    , 'reserva' : reservaFinal
+                    , 'color'   : 'green'
+                    , 'mensaje' : 'Existe un puesto disponible'
+                    }
+                )
+            else:
+                # Cambiar mensaje
+                return render(
+                    request,
+                    'template-mensaje.html',
+                    {'color'   : 'red'
+                    , 'mensaje' : 'No hay un puesto disponible para ese horario'
+                    }
+                )
+
+    return render(
+        request,
+        'reserva.html',
+        { 'form': form
+        , 'estacionamiento': estacionamiento
+        }
+    )
 
 def estacionamiento_pago(request,_id):
     form = PagoForm()
@@ -357,7 +475,8 @@ def estacionamiento_pago(request,_id):
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
-                estado          = 'Válido'
+                estado          = 'Válido',
+                tipo_vehiculo   = request.session['tipo_vehiculo']
             )
 
             # Se guarda la reserva en la base de datos
@@ -382,6 +501,7 @@ def estacionamiento_pago(request,_id):
                 , "pago"    : pago
                 , "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
+            
                 }
             )
     return render(
@@ -433,6 +553,8 @@ def estacionamiento_reserva(request, _id):
 
             inicioReserva = form.cleaned_data['inicio']
             finalReserva = form.cleaned_data['final']
+            tipo_vehiculo_tomado = form.cleaned_data['tipo_vehiculo']
+            tipo_vehiculo_tomado = str(tipo_vehiculo_tomado)
 
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
@@ -453,12 +575,13 @@ def estacionamiento_reserva(request, _id):
                     }
                 )
 
-            if marzullo(_id, inicioReserva, finalReserva):
+            if marzullo(_id, inicioReserva, finalReserva, tipo_vehiculo_tomado):
                 reservaFinal = Reserva(
                     estacionamiento = estacionamiento,
                     inicioReserva   = inicioReserva,
                     finalReserva    = finalReserva,
-                    estado          = 'Válido'
+                    estado          = 'Válido',
+                    tipo_vehiculo = tipo_vehiculo_tomado
                 )
 
                 iniReserva = inicioReserva
@@ -572,6 +695,7 @@ def estacionamiento_reserva(request, _id):
                 request.session['aniofinal']           = finalReserva.year
                 request.session['mesfinal']            = finalReserva.month
                 request.session['diafinal']            = finalReserva.day
+                request.session['tipo_vehiculo']       = tipo_vehiculo_tomado
                 return render(
                     request,
                     'confirmar.html',
@@ -722,7 +846,9 @@ def tasa_de_reservacion(request, _id):
             }
         )
     ocupacion = tasa_reservaciones(_id)
-    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre, estacionamiento.capacidad, ocupacion)
+    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
+                                estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos,
+                                ocupacion)
     datos_ocupacion = urlencode(ocupacion) # Se convierten los datos del diccionario en el formato key1=value1&key2=value2&...
     return render(
         request,
@@ -766,6 +892,7 @@ def Estacionamiento_Dias_Feriados(request, _id):
     # Verificamos que el objeto exista antes de continuar
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
+        DiasFeriados = DiasFeriadosEscogidos.objects.all()
     except ObjectDoesNotExist:
         raise Http404
 
@@ -781,13 +908,26 @@ def Estacionamiento_Dias_Feriados(request, _id):
         if form.is_valid():
             diaFeriado =  form.cleaned_data['esquema_diasFeriados']
             seleccionar_feriados(diaFeriado, estacionamiento)
-            
+        
+        # Arle
+        return render(
+                  request,
+                  'dias_feriados.html',
+                  { "form" : form 
+                   , "color"   : "green"
+                   ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
+                   }
+                )
+                    
     return render(
         request,
         'dias_feriados.html',
-        { "form" : form }
-    )
-        
+        { "form" : form 
+        }
+        )
+
+    # Fin Arle
+    
 def Estacionamiento_Dia_Feriado_Extra(request, _id):
     
     _id = int(_id)
@@ -795,6 +935,7 @@ def Estacionamiento_Dia_Feriado_Extra(request, _id):
     # Verificamos que el objeto exista antes de continuar
     try:
         estacionamiento = Estacionamiento.objects.get(id = _id)
+        DiasFeriados = DiasFeriadosEscogidos.objects.all()
     except ObjectDoesNotExist:
         raise Http404
 
@@ -811,9 +952,50 @@ def Estacionamiento_Dia_Feriado_Extra(request, _id):
             diaFecha =  form.cleaned_data['fecha']
             diaDescripcion =  form.cleaned_data['descripcion']
             seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
-            
+        
+    # Arle  
+        return render(
+            request,
+            'dia_feriado_extra.html',
+            { "form" : form 
+            , "color"   : "green"
+            ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
+            }
+          )
+        
     return render(
-        request,
-        'dia_feriado_extra.html',
-        { "form" : form }
-    )
+
+                request,
+                'dia_feriado_extra.html',
+                { "form" : form }
+                )
+    
+    # Fin Arle
+def Mostrar_Dias_Feriados(request, _id):
+    
+    _id = int(_id)
+    
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+        DiasFeriados = DiasFeriadosEscogidos.objects.all()
+    except ObjectDoesNotExist:
+        raise Http404
+    
+    Comprobacion = "false"
+    
+    for dia in DiasFeriados:
+        if(dia.estacionamiento == estacionamiento):
+            Comprobacion = "true"
+            break
+
+
+    print(DiasFeriados)
+    return render(
+                request,
+                'catalogo_dias_feriados.html',
+                {"estacionamientos": estacionamiento
+                ,"DiasFeriados" : DiasFeriados
+                , "Comprobacion" : Comprobacion
+                }
+            )

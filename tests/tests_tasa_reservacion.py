@@ -30,7 +30,9 @@ class TestTasaEstacionamiento(TestCase):
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
-            capacidad = puestos,
+            capacidadLivianos = puestos,
+            capacidadPesados = puestos,
+            capacidadMotos = puestos,
             apertura       = hora_apertura,
             cierre         = hora_cierre,
         )
@@ -208,9 +210,9 @@ class TestTasaEstacionamiento(TestCase):
             hora_reserva = ahora
             for j in range(HORAS_SEMANA):
                 if j!=HORAS_SEMANA-1:
-                    Reserva(estacionamiento=e,inicioReserva=hora_reserva,finalReserva=hora_reserva+UNA_HORA).save()
+                    Reserva(estacionamiento=e,inicioReserva=hora_reserva,finalReserva=hora_reserva+UNA_HORA,tipo_vehiculo = 'Liviano').save()
                 else:
-                    Reserva(estacionamiento=e,inicioReserva=hora_reserva,finalReserva=hora_reserva+timedelta(minutes=59)).save()
+                    Reserva(estacionamiento=e,inicioReserva=hora_reserva,finalReserva=hora_reserva+timedelta(minutes=59),tipo_vehiculo = 'Liviano').save()
                 hora_reserva += UNA_HORA
         lista_fechas=[(ahora+timedelta(i)).date() for i in range(7)]
         lista_valores=[60*CAPACIDAD*24 for i in range(7)]
@@ -228,7 +230,7 @@ class TestTasaEstacionamiento(TestCase):
             hora_reserva = ahora
             for j in range(7):
                 for k in range(HORAS_DIA):
-                    Reserva(estacionamiento=e,inicioReserva=hora_reserva,finalReserva=hora_reserva+UNA_HORA).save()
+                    Reserva(estacionamiento=e,inicioReserva=hora_reserva,finalReserva=hora_reserva+UNA_HORA,tipo_vehiculo = 'Liviano').save()
                     hora_reserva += UNA_HORA
                 hora_reserva=ahora+timedelta(j+1)
         lista_fechas=[(ahora+timedelta(i)).date() for i in range(7)]

@@ -32,6 +32,19 @@ class ReservaForm(forms.Form):
         )
     )
     
+    tipo_vehiculo = forms.ChoiceField(
+        required = True,
+        label    = 'Tipo de vehículo',
+        choices  = (
+            ('Liviano', 'Liviano'),
+            ('Pesado', 'Pesado'),
+            ('Moto', 'Moto')
+        ),
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )                                  
+    )
+    
 class CancelarReservaForm(forms.Form):
     
     transaccion_validator = RegexValidator(

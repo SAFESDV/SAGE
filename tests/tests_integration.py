@@ -57,7 +57,9 @@ class IntegrationTest(TestCase):
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
-            capacidad = 20,
+            capacidadPesados   = 20,
+            capacidadLivianos   = 20,
+            capacidadMotos   = 20,
             apertura = time(0,0),
             cierre = time(23,59),
         )
@@ -138,7 +140,9 @@ class IntegrationTest(TestCase):
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
-            capacidad = 20,
+            capacidadPesados   = 20,
+            capacidadLivianos   = 20,
+            capacidadMotos   = 20,
             apertura = time(0,0),
             cierre = time(23,59),
         )
@@ -153,7 +157,9 @@ class IntegrationTest(TestCase):
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
-            capacidad = 20,
+            capacidadPesados   = 20,
+            capacidadLivianos   = 20,
+            capacidadMotos   = 20,
             apertura = time(0,0),
             cierre = time(23,59),
         )

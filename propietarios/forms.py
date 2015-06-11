@@ -34,6 +34,18 @@ class PropietarioForm(forms.Form):
         )
     )
     
+    cedulaTipo = forms.ChoiceField(
+        required = True,
+        label    = 'cedulaTipo',
+        choices  = (
+            ('V', 'V'),
+            ('E', 'E')
+        ),
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )
+    
     Cedula = forms.CharField(
         required = True,
         label = "Cedula",

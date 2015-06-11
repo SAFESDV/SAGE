@@ -9,8 +9,16 @@
       Estacionamiento {{estacionamiento.nombre}}
     </h3>
     <hr>
-      <form method="post" class="form form-vertical">
-      {% csrf_token %}
+    {% if form %}   
+    <form method="post" class="form form-vertical">
+    <!-- Arle -->
+    <div class="col-md-10" style="color:{{color}}">
+        {{ mensaje }}
+         <br>
+         </br>
+    </div>
+    <!-- Fin Arle -->
+    {% csrf_token %}
       {% for choice in form.esquema_diasFeriados %}
       
         <div class="control-group">
@@ -29,13 +37,15 @@
       </div>
       <br>
       	<label></label>
+      <!-- Arle -->
       <a href="./agregar_dia_extra" onClick="popup(this, 'Dias Feriados Extras')">
          <button class="btn btn-primary">
              Feriados Extras 		
          </button>
       </a>
-      
+      <!-- Fin Arle -->
     </form>
+    {% endif %}
   </div>
 {% endblock %} 
 {% block scripts %}

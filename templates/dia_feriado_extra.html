@@ -10,6 +10,15 @@
       Estacionamiento {{estacionamiento.nombre}}
     </h3>
     <hr>
+    
+    <!-- Arle -->
+    <div class="col-md-10" style="color:{{color}}">
+        {{ mensaje }}
+         <br>
+         </br>
+    </div>
+    <!-- Fin Arle -->
+    
       <form method="post" class="form form-vertical">
       {% csrf_token %}
       {% for field in form %}
