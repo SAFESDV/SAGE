@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from estacionamiento.models import *
+from estacionamientos.models import *
 from django.test import TestCase
 from datetime import *
 from estacionamientos.forms import *
-from estacionamiento.controller import *
+from estacionamientos.controller import *
 
 class DiasFeriadosTestCase(TestCase):
 
@@ -35,29 +35,29 @@ class DiasFeriadosTestCase(TestCase):
 #dias feriados
 
     def RellenarDiasFeriados(self,est):
-        listaDiasFeriados = [DiasFeriadosEscogidos(fecha   = datetime(year = 2015, month = 12, day = 31), 
+        DiasFeriadosEscogidos(fecha   = datetime(year = 2015, month = 12, day = 31), 
                                                descripcion = "Fin de año",  
-                                               estacionamiento = est),
-                             DiasFeriadosEscogidos(fecha   = datetime(year = 2016, month = 1, day = 31), 
+                                               estacionamiento = est)
+        
+        DiasFeriadosEscogidos(fecha   = datetime(year = 2016, month = 1, day = 31), 
                                                descripcion = "Fin de año",  
-                                               estacionamiento = est),
-                            ]
+                                               estacionamiento = est)
+                            
 
     def testReservarHastaLas1159DeUnDiaFeriado(self):
         e = Estacionamiento( 
             nombre = "nombre_est", CI_prop = "123456", direccion = "direccion_est",
             rif = "J-123456789",apertura = time(hour = 0,  minute = 0),
-            cierre = time(hour = 23,  minute = 0),capacidad = 100)
+            cierre = time(hour = 23,  minute = 0),capacidadLivianos = 100,capacidadPesados = 100,capacidadMotos = 100)
         e.save()
         self.RellenarDiasFeriados(e)
-        
         
         Tarifa = TarifaHora(tarifa=2)
         
         esquemaTarif = EsquemaTarifario(
             tarifa = 2.0,
             estacionamiento = e,
-            tipo = 'TarifaHora'
+            tipoDia = 'TarifaHora'
         )
         
         esquemaParaFeriado = EsquemaTarifarioM2M(
@@ -66,16 +66,69 @@ class DiasFeriadosTestCase(TestCase):
         )
         esquemaParaFeriado.save()
 
-        valor = esquemaParaFeriado.tarifa.calcularPrecio(time(year = 2015, month = 12, day = 31, 23, 0),time(year = 2015, month = 12, day = 31, 23, 59)) 
+        valor = esquemaParaFeriado.tarifa.calcularPrecio(datetime(year = 2015, month = 12, day = 31, hour = 23, minute= 0), datetime(year = 2015, month = 12, day = 31, hour = 23, minute = 59)) 
         
         self.assertEqual(valor,2) #Deberia cobrarse 2 
     
     def testReservarHastaLas000DeUnDiaFeriado(self):
-        pass
+        e = Estacionamiento( 
+            nombre = "nombre_est", CI_prop = "123456", direccion = "direccion_est",
+            rif = "J-123456789",apertura = time(hour = 0,  minute = 0),
+            cierre = time(hour = 23,  minute = 0),capacidadLivianos = 100,capacidadPesados = 100,capacidadMotos = 100)
+        e.save()
+        self.RellenarDiasFeriados(e)
+        
+        Tarifa = TarifaHora(tarifa=2)
+        
+        esquemaTarif = EsquemaTarifario(
+            tarifa = 2.0,
+            estacionamiento = e,
+            tipoDia = 'TarifaHora'
+        )
+        
+        esquemaParaFeriado = EsquemaTarifarioM2M(
+            estacionamiento = e,
+            tarifa = Tarifa
+        )
+        esquemaParaFeriado.save()
+
+        valor = esquemaParaFeriado.tarifa.calcularPrecio(datetime(year = 2015, month = 12, day = 31, hour = 23, minute= 0), datetime(year = 2016, month = 1, day = 1, hour = 0, minute = 0)) 
+        
+        self.assertEqual(valor,2) #Deberia cobrarse 2 
     
-    def testReservarDesde1159DiaNormalA000DiaFeriado(self):
-        pass
+    def testReservarDesde1130DiaNormalA0030DiaFeriado(self):
+        e = Estacionamiento( 
+            nombre = "nombre_est", CI_prop = "123456", direccion = "direccion_est",
+            rif = "J-123456789",apertura = time(hour = 0,  minute = 0),
+            cierre = time(hour = 23,  minute = 0),capacidadLivianos = 100,capacidadPesados = 100,capacidadMotos = 100)
+        e.save()
+        self.RellenarDiasFeriados(e)
+        
+        Tarifa = TarifaHora(tarifa=2)
+        
+        esquemaTarif = EsquemaTarifario(
+            tarifa = 2.0,
+            estacionamiento = e,
+            tipoDia = 'Dia Feriado'
+        )
+        
+        esquemaTarif2 = EsquemaTarifario(
+            tarifa = 1.0,
+            estacionamiento = e,
+            tipoDia = 'Dia Normal'
+        )
+         
+        esquemaParaFeriado = EsquemaTarifarioM2M(
+            estacionamiento = e,
+            tarifa = Tarifa
+        )
+        esquemaParaFeriado.save()
+
+        valor = esquemaParaFeriado.tarifa.calcularPrecio(datetime(year = 2015, month = 12, day = 30, hour = 23, minute= 30), datetime(year = 2015, month = 12, day = 31, hour = 0, minute = 30)) 
+        self.assertEqual(valor,3) #Deberia cobrarse 2 
     
+    def testReservarHastaLas0000DeUnDiaFeriado(self):
+        pass
     def testReservarDesde1110A001(self):
         pass
     

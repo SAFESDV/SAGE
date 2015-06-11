@@ -21,7 +21,9 @@ class IntegrationTest(TestCase):
             nombre = "nom",
             direccion = "dir",
             rif = "rif",
-            capacidad = puestos,
+            capacidadLivianos = puestos,
+            capacidadPesados = puestos,
+            capacidadMotos = puestos,
             apertura       = hora_apertura,
             cierre         = hora_cierre,
         )
