@@ -593,7 +593,7 @@ def estacionamiento_reserva(request, _id):
                 iniReserva = inicioReserva
                 listaDiasReserva = []
             
-                while (iniReserva <= finalReserva):
+                while (iniReserva.day <= finalReserva.day):
                     
                     listaDiasReserva.append(iniReserva)
                     iniReserva += timedelta(days = 1) 
@@ -605,6 +605,11 @@ def estacionamiento_reserva(request, _id):
                     esquema_feriado = estacionamientotarifa[1]
                     
                 numDias = len(listaDiasReserva)
+                print()
+                print("El numero de dias eeeeeeeeeees " + str(numDias))
+                print()
+                monto = 0
+                montoTotal = 0
                 
                 # CASO 1: RESERVA EN UN SOLO DIA
                 
@@ -631,6 +636,7 @@ def estacionamiento_reserva(request, _id):
                             request.session['monto'] = float(
                                 esquema_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
+                            print("monto a agregar " + str(monto))
                             coincidencia = True
                             break
                         
@@ -640,6 +646,7 @@ def estacionamiento_reserva(request, _id):
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
                             print("Entre en NOOOOO tarifa feriada")
+                            print("monto a agregar " + str(monto))
                             request.session['monto'] = float(
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
@@ -655,15 +662,21 @@ def estacionamiento_reserva(request, _id):
                         
                     for diaReserva in listaDiasReserva:
                         
+                        print("Contador es " + str(cont))
+                        coincidencia = False
+                        
                         if (cont == 1):
+                            print("Dia primero")
                             inicioDia = inicioReserva
                             finalDia = datetime(inicioReserva.year, inicioReserva.month, 
                                                 inicioReserva.day, 23, 59)
                         elif (cont == numDias):
+                            print("Dia Ultimo")
                             inicioDia = datetime(finalReserva.year, finalReserva.month, 
                                                  finalReserva.day, 0, 0)
                             finalDia = finalReserva
                         else:
+                            print("Dia intermedio")
                             inicioDia = datetime(diaReserva.year, diaReserva.month, 
                                                  diaReserva.day, 0, 0)
                             
@@ -673,8 +686,6 @@ def estacionamiento_reserva(request, _id):
                         # Se Calcula la tarifa de los dias que coinciden con los dias feriados    
                             
                         for diaFeriado in diasFeriados:
-                            
-                               
                              
                             if (diaReserva.day == diaFeriado.fecha.day and 
                                 diaReserva.month == diaFeriado.fecha.month):
@@ -682,6 +693,7 @@ def estacionamiento_reserva(request, _id):
                                 monto = Decimal(
                                     esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                                 )
+                                print("monto a agregar " + str(monto))
                 
                                 request.session['monto'] = float(
                                     esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
@@ -694,13 +706,15 @@ def estacionamiento_reserva(request, _id):
                             monto = Decimal(
                                     esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                             )
+                            print("monto a agregar " + str(monto))
             
                             request.session['monto'] = float(
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                             )
                             
-                        monto += monto
-                        cont += cont
+                        montoTotal += monto
+                        cont += 1
+                        print("Monto =" + str(montoTotal))
                     
                 request.session['finalReservaHora']    = finalReserva.hour
                 request.session['finalReservaMinuto']  = finalReserva.minute
@@ -717,7 +731,7 @@ def estacionamiento_reserva(request, _id):
                     request,
                     'confirmar.html',
                     { 'id'      : _id
-                    , 'monto'   : monto
+                    , 'monto'   : montoTotal
                     , 'reserva' : reservaFinal
                     , 'color'   : 'green'
                     , 'mensaje' : 'Existe un puesto disponible'
