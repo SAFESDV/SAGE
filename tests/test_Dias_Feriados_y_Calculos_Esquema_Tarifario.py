@@ -48,16 +48,23 @@ class DiasFeriadosTestCase(TestCase):
             nombre = "nombre_est", CI_prop = "123456", direccion = "direccion_est",
             rif = "J-123456789",apertura = time(hour = 0,  minute = 0),
             cierre = time(hour = 23,  minute = 0),capacidad = 100)
-        
+        e.save()
         self.RellenarDiasFeriados(e)
         
         
         Tarifa = TarifaHora(tarifa=2)
         
+        esquemaTarif = EsquemaTarifario(
+            tarifa = 2.0,
+            estacionamiento = e,
+            tipo = 'TarifaHora'
+        )
+        
         esquemaParaFeriado = EsquemaTarifarioM2M(
             estacionamiento = e,
             tarifa = Tarifa
         )
+        esquemaParaFeriado.save()
 
         valor = esquemaParaFeriado.tarifa.calcularPrecio(time(year = 2015, month = 12, day = 31, 23, 0),time(year = 2015, month = 12, day = 31, 23, 59)) 
         
