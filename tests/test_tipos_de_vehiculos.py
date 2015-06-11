@@ -53,7 +53,9 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
-                      'esquema':'TarifaHora'}
+                      'esquema':'TarifaHora',
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : '100'}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertRaises(Exception,form.is_valid())
     
@@ -65,7 +67,9 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
-                      'esquema':'TarifaHora'}
+                      'esquema':'TarifaHora',
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : '100'}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())     
         
@@ -76,7 +80,9 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
-                      'esquema':'TarifaHora'}
+                      'esquema':'TarifaHora',
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : '100'}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())       
 
@@ -88,7 +94,9 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
-                      'esquema':'TarifaHora'}
+                      'esquema':'TarifaHora',
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : '100'}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())       
 
@@ -100,7 +108,9 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
-                      'esquema':'TarifaHora'}
+                      'esquema':'TarifaHora',
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : '100'}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
         
@@ -111,7 +121,9 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
-                      'esquema':'TarifaHora'}
+                      'esquema':'TarifaHora',
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : '100'}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
         
@@ -122,7 +134,9 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
-                      'esquema':'TarifaHora'}
+                      'esquema':'TarifaHora',
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : '100'}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
     '''print("Entre al caso y voy a considerar si reservar causa excepcion")
