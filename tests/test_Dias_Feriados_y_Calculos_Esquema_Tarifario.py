@@ -133,7 +133,7 @@ class DiasFeriadosTestCase(TestCase):
         
         self.assertEqual(valor,32) #Deberia cobrarse 2 
     
-    def testReservarDesde1110FeriadoA001Normal(self):
+    def testReservarDesde1130FeriadoA0030Normal(self):
         e = Estacionamiento( 
             nombre = "nombre_est", CI_prop = "123456", direccion = "direccion_est",
             rif = "J-123456789",apertura = time(hour = 0,  minute = 0),
