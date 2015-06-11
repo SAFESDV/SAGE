@@ -116,7 +116,7 @@
                   Fecha de Transacción:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.fechaTransaccion}}
+                  {{pago.transaccion.fecha}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-clock-o"></i>
@@ -137,20 +137,20 @@
                   Cédula:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.cedulaTipo}}-{{pago.cedula}}
+                  {{pago.transaccion.cedulaTipo}}-{{pago.transaccion.cedula}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-money"></i>
                   Tarjeta de Crédito:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.tarjetaTipo}} </td></tr>
+                  {{pago.transaccion.tarjetaTipo}} </td></tr>
 
                 <tr><td><b><i class="fa fa-money"></i>
                   Monto:
                 </b></td></tr>
                 <tr><td>
-                  BsF. {{pago.monto|floatformat:2|intcomma }}
+                  BsF. {{pago.transaccion.monto|floatformat:2|intcomma }}
                 </td></tr>
               </tbody>
             </table>

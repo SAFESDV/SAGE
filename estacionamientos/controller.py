@@ -5,7 +5,7 @@ from estacionamientos.models import Estacionamiento
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
-from pagos.models import Pago
+from transacciones.models import *
 
 # chequeo de horarios de extended
 def HorarioEstacionamiento(HoraInicio, HoraFin):
@@ -61,10 +61,11 @@ def consultar_ingresos(rif):
     listaIngresos         = []
 
     for estacionamiento in listaEstacionamientos:
-        listaFacturas = Pago.objects.filter(
-            reserva__estacionamiento__nombre = estacionamiento.nombre,
-            reserva__estado = 'Válido'
-        )
+        transreser = TransReser.objects.filter(
+            transreser__reserva__estacionamiento__nombre = estacionamiento.nombre,
+            transreser__reserva__estado = 'Válido'
+        )       
+        
         ingreso       = [estacionamiento.nombre, 0]
         for factura in listaFacturas:
             ingreso[1] += factura.monto

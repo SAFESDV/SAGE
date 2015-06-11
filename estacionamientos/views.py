@@ -42,12 +42,6 @@ from reservas.forms import (
     CancelarReservaForm,
 )
 
-from pagos.forms import (
-    PagoForm,
-    ModoPagoForm,
-    BilleteraElectronicaPagoForm
-)
-
 from estacionamientos.models import (
     Estacionamiento,
     TarifaHora,
@@ -59,10 +53,11 @@ from estacionamientos.models import (
 
 from propietarios.models import Propietario
 from reservas.models import Reserva
-from pagos.models import Pago
 
 from django.template.context_processors import request
 from django.forms.forms import Form
+
+from transacciones.models import *
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -387,22 +382,30 @@ def estacionamiento_pago(request,_id):
             reservaFinal.save()
 
             monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))
-            pago = Pago(
-                fechaTransaccion = datetime.now(),
-                cedula           = form.cleaned_data['cedula'],
-                cedulaTipo       = form.cleaned_data['cedulaTipo'],
-                monto            = monto,
-                tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
-                reserva          = reservaFinal,
+            
+            trans = Transaccion(
+                fecha = datetime.now(),
+                cedulaTipo = form.cleaned_data['cedulaTipo'],
+                cedula     = form.cleaned_data['cedula'],
+                modoPago   = 'UK',
+                monto      = monto,
+                estado     = 'Válido'
             )
-            # Se guarda el recibo de pago en la base de datos
-            pago.save()
+            
+            trans.save()
+            
+            transReser = TransReser(
+                transaccion = trans,
+                reserva = reservaFinal
+            )
+            
+            transReser.save()
 
             return render(
                 request,
                 'pago.html',
                 { "id"      : _id
-                , "pago"    : pago
+                , "pago"    : transReser
                 , "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
                 }

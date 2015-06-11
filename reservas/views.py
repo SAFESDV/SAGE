@@ -17,10 +17,7 @@ from billetera.forms import (
     BilleteraElectronicaRecargaForm,
 )
 
-from billetera.models import (
-    BilleteraElectronica,
-    PagoRecargaBilletera
-)
+from billetera.models import *
 
 from billetera.controller import (
     consultar_saldo,
@@ -38,14 +35,7 @@ from reservas.forms import (
     CancelarReservaForm,
 )
 
-from pagos.forms import (
-    PagoForm,
-    ModoPagoForm,
-    BilleteraElectronicaPagoForm
-)
-
 from reservas.models import Reserva
-from pagos.models import Pago
 
 def estacionamiento_cancelar_reserva(request):
     form = CancelarReservaForm()

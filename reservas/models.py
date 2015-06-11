@@ -12,6 +12,9 @@ from estacionamientos.models import Estacionamiento
 # Create your models here.
 
 class Reserva(models.Model):
+    cedulaTipo      = models.CharField(max_length = 1)
+    cedula          = models.CharField(max_length = 10)
+    nombre          = models.CharField(max_length = 50)
     estacionamiento = models.ForeignKey(Estacionamiento)
     inicioReserva   = models.DateTimeField()
     finalReserva    = models.DateTimeField()

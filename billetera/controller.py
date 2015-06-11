@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 # Archivo con funciones de control para SAGE
 from billetera.models import BilleteraElectronica
+from transacciones.models import *
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
 from django.core.exceptions import ObjectDoesNotExist
 
-def consultar_saldo(ID_Billetera, pin):
+def consultar_saldo(ID_Billetera):
     
     try:
-        BE = BilleteraElectronica.objects.get(id = ID_Billetera, PIN = pin)
-        return BE.saldo
-    
+        saldo = Decimal(0.00).quantize(Decimal("1.00"))
+        BE = BilleteraElectronica.objects.get(id = ID_Billetera)
+        TBE = TransBilletera.objects.filter(billetera = BE)
+        
+        for t in TBE:
+            if t.transaccion.tipo == 'Recarga':
+                saldo += Decimal(t.monto).quantize(Decimal("1.00"))
+        return saldo
     except ObjectDoesNotExist:
         pass
         

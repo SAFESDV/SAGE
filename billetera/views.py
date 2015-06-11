@@ -19,21 +19,10 @@ from estacionamientos.forms import (
 
 from reservas.forms import ReservaForm
 
-from pagos.forms import (
-    PagoForm,
-    ModoPagoForm,
-    BilleteraElectronicaPagoForm,
-    PagoRecargaForm
-)
-
-from billetera.forms import (
-    BilleteraElectronicaForm,
-    BilleteraElectronicaRecargaForm,
-)
+from billetera.forms import *
 
 from billetera.models import (
-    BilleteraElectronica,
-    PagoRecargaBilletera
+    BilleteraElectronica
 )
 
 from billetera.controller import (
@@ -51,12 +40,12 @@ from estacionamientos.models import (
     TarifaHoraPico,
 )
 
+from transacciones.models import *
 
 
 from django.template.context_processors import request
 from django.forms.forms import Form
 from reservas.models import Reserva
-from pagos.models import Pago
 
 def billetera_crear(request):
     form = BilleteraElectronicaForm()
@@ -70,8 +59,7 @@ def billetera_crear(request):
                 apellidoUsuario  = form.cleaned_data['apellido'],
                 cedulaTipo       = form.cleaned_data['cedulaTipo'],
                 cedula           = form.cleaned_data['cedula'],
-                PIN              = form.cleaned_data['pin'],
-                saldo            = Decimal(0).quantize(Decimal('1.00'))
+                PIN              = form.cleaned_data['pin']
             )
             
             billetera.save();
@@ -95,12 +83,12 @@ def billetera_crear(request):
 
 def Consultar_Saldo(request):
     
-    form = BilleteraElectronicaPagoForm()
+    form = BilleteraLogin()
     
     if request.method == 'POST':
-        form = BilleteraElectronicaPagoForm(request.POST)
+        form = BilleteraLogin(request.POST)
         if form.is_valid():
-            saldo = consultar_saldo(form.cleaned_data['id'], form.cleaned_data['pin'])
+            saldo = consultar_saldo(form.cleaned_data['id'])
             
             if(saldo == -1):
                 return render(
@@ -237,10 +225,10 @@ def billetera_pagar(request, _id):
     )
     
 def billetera_recargar(request):
-    form = BilleteraElectronicaRecargaForm()
+    form = BilleteraLogin()
     
     if request.method == 'POST':
-        form = BilleteraElectronicaRecargaForm(request.POST)
+        form = BilleteraLogin(request.POST)
         if form.is_valid():
             try:
                 BE = BilleteraElectronica.objects.get(id = form.cleaned_data['id'])
@@ -279,44 +267,60 @@ def billetera_recargar(request):
     )     
 
 def recarga_pago(request):
-    form = PagoRecargaForm()
+    form = BilleteraRecargaForm()
     
     if request.method == 'POST':
-        form = PagoRecargaForm(request.POST)
+        form = BilleteraRecargaForm(request.POST)
         if form.is_valid():
             
-            pago = PagoRecargaBilletera(
-                fechaTransaccion = datetime.now(),
-                cedulaTipo       = form.cleaned_data['cedulaTipo'],
-                cedula           = form.cleaned_data['cedula'],
-                ID_Billetera     = form.cleaned_data['ID_Billetera'],
-                monto            = form.cleaned_data['monto'],
-                tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
-            )
+            BE = BilleteraElectronica.objects.get(id = form.cleaned_data['ID_Billetera'])
             
-            BE = BilleteraElectronica.objects.get(id = pago.ID_Billetera)
-            if pago.monto + BE.saldo > Decimal(10000.00):
+            if form.cleaned_data['monto'] + consultar_saldo(BE.id) <= Decimal(10000.00):
+                           
+                trans = Transaccion(
+                    fecha  = datetime.now(),
+                    tipo   = 'Recarga',
+                    estado = 'Válido'
+                )
+                
+                trans.save()
+                
+                transTdc = TransTDC(
+                    nombre           = form.cleaned_data['nombre'],
+                    cedulaTipo       = form.cleaned_data['cedulaTipo'],
+                    cedula           = form.cleaned_data['cedula'],
+                    tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
+                    tarjeta           = form.cleaned_data['tarjeta'][-4:],
+                    monto            = form.cleaned_data['monto'],
+                    transaccion      = trans
+                )
+                
+                transBill = TransBilletera(
+                    billetera   = BilleteraElectronica.objects.get(id = form.cleaned_data['ID_Billetera']),
+                    transaccion = trans,
+                    monto       = form.cleaned_data['monto']
+                )
+
+                transBill.save()
+                transTdc.save()
+                
+            else:
                 return render(request,
-                    'pago_recarga.html',
-                    {
-                    'error'   : 1,
-                    "color"   : "red",
-                    'mensaje' : "Saldo resultante excede el monto maximo"
-                    }
-                )           
+                        'pago_recarga.html',
+                        {
+                        'error'   : 1,
+                        "color"   : "red",
+                        'mensaje' : "Saldo resultante excede el monto maximo"
+                        }
+                    )          
             
             
             # Se guarda el recibo de pago en la base de datos
-            pago.save()
-            
-            recargar_saldo(pago.ID_Billetera,pago.monto)
-            
-
             return render(
                 request,
                 'pago_recarga.html',
                 {
-                 "pago"   : pago,
+                 "pago"   : form,
                 "color"   : "green",
                 'mensaje' : "Se realizo la recarga satisfactoriamente."
                 }
