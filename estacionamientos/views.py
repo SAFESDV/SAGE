@@ -45,6 +45,7 @@ from estacionamientos.forms import (
 from reservas.forms import (
     ReservaForm,
     CancelarReservaForm,
+    PagoForm,
 )
 
 from estacionamientos.models import (
@@ -466,6 +467,10 @@ def estacionamiento_pago(request,_id):
             )
 
             reservaFinal = Reserva(
+                nombre          = request.session['nombre'],
+                apellido        = request.session['apellido'],
+                cedula          = request.session['cedula'],
+                cedulaTipo      = request.session['cedulaTipo'],
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
@@ -480,14 +485,23 @@ def estacionamiento_pago(request,_id):
             
             trans = Transaccion(
                 fecha = datetime.now(),
-                cedulaTipo = form.cleaned_data['cedulaTipo'],
-                cedula     = form.cleaned_data['cedula'],
-                modoPago   = 'UK',
-                monto      = monto,
+                tipo = 'Reserva',
                 estado     = 'Válido'
             )
             
             trans.save()
+            
+            transTdc = TransTDC(
+                nombre           = form.cleaned_data['nombre'],
+                cedulaTipo       = form.cleaned_data['cedulaTipo'],
+                cedula           = form.cleaned_data['cedula'],
+                tarjetaTipo      = form.cleaned_data['tarjetaTipo'],
+                tarjeta          = form.cleaned_data['tarjeta'][-4:],
+                monto            = monto,
+                transaccion      = trans
+            )
+            
+            transTdc.save()
             
             transReser = TransReser(
                 transaccion = trans,
@@ -644,10 +658,12 @@ def estacionamiento_reserva(request, _id):
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
                             print("Entre en NOOOOO tarifa feriada")
-                            print("monto a agregar " + str(monto))
+                            print("Monto a agregar " + str(monto))
                             request.session['monto'] = float(
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
+                    montoTotal += monto
+                    print("Monto =" + str(montoTotal))
                 
                 # CASO 2: RESERVA DE MULTIPLES DIAS
                     
@@ -709,8 +725,9 @@ def estacionamiento_reserva(request, _id):
                             request.session['monto'] = float(
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                             )
-                            
+                        
                         montoTotal += monto
+                        request.session['monto'] = float(montoTotal)
                         cont += 1
                         print("Monto =" + str(montoTotal))
                     
@@ -725,6 +742,11 @@ def estacionamiento_reserva(request, _id):
                 request.session['mesfinal']            = finalReserva.month
                 request.session['diafinal']            = finalReserva.day
                 request.session['tipo_vehiculo']       = tipo_vehiculo_tomado
+                request.session['nombre']              = form.cleaned_data['nombre']
+                request.session['apellido']            = form.cleaned_data['apellido']
+                request.session['cedula']              = form.cleaned_data['cedula']
+                request.session['cedulaTipo']          = form.cleaned_data['cedulaTipo']
+                request.session['tipo_vehiculo']       = form.cleaned_data['tipo_vehiculo']
                 return render(
                     request,
                     'confirmar.html',

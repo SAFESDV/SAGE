@@ -12,17 +12,9 @@ from matplotlib import pyplot
 from decimal import Decimal
 from collections import OrderedDict
 
-from billetera.forms import (
-    BilleteraElectronicaForm,
-)
-
+from billetera.forms import *
 from billetera.models import *
-
-from billetera.controller import (
-    consultar_saldo,
-    recargar_saldo,
-    consumir_saldo,
-)
+from billetera.controller import *
 
 from reservas.controller import (
     validarHorarioReserva,
@@ -36,6 +28,8 @@ from reservas.forms import (
 
 from reservas.models import Reserva
 from transacciones.models import *
+from reservas.controller import *
+from transacciones.controller import *
 
 def reserva_detalle(request, _id):
     _id = int(_id)
@@ -63,44 +57,33 @@ def reserva_detalle(request, _id):
         }
     )
 
-def estacionamiento_cancelar_reserva(request, _id):
-    id = int(_id)
+def estacionamiento_cancelar_reserva(request):
     
     form = CancelarReservaForm()
     if request.method == 'POST':
         form = CancelarReservaForm(request.POST)
         if form.is_valid():
             
-            numeroTransaccion   = form.cleaned_data['numTransac']
-            numeroCedula        = form.cleaned_data['cedula']
+            numeroReser   = form.cleaned_data['numReser']
+            numeroCedula  = form.cleaned_data['cedula']
             try:
-                factura      = transaccion.objects.get(id = numeroTransaccion, cedula = numeroCedula)
+                reserva      = Reserva.objects.get(id = numeroReser, cedula = numeroCedula, estado = 'Válido')
             except:
                 return render(
                     request,
                     'cancelar-reservas.html',
                     {  "color"    : "red"
-                     , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en el recibo de pago.'
+                     , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en la reserva.'
                      , "form"     : form
                     }
                 )
             
-            if factura.reserva.estado != 'Válido':
-                return render(
-                    request,
-                    'cancelar-reservas.html',
-                    {  "color"   : "red"
-                     , 'mensaje' : 'ID no existe o CI no corresponde al registrado en el recibo de pago.'
-                     , "form" : form 
-                     }
-                )
-            
-            request.session['facturaid'] = factura.id
+            request.session['reservaid'] = reserva.id
             return render(
                 request,
                 'cancelar_reserva_confirmar.html',
                 { 
-                  'billetera': BilleteraElectronicaPagoForm()
+                  'billetera': BilleteraLogin()
                 }
             )
                             
@@ -111,29 +94,26 @@ def estacionamiento_cancelar_reserva(request, _id):
     )
     
 def confirmar_cancelar_reserva(request):
-    form = BilleteraElectronicaPagoForm()
-    
-    factura = Pago.objects.get(id = request.session['facturaid'])
+    form = BilleteraLogin()
     
     if request.method == 'POST':
-        form = BilleteraElectronicaPagoForm(request.POST)
+        form = BilleteraLogin(request.POST)
         if form.is_valid():
-            numeroID  = form.cleaned_data['id']
-            numeroPin = form.cleaned_data['pin']
-            try:
-                billetera = BilleteraElectronica.objects.get(id = numeroID, PIN = numeroPin)
-            except:
+            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
                 return render(
-                    request,
-                    'cancelar_reserva_confirmar.html',
-                    { "color"   : "red"
-                     , 'mensaje' : 'Autenticación denegada.'
-                     , 'billetera' : form
-                     }
-                )
+                        request,
+                        'consultar_saldo.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+                
+            trans = get_transacciones(request.session['reservaid'])
+            monto = transaccion_monto(trans[0].id)
              
             try:   
-                recargar_saldo(billetera.id, factura.monto)
+                recargar_saldo(form.cleaned_data['id'], monto)
             except:
                 return render(
                     request,
@@ -144,8 +124,7 @@ def confirmar_cancelar_reserva(request):
                      }
                 )
                 
-            factura.reserva.estado = 'Cancelado'
-            factura.reserva.save()
+            cancelar_reserva(request.session['reservaid'])
             
             return render(
                     request,

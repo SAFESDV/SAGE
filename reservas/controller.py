@@ -4,6 +4,7 @@ from decimal import Decimal
 from collections import OrderedDict
 from estacionamientos.models import Estacionamiento
 from reservas.models import Reserva
+from transacciones.models import *
 
 def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre):
     if inicioReserva >= finReserva:
@@ -95,6 +96,17 @@ def reservas_activas(idEstacionamiento):
 def reservas_inactivas(idEstacionamiento):
     reservasIna = Reserva.objects.filter(estado = 'Inválido')
     return reservaIna
+
+def get_transacciones(idReserva):
+    transacciones = []
+    
+    relacion = TransReser.objects.filter(reserva__id = idReserva)
+    
+    for r in relacion:
+        transacciones += [r.transaccion]
+    
+    return transacciones
+    
     
     
     

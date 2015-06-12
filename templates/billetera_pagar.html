@@ -73,48 +73,48 @@
                   Número de Transacción:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.id}}
+                  {{relacion.transaccion.id}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-clock-o"></i>
                   Fecha de Transacción:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.fechaTransaccion}}
+                  {{relacion.transaccion.fecha}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-clock-o"></i>
                   Horario inicio de reserva:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.reserva.inicioReserva}}
+                  {{relacion.reserva.inicioReserva}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-clock-o"></i>
                   Horario fin de reserva:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.reserva.finalReserva}}
+                  {{relacion.reserva.finalReserva}}
                 </td></tr>
 
                 <tr><td><b><i class="fa fa-user"></i>
                   Cédula:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.cedulaTipo}}-{{pago.cedula}}
+                  {{relacion.reserva.cedulaTipo}}-{{relacion.reserva.cedula}}
                 </td></tr>
                 <tr><td><b><i class="fa fa-money"></i>
                   Monto:
                 </b></td></tr>
                 <tr><td>
-                  BsF. {{pago.monto|floatformat:2|intcomma }}
+                  BsF. {{relacion.transaccion.monto|floatformat:2|intcomma }}
                 </td></tr>
                 
                 <tr><td><b><i class="fa fa-car"></i>
                   Tipo de vehiculo:
                 </b></td></tr>
                 <tr><td>
-                  {{pago.reserva.tipo_vehiculo}}
+                  {{relacion.reserva.tipo_vehiculo}}
                 </td></tr>
               </tbody>
             </table>
