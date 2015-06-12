@@ -464,6 +464,7 @@ def estacionamiento_pago(request,_id):
                 day    = request.session['diafinal'],
                 hour   = request.session['finalReservaHora'],
                 minute = request.session['finalReservaMinuto']
+                
             )
 
             reservaFinal = Reserva(
@@ -509,16 +510,19 @@ def estacionamiento_pago(request,_id):
             )
             
             transReser.save()
+            
 
             return render(
                 request,
                 'pago.html',
                 { "id"      : _id
                 , "pago"    : transReser
+                , "pago2"   : transTdc
                 , "color"   : "green"
                 , 'mensaje' : "Se realizo el pago de reserva satisfactoriamente."
             
                 }
+                          
             )
     return render(
         request,
