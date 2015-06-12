@@ -4,6 +4,7 @@ from decimal import Decimal
 from collections import OrderedDict
 from estacionamientos.models import Estacionamiento
 from reservas.models import Reserva
+from transacciones.models import *
 
 def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre):
     if inicioReserva >= finReserva:
@@ -74,3 +75,43 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
     
     else:
         return False
+    
+def cancelar_reserva(idReserva):
+    
+    try:
+        reser = Reserva.objects.get(id = idReserva)
+    except:
+        raise
+    
+    reser.estado = 'Inválido'
+    reser.save()
+    relacion = TransReser.objects.get(reserva = reser)
+    trans = relacion.transaccion
+    trans.estado = 'Inválido'
+    
+def reservas_activas(idEstacionamiento):
+    reservasAct = Reserva.objects.filter(estado = 'Válido')
+    return reservaAct
+
+def reservas_inactivas(idEstacionamiento):
+    reservasIna = Reserva.objects.filter(estado = 'Inválido')
+    return reservaIna
+
+def get_transacciones(idReserva):
+    transacciones = []
+    
+    relacion = TransReser.objects.filter(reserva__id = idReserva)
+    
+    for r in relacion:
+        transacciones += [r.transaccion]
+    
+    return transacciones
+    
+    
+    
+    
+    
+    
+    
+    
+    

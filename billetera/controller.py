@@ -30,8 +30,35 @@ def consultar_saldo(ID_Billetera):
         return saldo
     except ObjectDoesNotExist:
         pass
+
+def recargar_saldo(_id, monto):
+    
+    try:
+        BE = BilleteraElectronica.objects.get(id = _id)
+    except:
+        raise
+            
+    if monto + consultar_saldo(BE.id) <= Decimal(10000.00):
+    
+        trans = Transaccion(
+            fecha  = datetime.now(),
+            tipo   = 'Recarga',
+            estado = 'Válido'
+        )
         
-def recargar_saldo(_id, form):
+        trans.save()
+        
+        transBill = TransBilletera(
+            billetera   = BE,
+            transaccion = trans,
+            monto       = monto
+        )
+        transBill.save()
+        
+        return trans.id
+    raise
+        
+def recargar_saldo_TDC(_id, form):
     
     try:
         BE = BilleteraElectronica.objects.get(id = _id)

@@ -468,6 +468,10 @@ def estacionamiento_pago(request,_id):
             )
 
             reservaFinal = Reserva(
+                nombre          = request.session['nombre'],
+                apellido        = request.session['apellido'],
+                cedula          = request.session['cedula'],
+                cedulaTipo      = request.session['cedulaTipo'],
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
@@ -725,8 +729,9 @@ def estacionamiento_reserva(request, _id):
                             request.session['monto'] = float(
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                             )
-                            
+                        
                         montoTotal += monto
+                        request.session['monto'] = float(montoTotal)
                         cont += 1
                         print("Monto =" + str(montoTotal))
                     
@@ -741,6 +746,11 @@ def estacionamiento_reserva(request, _id):
                 request.session['mesfinal']            = finalReserva.month
                 request.session['diafinal']            = finalReserva.day
                 request.session['tipo_vehiculo']       = tipo_vehiculo_tomado
+                request.session['nombre']              = form.cleaned_data['nombre']
+                request.session['apellido']            = form.cleaned_data['apellido']
+                request.session['cedula']              = form.cleaned_data['cedula']
+                request.session['cedulaTipo']          = form.cleaned_data['cedulaTipo']
+                request.session['tipo_vehiculo']       = form.cleaned_data['tipo_vehiculo']
                 return render(
                     request,
                     'confirmar.html',

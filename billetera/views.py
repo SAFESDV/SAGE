@@ -176,10 +176,10 @@ def billetera_pagar(request, _id):
             )
 
             reservaFinal = Reserva(
-                cedulaTipo      = BE.cedulaTipo,
-                cedula          = BE.cedula,
-                nombre          = BE.nombreUsuario,
-                apellido        = BE.apellidoUsuario,
+                cedulaTipo      = request.session['cedulaTipo'],
+                cedula          = request.session['cedula'],
+                nombre          = request.session['nombre'],
+                apellido        = request.session['apellido'],
                 estacionamiento = estacionamiento,
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
@@ -258,17 +258,22 @@ def recarga_pago(request):
     if request.method == 'POST':
         form = BilleteraRecargaForm(request.POST)
         if form.is_valid():
-            if recargar_saldo(request.session['passbillid'], form):
+            try:
+                transID = recargar_saldo_TDC(request.session['passbillid'], form)
+                
+                transaccion = TransTDC.objects.get(transaccion__id = transID)
+                
                 return render(
                     request,
                     'pago_recarga.html',
                     {
                      "pago"   : form,
+                     "pago2"  : transaccion,
                     "color"   : "green",
                     'mensaje' : "Se realizo la recarga satisfactoriamente."
                     }
                 )        
-            else:
+            except:
                 return render(request,
                         'pago_recarga.html',
                         {
