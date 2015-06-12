@@ -475,7 +475,7 @@ def estacionamiento_pago(request,_id):
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
                 estado          = 'Válido',
-                tipo_vehiculo   = request.session['tipo_vehiculo']
+                tipo_vehiculo = request.session['tipo_vehiculo']
             )
 
             # Se guarda la reserva en la base de datos
