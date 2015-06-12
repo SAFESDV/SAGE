@@ -259,12 +259,16 @@ def recarga_pago(request):
         form = BilleteraRecargaForm(request.POST)
         if form.is_valid():
             try:
-                recargar_saldo_TDC(request.session['passbillid'], form)
+                transID = recargar_saldo_TDC(request.session['passbillid'], form)
+                
+                transaccion = TransTDC.objects.get(transaccion__id = transID)
+                
                 return render(
                     request,
                     'pago_recarga.html',
                     {
                      "pago"   : form,
+                     "pago2"  : transaccion,
                     "color"   : "green",
                     'mensaje' : "Se realizo la recarga satisfactoriamente."
                     }
