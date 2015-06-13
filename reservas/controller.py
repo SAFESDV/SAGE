@@ -83,18 +83,18 @@ def cancelar_reserva(idReserva):
     except:
         raise
     
-    reser.estado = 'Inválido'
+    reser.estado = 'Cancelado'
     reser.save()
     relacion = TransReser.objects.get(reserva = reser)
     trans = relacion.transaccion
-    trans.estado = 'Inválido'
+    trans.estado = 'Cancelado'
     
 def reservas_activas(idEstacionamiento):
     reservasAct = Reserva.objects.filter(estado = 'Válido')
     return reservaAct
 
 def reservas_inactivas(idEstacionamiento):
-    reservasIna = Reserva.objects.filter(estado = 'Inválido')
+    reservasIna = Reserva.objects.filter(estado = 'Cancelado')
     return reservaIna
 
 def get_transacciones(idReserva):

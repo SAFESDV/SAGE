@@ -33,6 +33,7 @@
 	    <tr><td>
 	      {{reservacion.nombre}} {{reservacion.apellido}}
 	    </td></tr>
+	    
 	  </tbody>
 	</table>
     </div>
@@ -44,8 +45,14 @@
 	      Estacionamiento:
 	    </b></td></tr>
 	    <tr><td>
-	      {{reservacion.estacionamiento.rif}}<br>
 	      {{reservacion.estacionamiento.nombre}}
+	    </td></tr>
+	    
+	    <tr><td><b><i class="fa fa-phone"></i>
+	      Rif:
+	    </b></td></tr>
+	    <tr><td>
+	      {{reservacion.estacionamiento.rif}}<br>
 	    </td></tr>
 	    
 	    <tr><td><b><i class="fa fa-home"></i>
@@ -60,6 +67,13 @@
 	    </b></td></tr>
 	    <tr><td>
 	      {{reservacion.finalReserva}}
+	    </td></tr>
+	    
+	    <tr><td><b><i class="fa fa-home"></i>
+	      Tipo de Vehiculo:
+	    </b></td></tr>
+	    <tr><td>
+	      {{reservacion.tipo_vehiculo}}
 	    </td></tr>
 	    
 	    <tr><td><b><i class="fa fa-home"></i>
