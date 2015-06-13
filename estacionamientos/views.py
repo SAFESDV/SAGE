@@ -908,6 +908,7 @@ def tasa_de_reservacion(request, _id):
         request,
         'tasa-reservacion.html',
         { "ocupacion" : ocupacion
+        , "estacionamiento" : estacionamiento
         , "datos_ocupacion": datos_ocupacion
         }
     )
