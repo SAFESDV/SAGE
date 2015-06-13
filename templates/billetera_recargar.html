@@ -14,17 +14,30 @@
       Recargar Billetera Electronica
     </h3>
     <hr>
+    {% if form %}
+     <div class="col-md-8">
+      <table class="table table-striped">
+          <h3>Login para billetera electrónica (BE)</h3>
+      </table>
+    </div>
     <div class="col-md-4">
-      {% if form %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <i class="glyphicon glyphicon-wrench pull-right"></i>
+            <h4>
+              Datos de la billetera:
+            </h4>
+          </div>
+        </div>
+      <div class="panel-body">
+      
         <form
           method="post"
           class="form form-vertical"
         >
-        <div class="col-md-8" style="color:{{color}}">
-          {{ mensaje }}
-        </div>
-        <br>
         </br>
+        
           {% csrf_token %}
           <div class="control-group">
             <div class="controls">
@@ -57,21 +70,32 @@
               {{ form.monto.errors }}{% endcomment %}-->
             </div>
           </div>
+          <div class="col-md-10" style="color:{{color}}">
+          {{ mensaje }}
+          <br>
+          </br>
+        </div>
+        <br>
           <button class="btn btn-primary">
             Confirmar
           </button>
+
         </form>
       {% endif %}
-      <div class="row">
+      
       {% if valido %}
-        <a href="./pagarrecarga" onClick="return popup(this, 'Pago Tarjeta')">
+      
+     <div class="col-md-8">
+      <a href="./pagarrecarga" onClick="return popup(this, 'Pago Tarjeta')">
           <button class="btn btn-primary">
             Pagar con Tarjeta de Credito
           </button>
         </a>
+    </div>    
       {% endif %}
-    </div>
   </div>
+ </div>
+
 {% endblock %}
 {% block scripts %}
   {% include "validator.js.html" %}
