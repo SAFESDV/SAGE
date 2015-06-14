@@ -364,6 +364,7 @@ def estacionamiento_editar(request, _id):
                 finalReserva,
                 estacionamiento.apertura,
                 estacionamiento.cierre,
+                estacionamiento.horizonte,
             )
 
             # Si no es valido devolvemos el request
