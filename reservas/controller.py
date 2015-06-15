@@ -8,22 +8,22 @@ from transacciones.models import *
 from transacciones.controller import *
 from billetera.controller import *
 
-def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre):
+def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre, horizonte):
     if inicioReserva >= finReserva:
         return (False, 'El horario de inicio de reservacion debe ser menor al horario de fin de la reserva.')
     if finReserva - inicioReserva < timedelta(hours=1):
         return (False, 'El tiempo de reserva debe ser al menos de 1 hora.')
     if inicioReserva.date() < datetime.now().date():
         return (False, 'La reserva no puede tener lugar en el pasado.')
-    if inicioReserva.date() > (datetime.now()+timedelta(days=7)).date():
-        return (False, 'La reserva debe estar dentro de los próximos 7 días.')
+    if finReserva.date() > (datetime.now() +timedelta(days=horizonte)).date():
+        return (False, 'La reserva debe estar dentro de los próximos ' + str(horizonte) + ' día(s).')
     if apertura.hour==0 and apertura.minute==0 \
         and cierre.hour==23 and cierre.minute==59:
         seven_days=timedelta(days=7)
         if finReserva-inicioReserva<=seven_days :
             return (True,'')
         else:
-            return(False,'Se puede reservar un puesto por un maximo de 7 dias.')
+            return(False,"Se puede reservar un puesto por un maximo de " +str(horizonte) + " dias")
     else:
         hora_inicio = time(hour = inicioReserva.hour, minute = inicioReserva.minute)
         hora_final  = time(hour = finReserva.hour   , minute = finReserva.minute)

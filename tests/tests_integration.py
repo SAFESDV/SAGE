@@ -80,7 +80,7 @@ class IntegrationTest(TestCase):
         self.crear_estacionamiento(1)
         response = self.client.get('/estacionamientos/1/tasa')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'template-mensaje.html')
+        self.assertTemplateUsed(response, 'tabla-tasa-reservacion.html')
         
     # integracion esquina
     def test_llamada_a_la_generacion_de_grafica_empty_request(self):
@@ -112,11 +112,6 @@ class IntegrationTest(TestCase):
         response = self.client.get('/estacionamientos/sms')
         self.assertEqual(response.status_code, 400)
         
-    # integracion esquina
-    def test_llamada_a_reserva_sin_parametros_especificados_aun(self):
-        self.crear_estacionamiento(1)
-        response = self.client.get('/estacionamientos/1/reserva')
-        self.assertEqual(response.status_code, 403)
     
     # integracion TDD
     def test_llamada_a_consultar_reserva(self):
@@ -170,11 +165,6 @@ class IntegrationTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'pago.html')
     
-    # integracion malicia
-    def test_llamada_a_pago_sin_parametros_especificados_aun(self):
-        self.crear_estacionamiento(1)
-        response = self.client.get('/estacionamientos/1/reserva')
-        self.assertEqual(response.status_code, 403)
     
     # integracion malicia
     def test_llamada_a_pago_sin_estacionamiento_creado(self):

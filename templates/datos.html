@@ -55,5 +55,21 @@
     <tr><td>
       {{estacionamiento.rif}}
     </td></tr>
+    {% if estacionamiento.horizonte %}
+    <tr><td><b><i class="fa fa-circle"></i>
+      Horizonte de reservaci&oacute;n:
+    </b></td></tr>
+    <tr><td>
+      {{estacionamiento.horizonte}} D&iacute;a(s)
+    </td></tr> 
+    {% endif %}
+    {% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos  %}
+      <tr><td><b><i class="fa fa-car"></i> Puestos Livianos:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadLivianos}}</td></tr>
+      <tr><td><b><i class="fa fa-truck"></i> Puestos Pesados:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadPesados}}</td></tr>
+      <tr><td><b><i class="fa fa-bicycle"></i> Puestos Motos:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadMotos}}</td></tr>
+     {% endif %}        
   </tbody>
 </table>
