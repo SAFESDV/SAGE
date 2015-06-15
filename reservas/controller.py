@@ -5,6 +5,8 @@ from collections import OrderedDict
 from estacionamientos.models import Estacionamiento
 from reservas.models import Reserva
 from transacciones.models import *
+from transacciones.controller import *
+from billetera.controller import *
 
 def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre):
     if inicioReserva >= finReserva:
@@ -13,7 +15,7 @@ def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre):
         return (False, 'El tiempo de reserva debe ser al menos de 1 hora.')
     if inicioReserva.date() < datetime.now().date():
         return (False, 'La reserva no puede tener lugar en el pasado.')
-    if finReserva.date() > (datetime.now()+timedelta(days=6)).date():
+    if inicioReserva.date() > (datetime.now()+timedelta(days=7)).date():
         return (False, 'La reserva debe estar dentro de los próximos 7 días.')
     if apertura.hour==0 and apertura.minute==0 \
         and cierre.hour==23 and cierre.minute==59:
@@ -75,7 +77,6 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
     
     else:
         return False
-    
 def cancelar_reserva(idReserva):
     
     try:

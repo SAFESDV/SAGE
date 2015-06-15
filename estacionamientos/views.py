@@ -97,7 +97,10 @@ def estacionamientos_all(request):
         if form.is_valid():
             
             try:
-                propietario = Propietario.objects.get(Cedula = form.cleaned_data['CI_prop'])
+                propietario = Propietario.objects.get(
+                    Cedula = form.cleaned_data['CI_prop'],
+                    cedulaTipo = form.cleaned_data['cedulaTipo']
+                )
             except ObjectDoesNotExist:
                 return render(
                         request,
@@ -113,6 +116,7 @@ def estacionamientos_all(request):
             obj = Estacionamiento(
                 nombre      = form.cleaned_data['nombre'],
                 CI_prop     = form.cleaned_data['CI_prop'],
+                cedulaTipo  = form.cleaned_data['cedulaTipo'],
                 direccion   = form.cleaned_data['direccion'],
                 rif         = form.cleaned_data['rif'],
                 telefono1   = form.cleaned_data['telefono_1'],

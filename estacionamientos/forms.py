@@ -25,6 +25,18 @@ class EstacionamientoForm(forms.Form):
         regex   = '^[0-9]+$',
         message = 'La cédula solo puede contener caracteres numéricos.'
     )
+    
+    cedulaTipo = forms.ChoiceField(
+        required = True,
+        label    = 'cedulaTipo',
+        choices  = (
+            ('V', 'V'),
+            ('E', 'E')
+        ),
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )
 
     # CI del dueno del estacionamiento (no se permiten digitos)
     CI_prop = forms.CharField(

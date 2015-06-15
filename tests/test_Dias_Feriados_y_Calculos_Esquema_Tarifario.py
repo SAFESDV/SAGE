@@ -135,7 +135,7 @@ class DiasFeriadosTestCase(TestCase):
         esquemaParaFeriado.save()
         valor = esquemaParaFeriado.tarifa.calcularPrecio(datetime(year = 2015, month = 12, day = 30, hour = 23, minute= 30), datetime(year = 2015, month = 12, day = 31, hour = 0, minute = 30)) 
         
-        self.assertEqual(valor,32) #Deberia cobrarse 2 
+        self.assertEqual(valor,2) #Deberia cobrarse 2 
     
     def testReservarDesde1130FeriadoA0030Normal(self):
         e = Estacionamiento( 
@@ -176,7 +176,7 @@ class DiasFeriadosTestCase(TestCase):
         esquemaParaFeriado.save()
         valor = esquemaParaFeriado.tarifa.calcularPrecio(datetime(year = 2016, month = 1, day = 1, hour = 23, minute= 30), datetime(year = 2016, month = 1, day = 2, hour = 0, minute = 30)) 
         
-        self.assertEqual(valor,32) #Deberia cobrarse 2 
+        self.assertEqual(valor,2) #Deberia cobrarse 2 
     
     def testReservarEnHoraPicoUnDiaFeriado(self):
         

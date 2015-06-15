@@ -12,6 +12,7 @@ class Estacionamiento(models.Model):
     
     nombre      = models.CharField(max_length = 50)
     CI_prop     = models.CharField(max_length = 50)
+    cedulaTipo  = models.CharField(max_length = 1)
     direccion   = models.TextField(max_length = 120)
     telefono1   = models.CharField(blank = True, null = True, max_length = 30)
     telefono2   = models.CharField(blank = True, null = True, max_length = 30)
