@@ -14,7 +14,7 @@ def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre, horizonte
     if inicioReserva.date() < datetime.now().date():
         return (False, 'La reserva no puede tener lugar en el pasado.')
     if finReserva.date() > (datetime.now() +timedelta(days=horizonte)).date():
-        return (False, 'La reserva debe estar dentro de los próximos 7 días.')
+        return (False, 'La reserva debe estar dentro de los próximos ' + str(horizonte) + ' día(s).')
     if apertura.hour==0 and apertura.minute==0 \
         and cierre.hour==23 and cierre.minute==59:
         seven_days=timedelta(days=7)
