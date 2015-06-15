@@ -506,7 +506,8 @@ def estacionamiento_pago(request,_id):
             trans = Transaccion(
                 fecha = datetime.now(),
                 tipo = 'Reserva',
-                estado     = 'Válido'
+                estado     = 'Válido',
+                monto = monto
             )
             
             trans.save()
@@ -788,19 +789,23 @@ def estacionamiento_reserva(request, _id):
 
 def estacionamiento_ingreso(request):
     form = RifForm()
+    
     if request.method == 'POST':
         form = RifForm(request.POST)
         if form.is_valid():
 
-            rif = form.cleaned_data['rif']
-            listaIngresos, ingresoTotal = consultar_ingresos(rif)
+            _rif = form.cleaned_data['rif']
+            estacionamiento_selec = Estacionamiento.objects.get(rif = _rif)
+            listaIngresos, ingresoTotal,listaTransacciones = consultar_ingresos(_rif)
 
             return render(
                 request,
                 'consultar-ingreso.html',
-                { "ingresoTotal"  : ingresoTotal
-                , "listaIngresos" : listaIngresos
-                , "form"          : form
+                { "estacionamiento" : estacionamiento_selec
+                ,  "ingresoTotal"    : ingresoTotal
+                , "listaIngresos"   : listaIngresos
+                , "listaTransacciones" : listaTransacciones
+                , "form"            : form
                 }
             )
 

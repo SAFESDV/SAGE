@@ -43,10 +43,13 @@ class ConfiguracionSMS(models.Model):
 class EsquemaTarifarioM2M(models.Model):  
     #Relaciona estacionamiento con el esquema tarifario con estacionamiento (Many to Many)
     
-    estacionamiento = models.ForeignKey(Estacionamiento)
-    content_type    = models.ForeignKey(ContentType, null = True)
-    object_id       = models.PositiveIntegerField(null = True)
-    tarifa          = GenericForeignKey()    
+    estacionamiento     = models.ForeignKey(Estacionamiento)
+    content_type        = models.ForeignKey(ContentType, null = True)
+    object_id           = models.PositiveIntegerField(null = True)
+    tarifa              = GenericForeignKey()
+    #tarifa_Liviano      = GenericForeignKey()
+    #tarifa_Pesado       = GenericForeignKey()
+    #tarifa_Moto         = GenericForeignKey()
     
 class EsquemaTarifario(models.Model):
 

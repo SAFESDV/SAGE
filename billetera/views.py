@@ -261,7 +261,7 @@ def recarga_pago(request):
             try:
                 transID = recargar_saldo_TDC(request.session['passbillid'], form)
                 
-                transaccion = TransTDC.objects.get(transaccion__id = transID)
+                transaccion = TransTDC.objects.get(id = transID)
                 
                 return render(
                     request,
