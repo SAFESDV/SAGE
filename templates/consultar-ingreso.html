@@ -6,8 +6,8 @@
 {% endblock %}
 {% block innerContents%}
   <div class="col-sm-10">
-    <h3><i class="fa fa-bus"></i>
-      Estacionamientos
+    <h3><i class="fa fa-usd"></i>
+      Consultar Ingresos
     </h3>
     <hr>
     <div class="col-md-8">
@@ -24,7 +24,7 @@
             {% for ingreso in listaIngresos%}
               <tr>
                 <td></td>
-                <td>{{ingreso.0}}</td>
+                <td>{{ingreso.0}}</td> 
                 <td>{{ingreso.1|floatformat:2|intcomma}}</td>
               </tr>
             {% endfor %}

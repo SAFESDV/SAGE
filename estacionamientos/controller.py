@@ -12,6 +12,10 @@ from estacionamientos.models import (
     TarifaHoraPico,
     DiasFeriadosEscogidos,
 )
+from reservas.models import (
+    Reserva,
+)
+
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
@@ -86,10 +90,9 @@ def consultar_ingresos(rif):
     for estacionamiento in listaEstacionamientos:
         transreser = TransReser.objects.filter(
             reserva__estacionamiento__nombre = estacionamiento.nombre,
-            reserva__estado = 'Válido'
+            reserva__estado = 'Válido',
         )
         
-
         for	tr in transreser:
             listaTransacciones += [tr.transaccion]
 		
@@ -103,7 +106,6 @@ def consultar_ingresos(rif):
     return listaIngresos, ingresoTotal
    
 def seleccionar_feriados(diaFeriado, estacionamiento): #una lista de objeto que contiene la fecha y la descripción del día feriado
-	
 
 	feriadosEscogidos = DiasFeriadosEscogidos.objects.all()
 	
