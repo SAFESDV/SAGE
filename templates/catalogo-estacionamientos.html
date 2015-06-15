@@ -25,7 +25,7 @@
           {% for obj in estacionamientos %}
             <tr>
               <td>{{forloop.counter}}</td>
-              <td>{{obj.CI_prop}}</td>
+              <td>{{obj.cedulaTipo}-{{obj.CI_prop}}</td>
               <td>{{obj.nombre}}</td>
               <td>{{obj.rif}}</td>
               <td><a href="./{{	obj.id}}">

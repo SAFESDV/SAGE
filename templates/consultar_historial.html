@@ -9,12 +9,10 @@
     <h3><i class="fa fa-book"></i>
       Consultar Historial de Billetera Electronica
     </h3>
-      
-    
-    
+    <hr>
          {% if transacciones %}
           <h4>
-          ID: {{billetera.id}}
+          Billetera #{{billetera.id}}
     	  </h4>
     	  <hr>
     	  <div class="col-md-12">
@@ -92,6 +90,11 @@
                 </div>
               </div>
             {% endfor %}
+            <div class="col-md-10" style="color:{{color}}">
+      			{{ mensaje }}
+      			<br>
+      			</br>
+  			</div>
             <div class="control-group">
               <label></label>
               <div class="controls">

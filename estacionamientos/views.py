@@ -303,8 +303,9 @@ def estacionamiento_editar(request, _id):
         if estacionamiento.CI_prop:
             
             form_data = {
-                'CI_prop' : estacionamiento.CI_prop
-            }
+                'CI_prop' : estacionamiento.CI_prop,
+                'cedulaTipo' : estacionamiento.cedulaTipo
+                }
             form = EditarEstacionamientoForm(data = form_data)
         else:
             form = EditarEstacionamientoForm()
@@ -317,7 +318,8 @@ def estacionamiento_editar(request, _id):
         if form.is_valid():
             
             try:
-                propietario = Propietario.objects.get(Cedula = form.cleaned_data['CI_prop'])
+                propietario = Propietario.objects.get(Cedula = form.cleaned_data['CI_prop'],
+                                                      cedulaTipo = form.cleaned_data['cedulaTipo'])
             except ObjectDoesNotExist:
                 return render(
                         request,
@@ -331,6 +333,7 @@ def estacionamiento_editar(request, _id):
                     )
                 
             estacionamiento.CI_prop = form.cleaned_data['CI_prop']
+            estacionamiento.cedulaTipo = form.cleaned_data['cedulaTipo']
                                                
             estacionamiento.save()
                                          
@@ -795,7 +798,20 @@ def estacionamiento_ingreso(request):
         if form.is_valid():
 
             _rif = form.cleaned_data['rif']
-            estacionamiento_selec = Estacionamiento.objects.get(rif = _rif)
+            
+            try:
+                estacionamiento_selec = Estacionamiento.objects.get(rif = _rif)
+                
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'consultar-ingreso.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "No hay estacionamiento registrado bajo el rif escogido"
+                        }
+                    )  
+                  
             listaIngresos, ingresoTotal,listaTransacciones = consultar_ingresos(_rif)
 
             return render(

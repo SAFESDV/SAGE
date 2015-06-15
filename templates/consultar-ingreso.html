@@ -11,7 +11,7 @@
     </h3>
     <hr>
     
-        {% if listaTransacciones %}
+        {% if estacionamiento %}
     	  <div class="col-md-12">
       	  <table class="table table-striped">        
           <thead>
@@ -34,7 +34,7 @@
                 <td>{{transaccion.reserva.cedulaTipo}}-{{transaccion.reserva.cedula}}</td>
                 <td>{{transaccion.reserva.inicioReserva}} - {{transaccion.reserva.finalReserva}}</td>
                 <td>{{transaccion.reserva.tipo_vehiculo}}</td>
-                <td>{{transaccion.transaccion.monto}}</td>
+                <td><font color="33861E">{{transaccion.transaccion.monto}}</font></td>
               </tr>
             {% endfor %}
             <tr>
@@ -54,7 +54,7 @@
           </div>
         {% endif %}
       </table>
-    {% if not listaTransacciones %}
+    {% if not estacionamiento %}
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -81,6 +81,11 @@
                 </div>
               </div>
             {% endfor %}
+            <div class="col-md-10" style="color:{{color}}">
+      			{{ mensaje }}
+      			<br>
+      			</br>
+  			</div>            
             <div class="control-group">
               <label></label>
               <div class="controls">
