@@ -12,5 +12,6 @@ urlpatterns = patterns('',
     url(r'^verSaldo$', views.Consultar_Saldo, name = 'Consultar_Saldo'),
     url(r'^billeterarecargar$', views.billetera_recargar, name = 'billetera_recargar'),
     url(r'^pagarrecarga$',views.recarga_pago, name = 'recarga_pago'),
+    url(r'^verhistorial$',views.Consultar_Historia_Billetera, name = 'consultar_historial'),
 
 )

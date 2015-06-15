@@ -157,4 +157,19 @@ def consumir_saldo(_id, monto):
 #     except ObjectDoesNotExist:
 #         pass
 #     
+ 
+def consultar_historial(_id):
     
+    Billetera_Selec = BilleteraElectronica.objects.get(id = _id)
+    saldoTotal = 0
+
+    transacciones = TransBilletera.objects.filter(billetera = Billetera_Selec)
+    
+    for tr in transacciones:
+
+        if tr.transaccion.tipo == 'Recarga':
+            saldoTotal += Decimal(tr.monto).quantize(Decimal("1.00"))
+        elif tr.transaccion.tipo == 'Reserva':
+            saldoTotal -= Decimal(tr.monto).quantize(Decimal("1.00"))
+
+    return transacciones, saldoTotal  
