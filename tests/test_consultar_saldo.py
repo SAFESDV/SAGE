@@ -88,4 +88,3 @@ class consultar_saldoTestCase(TestCase):
         
         bill = self.crearBilletera(1234, 500)
         self.assertRaises(MontoNegativo, recargar_saldo, bill.id, -1)
-

@@ -200,3 +200,5 @@ class consultar_saldoTestCase(TestCase):
         recargar_saldo(bill.id, 10000)
         consumir_saldo(bill.id, 10000)
         self.assertEqual(consultar_saldo(bill.id), Decimal(0).quantize(Decimal("1.00")))
+
+    
