@@ -5,6 +5,8 @@ from collections import OrderedDict
 from estacionamientos.models import Estacionamiento
 from reservas.models import Reserva
 from transacciones.models import *
+from transacciones.controller import *
+from billetera.controller import *
 
 def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre, horizonte):
     if inicioReserva >= finReserva:
@@ -75,7 +77,6 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
     
     else:
         return False
-    
 def cancelar_reserva(idReserva):
     
     try:

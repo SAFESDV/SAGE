@@ -7,12 +7,13 @@ from decimal import Decimal
 from collections import OrderedDict
 from django.core.exceptions import ObjectDoesNotExist
 from transacciones.models import *
+from billetera.exceptions import *
 
 def autenticar(_id, _pin):
     try:
         BE = BilleteraElectronica.objects.get(id = _id, PIN = _pin)
     except:
-        return False
+        raise AutenticacionDenegada
     return True
 
 def consultar_saldo(ID_Billetera):
@@ -33,12 +34,15 @@ def consultar_saldo(ID_Billetera):
 
 def recargar_saldo(_id, monto):
     
-    try:
-        BE = BilleteraElectronica.objects.get(id = _id)
-    except:
-        raise
-            
-    if monto + consultar_saldo(BE.id) <= Decimal(10000.00):
+    BE = BilleteraElectronica.objects.get(id = _id)
+    
+    if monto < Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoNegativo
+    
+    elif monto == Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoCero
+    
+    if Decimal(monto).quantize(Decimal("1.00")) + consultar_saldo(BE.id) <= Decimal(10000.00):
     
         trans = Transaccion(
             fecha  = datetime.now(),
@@ -56,14 +60,18 @@ def recargar_saldo(_id, monto):
         transBill.save()
         
         return trans.id
-    raise
+    
+    raise SaldoExcedido
         
 def recargar_saldo_TDC(_id, form):
     
-    try:
-        BE = BilleteraElectronica.objects.get(id = _id)
-    except:
-        raise
+    BE = BilleteraElectronica.objects.get(id = _id)
+    
+    if monto < Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoNegativo
+    
+    elif monto == Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoCero
             
     if form.cleaned_data['monto'] + consultar_saldo(BE.id) <= Decimal(10000.00):
     
@@ -95,14 +103,20 @@ def recargar_saldo_TDC(_id, form):
         transTdc.save()
         
         return trans.id
-    raise
+    raise SaldoExcedido
 
 def consumir_saldo(_id, monto):
     
     try:
         BE = BilleteraElectronica.objects.get(id = _id)
     except:
-        raise
+        raise AutenticacionDenegada
+    
+    if monto < Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoNegativo
+    
+    elif monto == Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoCero
             
     if consultar_saldo(BE.id) - Decimal(monto).quantize(Decimal("1.00")) >= Decimal(0.00):
     
@@ -123,7 +137,7 @@ def consumir_saldo(_id, monto):
         transBill.save()
         
         return trans.id;
-    raise
+    raise SaldoNegativo
         
 # def consumir_saldo(ID_Billetera, monto):
 #     

@@ -16,3 +16,13 @@ class Propietario(models.Model):
     
     def __str__(self):
         return self.nomb_prop
+    
+class Persona(models.Model):
+    
+    cedulaTipo  = models.CharField(max_length = 1)
+    cedula      = models.CharField(max_length = 50)
+    nombre      = models.CharField(max_length = 50)
+    apellido    = models.CharField(max_length = 50)
+    
+    def __str__(self):
+        return self.nomb_prop
