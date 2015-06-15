@@ -4,7 +4,6 @@ from django.test import TestCase
 
 from datetime import time,datetime
 from estacionamientos.controller import consultar_ingresos
-from pagos.models import Pago
 from estacionamientos.models import Estacionamiento
 from reservas.models import Reserva
 

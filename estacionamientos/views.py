@@ -569,8 +569,14 @@ def estacionamiento_reserva(request, _id):
         raise Http404
 
     estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = estacionamiento_selec )
-    esquema_no_feriado = estacionamientotarifa[0]
-    esquema_feriado = estacionamientotarifa[1]
+    
+    esquema_no_feriado = None
+    esquema_feriado = None
+    
+    if (len(estacionamientotarifa) == 2):
+    
+        esquema_no_feriado = estacionamientotarifa[0]
+        esquema_feriado = estacionamientotarifa[1]
 
     # Verificamos que el estacionamiento este parametrizado
     if (estacionamiento_selec.apertura is None):

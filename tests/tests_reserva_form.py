@@ -20,19 +20,28 @@ class ReservaFormTestCase(TestCase):
 
     # caso borde
     def test_EstacionamientoReserva_UnCampo(self):
-        form_data = {'inicio_1': time(hour = 6, minute = 0),
-                     'final_1': time(hour = 15, minute = 0),
-                     'final_0': date(year=2015,month=2,day=27)
-        }
+        form_data = {'nombre'    : 'Arleyn',
+                     'apellido'  : 'Goncalves',
+                     'cedulaTipo': 'V',
+                     'cedula'    : '11111111',
+                     'inicio_1'  : time(hour=6, minute=0),
+                     'final_1'   : time(hour=15, minute=0),
+                     'final_0'   : date(year=2015, month=2, day=27),
+                     'inicio_0'  : date(year=2015, month=2, day=27),
+                    }
         form = ReservaForm(data = form_data)
         self.assertFalse(form.is_valid())
 
     # TDD
     def test_EstacionamientoReserva_TodosCamposBien(self):
-        form_data = {'inicio_1': time(hour=6, minute=0),
-                     'final_1' : time(hour=15, minute=0),
-                     'final_0' : date(year=2015, month=2, day=27),
-                     'inicio_0': date(year=2015, month=2, day=27),
+        form_data = {'nombre'    : 'Arleyn',
+                     'apellido'  : 'Goncalves',
+                     'cedulaTipo': 'V',
+                     'cedula'    : '11111111',
+                     'inicio_1'  : time(hour=6, minute=0),
+                     'final_1'   : time(hour=15, minute=0),
+                     'final_0'   : date(year=2015, month=2, day=27),
+                     'inicio_0'  : date(year=2015, month=2, day=27),
                      'tipo_vehiculo' : 'Liviano'
                     }
         form = ReservaForm(data = form_data)
