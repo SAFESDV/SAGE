@@ -64,7 +64,6 @@ def billetera_crear(request):
             )
             
             billetera.save();
-            
             return render(
                 request,
                 'crearbilletera.html',
@@ -296,6 +295,7 @@ def recarga_pago(request):
         'pago_recarga.html',
         { 'form' : form }
     )
+
     
 def cambiar_pin_verificar(request):
    
@@ -376,3 +376,44 @@ def cambiar_pin(request):
     )
     
     
+
+
+def Consultar_Historia_Billetera(request):
+    
+    form = BilleteraLogin()
+    
+    if request.method == 'POST':
+        form = BilleteraLogin(request.POST)
+        if form.is_valid():
+            _id = form.cleaned_data['id']
+            try:
+                billetera_selec = BilleteraElectronica.objects.get(id = _id)
+                transacciones, saldoTotal  = consultar_historial(_id)
+    
+                return render(
+                    request,
+                    'consultar_historial.html',
+                    { "billetera" : billetera_selec
+                    ,  "transacciones"    : transacciones
+                    , "saldoTotal"   : saldoTotal
+                    , "form"            : form
+                    }
+                )
+                
+            except ObjectDoesNotExist:
+                return render(
+                        request,
+                        'consultar_historial.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+            
+            
+
+    return render(
+        request,
+        'consultar_historial.html',
+        { "form" : form }
+    )

@@ -99,17 +99,22 @@ def confirmar_cancelar_reserva(request):
     if request.method == 'POST':
         form = BilleteraLogin(request.POST)
         if form.is_valid():
+            print(form.cleaned_data['id'])
+            print(form.cleaned_data['pin'])
+            print(autenticar(form.cleaned_data['id'], form.cleaned_data['pin']))
             if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
                 return render(
                         request,
                         'cancelar_reserva_confirmar.html',
-                        { "billetera"    : form
-                        , "color"   : "red"
-                        ,'mensaje'  : "Autenticación denegada."
+                        { "billetera"       : form
+                        , "color"           : "red"
+                        ,'mensaje'          : "Autenticación denegada."
                         }
                     )
                 
             trans = get_transacciones(request.session['reservaid'])
+            print(request.session['reservaid'])
+            print(trans)
             monto = transaccion_monto(trans[0].id)
              
             try:   

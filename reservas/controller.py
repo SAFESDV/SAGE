@@ -1,8 +1,19 @@
 # -*- coding: utf-8 -*-
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render
+import urllib
+from django.http import HttpResponse, Http404
+from django.utils.dateparse import parse_datetime
+from urllib.parse import urlencode
+from matplotlib import pyplot
+from decimal import Decimal
+from collections import OrderedDict
+
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
-from estacionamientos.models import Estacionamiento
+from estacionamientos.models import *
 from reservas.models import Reserva
 from transacciones.models import *
 from transacciones.controller import *
@@ -99,14 +110,116 @@ def reservas_inactivas(idEstacionamiento):
     return reservaIna
 
 def get_transacciones(idReserva):
-    transacciones = []
     
-    relacion = TransReser.objects.filter(reserva__id = idReserva)
+    
+    transacciones = []
+    reserva_selec = Reserva.objects.get(id = idReserva)
+    print(reserva_selec)
+    relacion = TransReser.objects.filter(reserva = reserva_selec)
+    print(relacion)
     
     for r in relacion:
         transacciones += [r.transaccion]
     
     return transacciones
+
+def calcular_Precio_Reserva(reserva,diasFeriados):
+    
+    iniReserva = reserva.inicioReserva
+    listaDiasReserva = []
+
+    while (iniReserva.day <= reserva.finalReserva.day):
+        
+        listaDiasReserva.append(iniReserva)
+        iniReserva += timedelta(days = 1) 
+    
+    estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = reserva.estacionamiento )
+
+    if len(estacionamientotarifa) == 2:
+        esquema_no_feriado = estacionamientotarifa[0]
+        esquema_feriado = estacionamientotarifa[1]
+        
+    numDias = len(listaDiasReserva)
+    monto = 0
+    montoTotal = 0
+    
+    # CASO 1: RESERVA EN UN SOLO DIA
+    
+    if (numDias == 1):
+        
+        coincidencia = False
+        
+        for diaFeriado in diasFeriados:
+            
+            if (listaDiasReserva[0].day == diaFeriado.fecha.day and 
+                listaDiasReserva[0].month == diaFeriado.fecha.month):
+                monto = Decimal(
+                    esquema_feriado.tarifa.calcularPrecio(reserva.inicioReserva,reserva.finalReserva))
+                
+                coincidencia = True
+                break
+            
+        if (not coincidencia):
+                
+                monto = Decimal(
+                    esquema_no_feriado.tarifa.calcularPrecio(reserva.inicioReserva,reserva.finalReserva)
+                )
+                                
+        montoTotal += monto
+    
+    # CASO 2: RESERVA DE MULTIPLES DIAS
+        
+    elif (numDias > 1):
+        
+        coincidencia = False
+        cont = 1
+        
+        # Se define el inicio y el final de cada dia
+            
+        for diaReserva in listaDiasReserva:
+            
+        
+            coincidencia = False
+            
+            if (cont == 1):
+                inicioDia = reserva.inicioReserva
+                finalDia = datetime(reserva.inicioReserva.year, reserva.inicioReserva.month, 
+                                    reserva.inicioReserva.day, 23, 59)
+            elif (cont == numDias):
+                inicioDia = datetime(reserva.finalReserva.year, reserva.finalReserva.month, 
+                                     reserva.finalReserva.day, 0, 0)
+                finalDia = reserva.finalReserva
+            else:
+                inicioDia = datetime(diaReserva.year, diaReserva.month, 
+                                     diaReserva.day, 0, 0)
+                
+                finalDia  = datetime(diaReserva.year, diaReserva.month, 
+                                     diaReserva.day, 23, 59)
+                
+            # Se Calcula la tarifa de los dias que coinciden con los dias feriados    
+                
+            for diaFeriado in diasFeriados:
+                 
+                if (diaReserva.day == diaFeriado.fecha.day and 
+                    diaReserva.month == diaFeriado.fecha.month):
+                    
+                    monto = Decimal(
+                        esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
+                    )
+                    coincidencia = True
+                    break
+                     
+            if (not coincidencia):
+                
+                monto = Decimal(
+                        esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
+                        )
+            
+            montoTotal += monto
+            request.session['monto'] = float(montoTotal)
+            cont += 1
+            
+    return montoTotal
     
     
     
