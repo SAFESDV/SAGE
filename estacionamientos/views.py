@@ -15,6 +15,7 @@ from datetime import datetime, date, timedelta
 from reservas.controller import (
     validarHorarioReserva,
     marzullo,
+    calcular_Precio_Reserva,
 )
 
 from estacionamientos.controller import (
@@ -237,15 +238,15 @@ def estacionamiento_detail(request, _id):
                 
             # debería funcionar con excepciones
             esquema_no_feriado = EsquemaTarifarioM2M(
-                                                        estacionamiento= estacionamiento,
-                                                                    tarifa = esquemaTarifa
-                                                                    )
+                                                     estacionamiento= estacionamiento,
+                                                     tarifa = esquemaTarifa
+                                                     )
             esquema_no_feriado.save()
             
             esquema_feriado = EsquemaTarifarioM2M(
-                                                                    estacionamiento= estacionamiento,
-                                                                    tarifa = esquemaTarifaFeriado
-                                                                    )
+                                                  estacionamiento= estacionamiento,
+                                                  tarifa = esquemaTarifaFeriado
+                                                  )
             esquema_feriado.save()
             
             esquema_no_feriado = esquemaTarifa 
@@ -292,10 +293,6 @@ def estacionamiento_editar(request, _id):
     except ObjectDoesNotExist:
         raise Http404
 
-    estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
-    esquema_no_feriado = estacionamientotarifa[0]
-    esquema_feriado = estacionamientotarifa[1] 
-
     if request.method == 'GET':
         
         
@@ -325,7 +322,6 @@ def estacionamiento_editar(request, _id):
                         request,
                         'editar-datos-estacionamiento.html',
                         { "form"    : form
-                        , 'estacionamientos': estacionamiento
                         , 'estacionamiento': estacionamiento
                         , "color"   : "red"
                         ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
@@ -345,8 +341,6 @@ def estacionamiento_editar(request, _id):
         'editar-datos-estacionamiento.html',
         { 'form': form
         , 'estacionamiento': estacionamiento
-        , 'esquema_no_feriado' : esquema_no_feriado
-        , 'esquema_feriado' : esquema_feriado
         }
     )
 
@@ -498,13 +492,16 @@ def estacionamiento_pago(request,_id):
                 inicioReserva   = inicioReserva,
                 finalReserva    = finalReserva,
                 estado          = 'Válido',
-                tipo_vehiculo = request.session['tipo_vehiculo']
+                tipo_vehiculo   = request.session['tipo_vehiculo']
             )
 
             # Se guarda la reserva en la base de datos
+            
             reservaFinal.save()
 
-            monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))
+            monto = float(request.session['monto'])
+            monto = Decimal(monto).quantize(Decimal('1.00'))
+            #monto = Decimal(request.session['monto']).quantize("1.00")
             
             trans = Transaccion(
                 fecha = datetime.now(),
@@ -633,116 +630,9 @@ def estacionamiento_reserva(request, _id):
                     estado          = 'Válido',
                     tipo_vehiculo = tipo_vehiculo_tomado
                 )
-
-                iniReserva = inicioReserva
-                listaDiasReserva = []
             
-                while (iniReserva.day <= finalReserva.day):
-                    
-                    listaDiasReserva.append(iniReserva)
-                    iniReserva += timedelta(days = 1) 
-                
-                estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = estacionamiento_selec )
-            
-                if len(estacionamientotarifa) == 2:
-                    esquema_no_feriado = estacionamientotarifa[0]
-                    esquema_feriado = estacionamientotarifa[1]
-                    
-                numDias = len(listaDiasReserva)
-                monto = 0
-                montoTotal = 0
-                
-                # CASO 1: RESERVA EN UN SOLO DIA
-                
-                if (numDias == 1):
-                    
-                    coincidencia = False
-                    
-                    for diaFeriado in diasFeriados:
-                        
-                        if (listaDiasReserva[0].day == diaFeriado.fecha.day and 
-                            listaDiasReserva[0].month == diaFeriado.fecha.month):
-                            monto = Decimal(
-                                esquema_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
-                            )
-                
-                            request.session['monto'] = float(
-                                esquema_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
-                            )
-                            
-                            coincidencia = True
-                            break
-                        
-                    if (not coincidencia):
-                            
-                            monto = Decimal(
-                                esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
-                            )
-                            request.session['monto'] = float(
-                                esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
-                            )
-                    montoTotal += monto
-                
-                # CASO 2: RESERVA DE MULTIPLES DIAS
-                    
-                elif (numDias > 1):
-                    
-                    coincidencia = False
-                    cont = 1
-                    
-                    # Se define el inicio y el final de cada dia
-                        
-                    for diaReserva in listaDiasReserva:
-                        
-                    
-                        coincidencia = False
-                        
-                        if (cont == 1):
-                            inicioDia = inicioReserva
-                            finalDia = datetime(inicioReserva.year, inicioReserva.month, 
-                                                inicioReserva.day, 23, 59)
-                        elif (cont == numDias):
-                            inicioDia = datetime(finalReserva.year, finalReserva.month, 
-                                                 finalReserva.day, 0, 0)
-                            finalDia = finalReserva
-                        else:
-                            inicioDia = datetime(diaReserva.year, diaReserva.month, 
-                                                 diaReserva.day, 0, 0)
-                            
-                            finalDia  = datetime(diaReserva.year, diaReserva.month, 
-                                                 diaReserva.day, 23, 59)
-                            
-                        # Se Calcula la tarifa de los dias que coinciden con los dias feriados    
-                            
-                        for diaFeriado in diasFeriados:
-                             
-                            if (diaReserva.day == diaFeriado.fecha.day and 
-                                diaReserva.month == diaFeriado.fecha.month):
-                                
-                                monto = Decimal(
-                                    esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
-                                )
-                                
-                
-                                request.session['monto'] = float(
-                                    esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
-                                )
-                                coincidencia = True
-                                break
-                                 
-                        if (not coincidencia):
-                            
-                            monto = Decimal(
-                                    esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
-                            )
-            
-                            request.session['monto'] = float(
-                                esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
-                            )
-                        
-                        montoTotal += monto
-                        request.session['monto'] = float(montoTotal)
-                        cont += 1
+                montoTotal = calcular_Precio_Reserva(reservaFinal,diasFeriados)
+                request.session['monto'] = float(montoTotal)
                     
                 request.session['finalReservaHora']    = finalReserva.hour
                 request.session['finalReservaMinuto']  = finalReserva.minute
@@ -760,6 +650,7 @@ def estacionamiento_reserva(request, _id):
                 request.session['cedula']              = form.cleaned_data['cedula']
                 request.session['cedulaTipo']          = form.cleaned_data['cedulaTipo']
                 request.session['tipo_vehiculo']       = form.cleaned_data['tipo_vehiculo']
+                
                 return render(
                     request,
                     'confirmar.html',

@@ -14,6 +14,7 @@ def autenticar(_id, _pin):
         BE = BilleteraElectronica.objects.get(id = _id, PIN = _pin)
     except:
         return False
+    return True
 
 def consultar_saldo(ID_Billetera):
     

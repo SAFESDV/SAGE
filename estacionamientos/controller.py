@@ -140,6 +140,8 @@ def seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento): #una l
 											descripcion = diaDescripcion,
 											estacionamiento = estacionamiento)
 	feriadosEscogidos.save()
+    
+    
 
 def limpiarEsquemasTarifarios(_id):
 	
