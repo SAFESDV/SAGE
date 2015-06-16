@@ -9,11 +9,21 @@
       Tasa de Reservacion del Estacionamiento {{estacionamiento.nombre}}
     </h3>
     <hr>
+    
     <div class="col-md-6">
       {% include "tabla-tasa-reservacion.html" %}
     </div>
+    
     <div class="col-md-6">
-		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacion}}">
+		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionLivianos}}">
+    </div>
+    
+    <div class="col-md-6">
+		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionPesados}}">
+    </div>
+    
+    <div class="col-md-6">
+		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionMotos}}">
     </div>
   </div>
 {% endblock %}
