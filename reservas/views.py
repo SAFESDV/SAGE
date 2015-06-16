@@ -21,12 +21,7 @@ from reservas.controller import (
     marzullo,
 )
 
-from reservas.forms import (
-    ReservaForm,
-    CancelarReservaForm,
-    MoverReservaForm,
-    MoverReservaNuevaForm,
-)
+from reservas.forms import *
 
 from reservas.models import Reserva
 from transacciones.models import *
@@ -115,22 +110,7 @@ def confirmar_cancelar_reserva(request):
                         }
                     )
                 
-            trans = get_transacciones(request.session['reservaid'])
-            print(request.session['reservaid'])
-            print(trans)
-            monto = transaccion_monto(trans[0].id)
-             
-            try:   
-                recargar_saldo(form.cleaned_data['id'], monto)
-            except:
-                return render(
-                    request,
-                    'cancelar_reserva_confirmar.html',
-                    { "color"   : "red"
-                     , 'mensaje' : 'No se puede hacer un reembolso a esta billetera porque excede el limite'
-                     , 'billetera' : form
-                     }
-                )
+
                 
             cancelar_reserva(request.session['reservaid'])
             
@@ -151,11 +131,11 @@ def confirmar_cancelar_reserva(request):
         }
     )
     
-def Mover_reserva(request):
+def Mover_reserva_buscar_original(request):
+    
     form = MoverReservaForm()
     if request.method == 'POST':
         form = MoverReservaForm(request.POST)
-        form2 = MoverReservaNuevaForm(request.POST)
         if form.is_valid():
             
             numeroReser   = form.cleaned_data['numReser']
@@ -165,7 +145,7 @@ def Mover_reserva(request):
             except:
                 return render(
                     request,
-                    'mover-reserva.html',
+                    'mover-reserva-buscar-original.html',
                     {  "color"    : "red"
                      , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en la reserva.'
                      , "form"     : form
@@ -178,7 +158,7 @@ def Mover_reserva(request):
             
             return render(
                 request,
-                'mover-reserva.html',
+                'mover-reserva-buscar-original.html',
                 { 'reserva'     : reserva_selec,
                   'transreser'  : transreser,
                   'billetera'   : BilleteraLogin(),
@@ -188,11 +168,11 @@ def Mover_reserva(request):
                             
     return render(
         request,
-        'mover-reserva.html',
+        'mover-reserva-buscar-original.html',
         { "form" : form }
     )
 
-def Comfirmacion_Mover_Reserva(request):
+def Mover_Reserva_buscar_nueva(request):
     
     form = MoverReservaNuevaForm()
     reserva_selec = Reserva.objects.get(id = request.session['reservaid'])
@@ -209,7 +189,7 @@ def Comfirmacion_Mover_Reserva(request):
             except:
                 return render(
                     request,
-                    'comfirmar-mover-reservacion.html',
+                    'mover-reservacion-buscar-nueva.html',
                     {  "color"    : "red"
                      , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en la reserva.'
                      , "form"     : form
@@ -225,7 +205,7 @@ def Comfirmacion_Mover_Reserva(request):
             if not m_validado[0]:
                 return render(
                     request,
-                    'comfirmar-mover-reservacion.html',
+                    'mover-reservacion-buscar-nueva.html',
                     { 'color'  :'red'
                     , 'mensaje': m_validado[1]
                     , "form"            : form
@@ -249,26 +229,91 @@ def Comfirmacion_Mover_Reserva(request):
                 montoTotal = calcular_Precio_Reserva(reservaNueva,diasFeriados)
                 diferencia = transreser.transaccion.monto - montoTotal
        
+                request.session['finalReservaHora']    = NuevoFinal.hour
+                request.session['finalReservaMinuto']  = NuevoFinal.minute
+                request.session['inicioReservaHora']   = NuevoInicio.hour
+                request.session['inicioReservaMinuto'] = NuevoInicio.minute
+                request.session['anioinicial']         = NuevoInicio.year
+                request.session['mesinicial']          = NuevoInicio.month
+                request.session['diainicial']          = NuevoInicio.day
+                request.session['aniofinal']           = NuevoFinal.year
+                request.session['mesfinal']            = NuevoFinal.month
+                request.session['diafinal']            = NuevoFinal.day
+                request.session['tipo_vehiculo']       = reserva_selec.tipo_vehiculo
+                request.session['nombre']              = reserva_selec.nombre
+                request.session['apellido']            = reserva_selec.apellido
+                request.session['cedula']              = reserva_selec.cedula
+                request.session['cedulaTipo']          = reserva_selec.cedulaTipo
+                request.session['monto']               = float(montoTotal)
             
             return render(
                 request,
-                'comfirmar-mover-reservacion.html',
-                { "form"            : form,
-                  'reserva'         : reserva_selec,
-                  'transreser'      : transreser,
-                  'billetera'       : BilleteraLogin(),
-                  'reservaNueva'    : reservaNueva,
-                  'Monto'           : montoTotal,
-                  'diferencia'      : diferencia
+                'mover-reservacion-buscar-nueva.html',
+                { "form"            : form
+                  ,'reserva'         : reserva_selec
+                  ,'transreser'      : transreser
+                  ,'billetera'       : BilleteraLogin()
+                  ,'reservaNueva'    : reservaNueva
+                  ,'Monto'           : montoTotal
+                  ,'diferencia'      : diferencia
+                  , 'mensaje': m_validado[1]
                 }
             )
             
     return render(
         request,
-        'comfirmar-mover-reservacion.html',
+        'mover-reservacion-buscar-nueva.html',
         { "form"        : form,
          'reserva'      : reserva_selec,
          'transreser'   : transreser,
           'billetera'   : BilleteraLogin(),          
           }
     )
+
+def Mover_Reserva_comfirmar(request):
+    
+    form = MoverReservaBilletera()
+    reserva_selec = Reserva.objects.get(id = request.session['reservaid'])
+    transreser = TransReser.objects.get(reserva = reserva_selec)
+    _id = reserva_selec.estacionamiento.id
+    
+    if request.method == 'POST':
+        form = MoverReservaBilletera(request.POST)
+        if form.is_valid():
+            
+            if not (autenticar(form.cleaned_data['id'],form.cleaned_data['pin'])):
+                return render(
+                    request,
+                    'mover-reserva-comfirmar.html',
+                    {  "color"    : "red"
+                     , 'mensaje'  : 'Billetera eletronica no valida'
+                     , "form"     : form
+                    }
+                )            
+            
+            cancelar_reserva(request.session['reservaid'])
+            
+            return render(
+                request,
+                'mover-reserva-comfirmar.html',
+                { "form"            : form
+                  ,'reserva'         : reserva_selec
+                  ,'transreser'      : transreser
+                  ,'billetera'       : BilleteraLogin()
+                  ,'reservaNueva'    : reservaNueva
+                  ,'Monto'           : montoTotal
+                  ,'diferencia'      : diferencia
+                  , 'mensaje'        : m_validado[1]
+                }
+            )
+            
+    return render(
+        request,
+        'mover-reserva-comfirmar.html',
+        { "form"        : form,
+         'reserva'      : reserva_selec,
+         'transreser'   : transreser,
+          'billetera'   : BilleteraLogin(),          
+          }
+    )
+        

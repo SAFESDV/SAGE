@@ -92,6 +92,13 @@
       <hr>
     </div>
     <div class="col-md-4">
+                      {% if reservaNueva %}
+                  <a href="/estacionamientos/mover_reserva/comfirmar">
+              		<button class="btn btn-primary">
+                		Comfirmar
+              		</button>
+            	  </a>
+                  {% endif %}
     </div>
       
       {% if form %}
@@ -138,11 +145,6 @@
                   <button type="submit" class="btn btn-primary">
                     Consultar
                   </button>
-                  {% if reservaNueva %}
-                   <button type="submit" class="btn btn-primary">
-                    Comfirmar
-                  </button>
-                  {% endif %}
                 </div>
 
               </div>

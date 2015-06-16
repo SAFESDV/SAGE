@@ -5,7 +5,6 @@ from django.conf.urls import patterns, url
 from estacionamientos import views
 from billetera.views import billetera_pagar
 from reservas.views import *
-from reservas.views import reserva_detalle
 
 
 # Este error es raro, en django funciona
@@ -22,8 +21,9 @@ urlpatterns = patterns('',
     url(r'^cancelar_reserva$', estacionamiento_cancelar_reserva, name = 'estacionamiento_cancelar_reserva'),
     url(r'^cancelar_reserva/confirmar$', confirmar_cancelar_reserva, name = 'confirmar_cancelar_reserva'),
     
-    url(r'^mover_reserva$', Mover_reserva, name = 'mover_reserva'),
-    url(r'^mover_reserva/confirmar$', Comfirmacion_Mover_Reserva, name = 'mover_reserva_comfirmar'),
+    url(r'^mover_reserva$', Mover_reserva_buscar_original, name = 'Mover_reserva_buscar_original'),
+    url(r'^mover_reserva/buscar_nueva$', Mover_Reserva_buscar_nueva, name = 'Mover_reserva_buscar_nuevo'),
+    url(r'^mover_reserva/comfirmar$', Mover_Reserva_comfirmar, name = 'Mover_Reserva_comfirmar'),
 
     
     url(r'^sms$', views.receive_sms, name='receive_sms'),

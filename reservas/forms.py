@@ -190,15 +190,18 @@ class MoverReservaForm(forms.Form):
     
 class MoverReservaNuevaForm(forms.Form):
     
-    card_name_validator = RegexValidator(
-        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
-        message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
-    )
-    
-    card_surname_validator = RegexValidator(
-        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
-        message = 'El apellido no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
-    )
+    nuevoInicio = forms.SplitDateTimeField(
+        required = True,
+        label = 'Horario Inicio Reserva',
+        widget= CustomSplitDateTimeWidget(attrs=
+            { 'class'       : 'form-control'
+            , 'type'        : 'date'
+            , 'placeholder' : 'Hora Inicio Reserva'
+            }
+        )
+    )                 
+
+class MoverReservaBilletera(forms.Form):
     
     id_validator = RegexValidator(
         regex   = '^[0-9]+$',
@@ -234,19 +237,7 @@ class MoverReservaNuevaForm(forms.Form):
             , 'message'     : pin_validator.message
             }
         )
-    )
-    
-    nuevoInicio = forms.SplitDateTimeField(
-        required = True,
-        label = 'Horario Inicio Reserva',
-        widget= CustomSplitDateTimeWidget(attrs=
-            { 'class'       : 'form-control'
-            , 'type'        : 'date'
-            , 'placeholder' : 'Hora Inicio Reserva'
-            }
-        )
     )                 
-
    
 class PagoForm(forms.Form):
     
