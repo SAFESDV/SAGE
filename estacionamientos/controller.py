@@ -76,6 +76,8 @@ def calcular_porcentaje_de_tasa(hora_apertura,hora_cierre, capacidad, ocupacion)
 	for i in ocupacion.keys():
 		ocupacion[i] = (Decimal(ocupacion[i])*100/(factor_divisor*capacidad)).quantize(Decimal('1.0'))
 
+
+
 def consultar_ingresos(rif):
 	
     listaEstacionamientos = Estacionamiento.objects.filter(rif = rif)
