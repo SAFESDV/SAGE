@@ -13,8 +13,19 @@ def autenticar(_id, _pin):
     try:
         BE = BilleteraElectronica.objects.get(id = _id, PIN = _pin)
     except:
-        raise AutenticacionDenegada
+        return False
     return True
+
+def verificarPin(pin1,pin2):
+    if pin1!=pin2:
+        return False
+    else:
+        return True
+    
+def modificarPin(Id,pin1):
+    BE = BilleteraElectronica.objects.get(id = Id)
+    BE.PIN = pin1
+    BE.save()
 
 def consultar_saldo(ID_Billetera):
     
