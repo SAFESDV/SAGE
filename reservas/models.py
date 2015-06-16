@@ -23,4 +23,4 @@ class Reserva(models.Model):
     tipo_vehiculo   = models.CharField(max_length = 7)
 
     def __str__(self):
-        return str(self.id) + ' ' +self.estacionamiento.nombre+' ('+str(self.inicioReserva)+','+str(self.finalReserva)+')'
+        return str(self.id) +  ' ' +self.estacionamiento.nombre+' ('+str(self.inicioReserva)+','+str(self.finalReserva)+ ' ' + self.estado + ')'

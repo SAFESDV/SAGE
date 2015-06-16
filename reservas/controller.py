@@ -114,9 +114,7 @@ def get_transacciones(idReserva):
     
     transacciones = []
     reserva_selec = Reserva.objects.get(id = idReserva)
-    print(reserva_selec)
     relacion = TransReser.objects.filter(reserva = reserva_selec)
-    print(relacion)
     
     for r in relacion:
         transacciones += [r.transaccion]

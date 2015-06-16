@@ -21,6 +21,11 @@ urlpatterns = patterns('',
     url(r'^consulta_reserva/(?P<_id>\d+)$', reserva_detalle, name = 'estacionamiento_consulta_reserva'),
     url(r'^cancelar_reserva$', estacionamiento_cancelar_reserva, name = 'estacionamiento_cancelar_reserva'),
     url(r'^cancelar_reserva/confirmar$', confirmar_cancelar_reserva, name = 'confirmar_cancelar_reserva'),
+    
+    url(r'^mover_reserva$', Mover_reserva, name = 'mover_reserva'),
+    url(r'^mover_reserva/confirmar$', Comfirmacion_Mover_Reserva, name = 'mover_reserva_comfirmar'),
+
+    
     url(r'^sms$', views.receive_sms, name='receive_sms'),
     url(r'^(?P<_id>\d+)/tasa$', views.tasa_de_reservacion, name = 'tasa_de_reservacion'),
     url(r'^grafica/.*$', views.grafica_tasa_de_reservacion, name = 'grafica_tasa_de_reservacion'),

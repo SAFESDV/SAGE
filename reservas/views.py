@@ -24,12 +24,14 @@ from reservas.controller import (
 from reservas.forms import (
     ReservaForm,
     CancelarReservaForm,
+    MoverReservaForm,
 )
 
 from reservas.models import Reserva
 from transacciones.models import *
 from reservas.controller import *
 from transacciones.controller import *
+from _datetime import timedelta
 
 def reserva_detalle(request, _id):
     _id = int(_id)
@@ -147,3 +149,107 @@ def confirmar_cancelar_reserva(request):
         'billetera' : form,
         }
     )
+    
+def Mover_reserva(request):
+    form = MoverReservaForm()
+    if request.method == 'POST':
+        form = MoverReservaForm(request.POST)
+        if form.is_valid():
+            
+            numeroReser   = form.cleaned_data['numReser']
+            numeroCedula  = form.cleaned_data['cedula']
+            try:
+                reserva_selec      = Reserva.objects.get(id = numeroReser, cedula = numeroCedula, estado = 'Válido')
+            except:
+                return render(
+                    request,
+                    'mover-reserva.html',
+                    {  "color"    : "red"
+                     , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en la reserva.'
+                     , "form"     : form
+                    }
+                )
+            
+            transreser = TransReser.objects.get(reserva = reserva_selec)
+        
+            
+            request.session['reservaid'] = reserva_selec.id
+            return render(
+                request,
+                'comfirmar-mover-reservacion.html',
+                { 'reserva'     : reserva_selec,
+                  'transreser'  : transreser,
+                  'billetera'   : BilleteraLogin()
+                }
+            )
+                            
+    return render(
+        request,
+        'mover-reserva.html',
+        { "form" : form }
+    )
+
+def Comfirmacion_Mover_Reserva():
+    form = MoverReservaNuevaForm()
+    if request.method == 'POST':
+        form = MoverReservaNuevaForm(request.POST)
+        if form.is_valid():
+            
+            NuevoInicio   = form.cleaned_data['nuevoInicio']
+            try:
+                reserva_selec      = Reserva.objects.get(id = request.session['reservaid'], estado = 'Válido')
+            except:
+                return render(
+                    request,
+                    'mover-reserva.html',
+                    {  "color"    : "red"
+                     , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en la reserva.'
+                     , "form"     : form
+                    }
+                )
+            
+            transreser = TransReser.objects.get(reserva = reserva_selec)
+            NuevoFinal = NuevoInicio + (reserva_selec.finalReserva - reserva_selec.inicioReserva)
+            m_validado = validarHorarioReserva(NuevoInicio, NuevoFinal, reserva.estacionamiento.apertura, 
+                                  reserva.estacionamiento.cierre, reserva.estacionamiento.horizonte)
+            
+            
+            # Si no es valido devolvemos el request
+            if not m_validado[0]:
+                return render(
+                    request,
+                    'mover-reserva.html',
+                    { 'color'  :'red'
+                    , 'mensaje': m_validado[1]
+                    }
+                )
+            
+            if marzullo(_id, inicioReserva, finalReserva, tipo_vehiculo_tomado):
+                reservaNueva = Reserva(
+                    estacionamiento = reserva.estacionamiento,
+                    inicioReserva   = NuevoInicio,
+                    finalReserva    = NuevoFinal,
+                    estado          = 'Válido',
+                    tipo_vehiculo   = reserva.tipo_vehiculo
+                )
+                
+                montoTotal = calcular_Precio_Reserva(reservaNueva,diasFeriados)
+                diferencia = transreser.transaccion.monto - montoTotal
+                
+                
+            
+            return render(
+                request,
+                'comfirmar-mover-reservacion.html',
+                { 'reserva'     : reserva_selec,
+                  'transreser'  : transreser,
+                  'billetera'   : BilleteraLogin()
+                }
+            )
+                            
+    return render(
+        request,
+        'mover-reserva.html',
+        { "form" : form }
+    )    
+    pass

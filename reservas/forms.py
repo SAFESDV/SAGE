@@ -150,6 +150,73 @@ class CancelarReservaForm(forms.Form):
         )
     ) 
    
+class MoverReservaForm(forms.Form):
+    
+    transaccion_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'El numero de transaccion solo puede contener caracteres numéricos.'
+    )
+    
+    cedula_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'La cédula solo puede contener caracteres numéricos.'
+    )
+    
+    numReser = forms.CharField(
+        required   = True,
+        label      = "Reserva",
+        validators = [transaccion_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'ID Reserva'
+            , 'pattern'     : transaccion_validator.regex.pattern
+            , 'message'     : transaccion_validator.message
+            }
+        )
+    )                            
+    
+    cedula = forms.CharField(
+        required   = True,
+        label      = "Cédula",
+        validators = [cedula_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Cédula'
+            , 'pattern'     : cedula_validator.regex.pattern
+            , 'message'     : cedula_validator.message
+            }
+        )
+    ) 
+    
+class MoverReservaNuevaForm(forms.Form):
+    
+    card_name_validator = RegexValidator(
+        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
+        message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
+    )
+    
+    card_surname_validator = RegexValidator(
+        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
+        message = 'El apellido no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
+    )
+    
+    id_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'La cédula solo puede contener caracteres numéricos.'
+    )
+    
+    inicio = forms.SplitDateTimeField(
+        required = True,
+        label = 'Horario Inicio Reserva',
+        widget= CustomSplitDateTimeWidget(attrs=
+            { 'class'       : 'form-control'
+            , 'type'        : 'date'
+            , 'placeholder' : 'Hora Inicio Reserva'
+            }
+        )
+    )                 
+
+   
 class PagoForm(forms.Form):
     
     card_name_validator = RegexValidator(
