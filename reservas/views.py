@@ -117,21 +117,9 @@ def confirmar_cancelar_reserva(request):
             trans = get_transacciones(request.session['reservaid'])
             print(request.session['reservaid'])
             print(trans)
-            monto = transaccion_monto(trans[0].id)
-             
-            try:   
-                recargar_saldo(form.cleaned_data['id'], monto)
-            except:
-                return render(
-                    request,
-                    'cancelar_reserva_confirmar.html',
-                    { "color"   : "red"
-                     , 'mensaje' : 'No se puede hacer un reembolso a esta billetera porque excede el limite'
-                     , 'billetera' : form
-                     }
-                )
-                
-            cancelar_reserva(request.session['reservaid'])
+            
+            monto = transaccion_monto(trans.id)
+            cancelar_reserva(request.session['reservaid'],form.cleaned_data['id'],monto)
             
             return render(
                     request,
@@ -196,6 +184,7 @@ def Comfirmacion_Mover_Reserva():
         if form.is_valid():
             
             NuevoInicio   = form.cleaned_data['nuevoInicio']
+            
             try:
                 reserva_selec      = Reserva.objects.get(id = request.session['reservaid'], estado = 'Válido')
             except:
@@ -226,27 +215,47 @@ def Comfirmacion_Mover_Reserva():
             
             if marzullo(_id, inicioReserva, finalReserva, tipo_vehiculo_tomado):
                 reservaNueva = Reserva(
-                    estacionamiento = reserva.estacionamiento,
+                    estacionamiento = reserva_selec.estacionamiento,
                     inicioReserva   = NuevoInicio,
                     finalReserva    = NuevoFinal,
                     estado          = 'Válido',
-                    tipo_vehiculo   = reserva.tipo_vehiculo
+                    tipo_vehiculo   = reserva_selec.tipo_vehiculo
                 )
                 
                 montoTotal = calcular_Precio_Reserva(reservaNueva,diasFeriados)
-                diferencia = transreser.transaccion.monto - montoTotal
+                diferencia = montoTotal - transreser.transaccion.monto
+                cancelar_reserva = (idReserva,idbilletera,monto)
                 
+                request.session['monto']                = float(montoTotal)    
+                request.session['finalReservaHora']     = reservaNueva.finalReserva.hour
+                request.session['finalReservaMinuto']   = reservaNueva.finalReserva.minute
+                request.session['inicioReservaHora']    = reservaNueva.inicioReserva.hour
+                request.session['inicioReservaMinuto']  = reservaNueva.inicioReserva.minute
+                request.session['anioinicial']          = reservaNueva.inicioReserva.year
+                request.session['mesinicial']           = reservaNueva.inicioReserva.month
+                request.session['diainicial']           = reservaNueva.inicioReserva.day
+                request.session['aniofinal']            = reservaNueva.finalReserva.year
+                request.session['mesfinal']             = reservaNueva.finalReserva.month
+                request.session['diafinal']             = reservaNueva.finalReserva.day
+                request.session['tipo_vehiculo']        = reservaNueva.tipo_vehiculo_tomado
+                request.session['nombre']               = reserva_selec.nombre
+                request.session['apellido']             = reserva_selec.apellido
+                request.session['cedula']               = reserva_selec.cedula
+                request.session['cedulaTipo']           = reserva_selec.cedulaTipo
+                request.session['tipo_vehiculo']        = reserva_selec.tipo_vehiculo
                 
-            
-            return render(
-                request,
-                'comfirmar-mover-reservacion.html',
-                { 'reserva'     : reserva_selec,
-                  'transreser'  : transreser,
-                  'billetera'   : BilleteraLogin()
-                }
-            )
-                            
+                id_ = reserva_selec.estacionamiento.id        
+                
+                return render(
+                    request,
+                    'confirmar.html',
+                    { 'id'      : _id
+                    , 'monto'   : montoTotal
+                    , 'reserva' : reservaNueva
+                    , 'color'   : 'green'
+                    , 'mensaje' : 'Existe un puesto disponible'
+                    }
+                )         
     return render(
         request,
         'mover-reserva.html',

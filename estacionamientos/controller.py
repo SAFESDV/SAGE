@@ -101,8 +101,6 @@ def consultar_ingresos(rif):
 
     return listaIngresos, ingresoTotal, listaTransacciones
    
-
-
 def seleccionar_feriados(diaFeriado, estacionamiento): #una lista de objeto que contiene la fecha y la descripción del día feriado
 
 	feriadosEscogidos = DiasFeriadosEscogidos.objects.all()
@@ -141,8 +139,6 @@ def seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento): #una l
 											estacionamiento = estacionamiento)
 	feriadosEscogidos.save()
     
-    
-
 def limpiarEsquemasTarifarios(_id):
 	
 	#limpiando la base de datos

@@ -88,7 +88,8 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
     
     else:
         return False
-def cancelar_reserva(idReserva):
+    
+def cancelar_reserva(idReserva,idbilletera,monto):
     
     try:
         reser = Reserva.objects.get(id = idReserva)
@@ -101,6 +102,18 @@ def cancelar_reserva(idReserva):
     trans = relacion.transaccion
     trans.estado = 'Cancelado'
     
+    try:   
+        recargar_saldo(idbilletera, monto)
+    except:
+        return render(
+                    request,
+                    'cancelar_reserva_confirmar.html',
+                    { "color"   : "red"
+                     , 'mensaje' : 'No se puede hacer un reembolso a esta billetera porque excede el limite'
+                     , 'billetera' : form
+                     }
+                      )
+    
 def reservas_activas(idEstacionamiento):
     reservasAct = Reserva.objects.filter(estado = 'Válido')
     return reservaAct
@@ -111,15 +124,10 @@ def reservas_inactivas(idEstacionamiento):
 
 def get_transacciones(idReserva):
     
-    
-    transacciones = []
     reserva_selec = Reserva.objects.get(id = idReserva)
     relacion = TransReser.objects.filter(reserva = reserva_selec)
     
-    for r in relacion:
-        transacciones += [r.transaccion]
-    
-    return transacciones
+    return relacion.transaccion
 
 def calcular_Precio_Reserva(reserva,diasFeriados):
     

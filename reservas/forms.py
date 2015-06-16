@@ -190,21 +190,6 @@ class MoverReservaForm(forms.Form):
     
 class MoverReservaNuevaForm(forms.Form):
     
-    card_name_validator = RegexValidator(
-        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
-        message = 'El nombre no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
-    )
-    
-    card_surname_validator = RegexValidator(
-        regex   = '^[a-zA-ZáéíóúñÑÁÉÍÓÚ][a-zA-ZáéíóúñÑÁÉÍÓÚ ]*$',
-        message = 'El apellido no puede iniciar con espacio en blanco ni contener números ni caracteres desconocidos.'
-    )
-    
-    id_validator = RegexValidator(
-        regex   = '^[0-9]+$',
-        message = 'La cédula solo puede contener caracteres numéricos.'
-    )
-    
     inicio = forms.SplitDateTimeField(
         required = True,
         label = 'Horario Inicio Reserva',
