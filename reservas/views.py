@@ -25,6 +25,7 @@ from reservas.forms import (
     ReservaForm,
     CancelarReservaForm,
     MoverReservaForm,
+    MoverReservaNuevaForm,
 )
 
 from reservas.models import Reserva
@@ -154,6 +155,7 @@ def Mover_reserva(request):
     form = MoverReservaForm()
     if request.method == 'POST':
         form = MoverReservaForm(request.POST)
+        form2 = MoverReservaNuevaForm(request.POST)
         if form.is_valid():
             
             numeroReser   = form.cleaned_data['numReser']
@@ -171,15 +173,15 @@ def Mover_reserva(request):
                 )
             
             transreser = TransReser.objects.get(reserva = reserva_selec)
-        
-            
+                    
             request.session['reservaid'] = reserva_selec.id
             return render(
                 request,
                 'comfirmar-mover-reservacion.html',
                 { 'reserva'     : reserva_selec,
                   'transreser'  : transreser,
-                  'billetera'   : BilleteraLogin()
+                  'billetera'   : BilleteraLogin(),
+                  "form"        : form2
                 }
             )
                             

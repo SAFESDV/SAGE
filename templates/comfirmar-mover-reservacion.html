@@ -10,11 +10,19 @@
     </h3>
     <hr>
     <div class="row">
+        <h5><tr><td><b>
+        Esta es la reservacion que quiere modificar, comfirme su seleccion 
+        </b></td></tr></h5>
+        <h5><tr><td><b>
+        Nota: Al Comfirmar su seleccion se eliminara esta reservacion para hacer una nueva
+        </b></td></tr></h5>
       <div class="col-md-8" style="color:{{color}}">
         {{ mensaje }}
         <hr>
       </div>
     </div>
+    
+    
     <div class="col-md-4">
       <table class="table table-striped">
         <thead></thead>
@@ -61,15 +69,63 @@
           </td></tr>
         </tbody>
       </table>
+      <hr>
     </div>
-        <h5><tr><td><b>
-        Esta es la reservacion que quiere modificar, comfirme su seleccion 
-        </b></td></tr></h5>
-        <h5><tr><td><b>
-        Nota: Al Comfirmar su seleccion se eliminara esta reservacion para hacer una nueva
-        </b></td></tr></h5>
-  </div>
-
+    <div class="col-md-4">
+    </div>
+      
+      {% if form %}
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="panel-title">
+            <i class="glyphicon glyphicon-wrench pull-right"></i>
+            <h4>
+              Cambiar Reservas
+            </h4>
+          </div>
+        </div>
+        <div class="panel-body">
+        
+          <form
+            method="post"
+            class="form form-vertical"
+          >
+            {% csrf_token %}
+              {% for field in form %}
+              <div class="control-group">
+                <div class="controls">
+                  {{ field }}
+                  <span class='error' id='{{field.name}}_error' aria-live="polite">
+                    {{ field.errors }}
+                  </span>
+                  <p>
+                </div>
+              </div>
+            {% endfor %}
+              <div class="col-md-12" style="color:{{color}}">
+  				{% if mensaje %} 
+      				{{ mensaje }}
+      				<br>
+      				</br>
+    			{% endif %}
+    		  </div>
+              <div class="control-group">
+                <label></label>
+                <div class="controls">
+                  <button type="submit" class="btn btn-primary">
+                    Cambiar
+                  </button>
+                </div>
+              </div>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    
+</div>
   <script type="text/javascript">
     function popup(mylink, windowname) {
       if (! window.focus)
