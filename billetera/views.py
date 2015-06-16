@@ -138,12 +138,9 @@ def billetera_pagar(request, _id):
     if request.method == 'POST':
         form = BilleteraLogin(request.POST)
         if form.is_valid():
-            try:
-                BE = BilleteraElectronica.objects.get(
-                    id = form.cleaned_data['id'],
-                    PIN = form.cleaned_data['pin']
-                )                
-            except ObjectDoesNotExist:
+            
+                        
+            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
                 return render(
                         request,
                         'billetera_pagar.html',
@@ -152,6 +149,12 @@ def billetera_pagar(request, _id):
                         ,'mensaje'  : "Autenticación denegada."
                         }
                     )
+                
+            BE = BilleteraElectronica.objects.get(
+                    id = form.cleaned_data['id']
+                )
+            
+            
             
             monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))
             
@@ -267,7 +270,7 @@ def recarga_pago(request):
             try:
                 transID = recargar_saldo_TDC(request.session['passbillid'], form)
                 
-                transaccion = TransTDC.objects.get(transaccion__id = transID)
+                transaccion = TransTDC.objects.get(id = transID)
                 
                 return render(
                     request,
@@ -293,3 +296,83 @@ def recarga_pago(request):
         'pago_recarga.html',
         { 'form' : form }
     )
+    
+def cambiar_pin_verificar(request):
+   
+    form = BilleteraLogin()
+    
+    if request.method == 'POST':
+        form = BilleteraLogin(request.POST)
+        if form.is_valid():
+            
+            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
+                return render(
+                        request,
+                        'billetera_cambiar.html',
+                        { "form"    : form
+                        , "valido"  : 0
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+                
+            request.session['passbillid'] = form.cleaned_data['id']
+            BillID = request.session['passbillid'] 
+            
+            return render(
+                    request,
+                   'billetera_cambiar.html',
+                    { "form"    : form
+                    , "valido"  : 1
+                    }
+                )
+
+    return render(
+        request,
+        'billetera_cambiar.html',
+        { 'form'   : form
+        , "valido" : 0
+        }
+    )     
+    
+def cambiar_pin(request):
+    
+    form = CambiarPinForm()
+    
+    if request.method == 'POST':
+        form = CambiarPinForm(request.POST)
+        if form.is_valid():
+
+            BillID = request.session['passbillid']
+           
+            pin1 = form.cleaned_data['pin'] 
+            pin2 = form.cleaned_data['pin_verificar']
+
+            if not verificarPin(pin1,pin2):
+                    return render(
+                        request,
+                        'billetera_cambiar_pin.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Las contraseñas no coinciden"
+                        }
+                    )
+            else:
+                modificarPin(BillID,pin1)
+                return render(
+                        request,
+                        'billetera_cambiar_pin.html',
+                        { "form"    : form
+                        , "color"   : "green"
+                        ,'mensaje'  : "La contraseña se modificó exitosamente "
+                        }
+                    )
+        
+                
+    return render(
+        request,
+        'billetera_cambiar_pin.html',
+        { 'form' : form }
+    )
+    
+    

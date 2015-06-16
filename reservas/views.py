@@ -102,8 +102,8 @@ def confirmar_cancelar_reserva(request):
             if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
                 return render(
                         request,
-                        'consultar_saldo.html',
-                        { "form"    : form
+                        'cancelar_reserva_confirmar.html',
+                        { "billetera"    : form
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
                         }
@@ -119,7 +119,7 @@ def confirmar_cancelar_reserva(request):
                     request,
                     'cancelar_reserva_confirmar.html',
                     { "color"   : "red"
-                     , 'mensaje' : 'Error al reembolsar reservación (Límite de saldo excedido).'
+                     , 'mensaje' : 'No se puede hacer un reembolso a esta billetera porque excede el limite'
                      , 'billetera' : form
                      }
                 )

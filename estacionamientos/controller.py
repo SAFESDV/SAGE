@@ -12,6 +12,10 @@ from estacionamientos.models import (
     TarifaHoraPico,
     DiasFeriadosEscogidos,
 )
+from reservas.models import (
+    Reserva,
+)
+
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
@@ -80,32 +84,28 @@ def calcular_porcentaje_de_tasa(hora_apertura,hora_cierre, capacidad, ocupacion)
 
 def consultar_ingresos(rif):
 	
-    listaEstacionamientos = Estacionamiento.objects.filter(rif = rif)
+    estacionamiento = Estacionamiento.objects.get(rif = rif)
     ingresoTotal = 0
     listaIngresos = []
     listaTransacciones = []
 
-    for estacionamiento in listaEstacionamientos:
-        transreser = TransReser.objects.filter(
-            reserva__estacionamiento__nombre = estacionamiento.nombre,
-            reserva__estado = 'Válido'
-        )
+    transreser = TransReser.objects.filter(
+        reserva__estacionamiento__nombre = estacionamiento.nombre,
+        reserva__estado = 'Válido',
+    )
+    
+    for	tr in transreser:
         
+        ingreso = transaccion_monto(tr.transaccion.id)
+        tr.transaccion.monto = ingreso
+        listaTransacciones += [tr]
+        ingresoTotal  += ingreso
 
-        for	tr in transreser:
-            listaTransacciones += [tr.transaccion]
-		
-        ingreso = [estacionamiento.nombre, 0]
-		
-        for trans in listaTransacciones:
-            ingreso[1] += transaccion_monto(trans.id)
-        listaIngresos += [ingreso]
-        ingresoTotal  += ingreso[1]
-
-    return listaIngresos, ingresoTotal
+    return listaIngresos, ingresoTotal, listaTransacciones
    
+
+
 def seleccionar_feriados(diaFeriado, estacionamiento): #una lista de objeto que contiene la fecha y la descripción del día feriado
-	
 
 	feriadosEscogidos = DiasFeriadosEscogidos.objects.all()
 	

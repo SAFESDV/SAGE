@@ -97,7 +97,10 @@ def estacionamientos_all(request):
         if form.is_valid():
             
             try:
-                propietario = Propietario.objects.get(Cedula = form.cleaned_data['CI_prop'])
+                propietario = Propietario.objects.get(
+                    Cedula = form.cleaned_data['CI_prop'],
+                    cedulaTipo = form.cleaned_data['cedulaTipo']
+                )
             except ObjectDoesNotExist:
                 return render(
                         request,
@@ -113,6 +116,7 @@ def estacionamientos_all(request):
             obj = Estacionamiento(
                 nombre      = form.cleaned_data['nombre'],
                 CI_prop     = form.cleaned_data['CI_prop'],
+                cedulaTipo  = form.cleaned_data['cedulaTipo'],
                 direccion   = form.cleaned_data['direccion'],
                 rif         = form.cleaned_data['rif'],
                 telefono1   = form.cleaned_data['telefono_1'],
@@ -145,34 +149,34 @@ def estacionamiento_detail(request, _id):
         estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
         
         if len(estacionamientotarifa) == 2:
-            estacionamientoTarifa = estacionamientotarifa[0]
-            estacionamientoTarifaFeriado = estacionamientotarifa[1]   
+            esquema_no_feriado = estacionamientotarifa[0]
+            esquema_feriado = estacionamientotarifa[1]   
             
-            if estacionamientoTarifa and estacionamientoTarifaFeriado:
+            if esquema_no_feriado and esquema_feriado:
                 form_data = {
                     'horarioin' : estacionamiento.apertura,
                     'horarioout' : estacionamiento.cierre,
-                    'tarifa' : estacionamientoTarifa.tarifa.tarifa,
-                    'tarifa2' : estacionamientoTarifa.tarifa.tarifa2,
-                    'inicioTarifa2' : estacionamientoTarifa.tarifa.inicioEspecial,
-                    'finTarifa2' : estacionamientoTarifa.tarifa.finEspecial,
-                    'tarifaFeriado' : estacionamientoTarifaFeriado.tarifa.tarifa,
-                    'tarifaFeriado2' : estacionamientoTarifaFeriado.tarifa.tarifa2,
-                    'inicioTarifaFeriado2' :estacionamientoTarifaFeriado.tarifa.inicioEspecial,
-                    'finTarifaFeriado2' : estacionamientoTarifaFeriado.tarifa.finEspecial,
+                    'tarifa' : esquema_no_feriado.tarifa.tarifa,
+                    'tarifa2' : esquema_no_feriado.tarifa.tarifa2,
+                    'inicioTarifa2' : esquema_no_feriado.tarifa.inicioEspecial,
+                    'finTarifa2' : esquema_no_feriado.tarifa.finEspecial,
+                    'tarifaFeriado' : esquema_feriado.tarifa.tarifa,
+                    'tarifaFeriado2' : esquema_feriado.tarifa.tarifa2,
+                    'inicioTarifaFeriado2' :esquema_feriado.tarifa.inicioEspecial,
+                    'finTarifaFeriado2' : esquema_feriado.tarifa.finEspecial,
                     'puestosLivianos' : estacionamiento.capacidadLivianos,
                     'puestosPesados' : estacionamiento.capacidadPesados,
                     'puestosMotos' : estacionamiento.capacidadMotos,
-                    'esquema' : estacionamientoTarifa.tarifa.__class__.__name__,
-                    'esquemaFeriado': estacionamientoTarifaFeriado.tarifa.__class__.__name__,
+                    'esquema' : esquema_no_feriado.tarifa.__class__.__name__,
+                    'esquemaFeriado': esquema_feriado.tarifa.__class__.__name__,
                     'horizonte' : estacionamiento.horizonte
                 }
                 form = EstacionamientoExtendedForm(data = form_data)
                 
         else:
              form = EstacionamientoExtendedForm()
-             estacionamientoTarifa = None
-             estacionamientoTarifaFeriado = None
+             esquema_no_feriado = None
+             esquema_feriado = None
     
     elif request.method == 'POST':
         
@@ -232,20 +236,20 @@ def estacionamiento_detail(request, _id):
                 )
                 
             # debería funcionar con excepciones
-            estacionamientoTarifa = EsquemaTarifarioM2M(
+            esquema_no_feriado = EsquemaTarifarioM2M(
                                                         estacionamiento= estacionamiento,
                                                                     tarifa = esquemaTarifa
                                                                     )
-            estacionamientoTarifa.save()
+            esquema_no_feriado.save()
             
-            estacionamientoTarifaFeriado = EsquemaTarifarioM2M(
+            esquema_feriado = EsquemaTarifarioM2M(
                                                                     estacionamiento= estacionamiento,
                                                                     tarifa = esquemaTarifaFeriado
                                                                     )
-            estacionamientoTarifaFeriado.save()
+            esquema_feriado.save()
             
-            estacionamientoTarifa = esquemaTarifa 
-            estacionamientoTarifaFeriado = esquemaTarifaFeriado
+            esquema_no_feriado = esquemaTarifa 
+            esquema_feriado = esquemaTarifaFeriado
 
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
@@ -267,16 +271,16 @@ def estacionamiento_detail(request, _id):
             form = EstacionamientoExtendedForm()
             
         else:
-            estacionamientoTarifa = None
-            estacionamientoTarifaFeriado = None
+            esquema_no_feriado = None
+            esquema_feriado = None
                 
     return render(
         request,
         'detalle-estacionamiento.html',
         { 'form': form
-         , 'estacionamiento' : estacionamiento
-        , 'estacionamientoTarifa' : estacionamientoTarifa
-        , 'estacionamientoTarifaFeriado' : estacionamientoTarifaFeriado
+        , 'estacionamiento' : estacionamiento
+        , 'esquema_no_feriado' : esquema_no_feriado
+        , 'esquema_feriado' : esquema_feriado
         }
     )
     
@@ -288,7 +292,13 @@ def estacionamiento_editar(request, _id):
     except ObjectDoesNotExist:
         raise Http404
 
+    estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
+    esquema_no_feriado = estacionamientotarifa[0]
+    esquema_feriado = estacionamientotarifa[1] 
+
     if request.method == 'GET':
+        
+        
         
         if estacionamiento.CI_prop:
             
@@ -332,6 +342,8 @@ def estacionamiento_editar(request, _id):
         'editar-datos-estacionamiento.html',
         { 'form': form
         , 'estacionamiento': estacionamiento
+        , 'esquema_no_feriado' : esquema_no_feriado
+        , 'esquema_feriado' : esquema_feriado
         }
     )
 
@@ -357,13 +369,13 @@ def estacionamiento_editar(request, _id):
             # debería funcionar con excepciones, y el mensaje debe ser mostrado
             # en el mismo formulario
             
-            print(tipo_vehiculo_tomado)
             
             m_validado = validarHorarioReserva(
                 inicioReserva,
                 finalReserva,
                 estacionamiento.apertura,
                 estacionamiento.cierre,
+                estacionamiento.horizonte,
             )
 
             # Si no es valido devolvemos el request
@@ -429,12 +441,16 @@ def estacionamiento_editar(request, _id):
                     , 'mensaje' : 'No hay un puesto disponible para ese horario'
                     }
                 )
-
+    
+    print(esquema_no_feriado)
+    
     return render(
         request,
         'reserva.html',
         { 'form': form
         , 'estacionamiento': estacionamiento
+        , 'esquema_no_feriado' : esquema_no_feriado
+        , 'esquema_feriado' : esquema_feriado
         }
     )
 
@@ -490,7 +506,8 @@ def estacionamiento_pago(request,_id):
             trans = Transaccion(
                 fecha = datetime.now(),
                 tipo = 'Reserva',
-                estado     = 'Válido'
+                estado     = 'Válido',
+                monto = monto
             )
             
             trans.save()
@@ -555,12 +572,16 @@ def estacionamiento_reserva(request, _id):
         diasFeriados = DiasFeriadosEscogidos.objects.filter(estacionamiento = estacionamiento_selec)
     except ObjectDoesNotExist:
         raise Http404
+
+    estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = estacionamiento_selec )
     
-    print()
-    print(_id)
-    print(estacionamiento_selec)
-    print(diasFeriados)
-    print()
+    esquema_no_feriado = None
+    esquema_feriado = None
+    
+    if (len(estacionamientotarifa) == 2):
+    
+        esquema_no_feriado = estacionamientotarifa[0]
+        esquema_feriado = estacionamientotarifa[1]
 
     # Verificamos que el estacionamiento este parametrizado
     if (estacionamiento_selec.apertura is None):
@@ -588,6 +609,7 @@ def estacionamiento_reserva(request, _id):
                 finalReserva,
                 estacionamiento_selec.apertura,
                 estacionamiento_selec.cierre,
+                estacionamiento_selec.horizonte
             )
 
             # Si no es valido devolvemos el request
@@ -624,9 +646,6 @@ def estacionamiento_reserva(request, _id):
                     esquema_feriado = estacionamientotarifa[1]
                     
                 numDias = len(listaDiasReserva)
-                print()
-                print("El numero de dias eeeeeeeeeees " + str(numDias))
-                print()
                 monto = 0
                 montoTotal = 0
                 
@@ -638,16 +657,8 @@ def estacionamiento_reserva(request, _id):
                     
                     for diaFeriado in diasFeriados:
                         
-                        print()
-                        print("el dia de la reserva es ")
-                        print(listaDiasReserva[0])
-                        print("el dia feriado es ")
-                        print(diaFeriado)
-                        print()
-                        
                         if (listaDiasReserva[0].day == diaFeriado.fecha.day and 
                             listaDiasReserva[0].month == diaFeriado.fecha.month):
-                            print("Entre en tarifa feriada")
                             monto = Decimal(
                                 esquema_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
@@ -655,7 +666,7 @@ def estacionamiento_reserva(request, _id):
                             request.session['monto'] = float(
                                 esquema_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
-                            print("monto a agregar " + str(monto))
+                            
                             coincidencia = True
                             break
                         
@@ -664,13 +675,10 @@ def estacionamiento_reserva(request, _id):
                             monto = Decimal(
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
-                            print("Entre en NOOOOO tarifa feriada")
-                            print("Monto a agregar " + str(monto))
                             request.session['monto'] = float(
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioReserva,finalReserva)
                             )
                     montoTotal += monto
-                    print("Monto =" + str(montoTotal))
                 
                 # CASO 2: RESERVA DE MULTIPLES DIAS
                     
@@ -683,21 +691,18 @@ def estacionamiento_reserva(request, _id):
                         
                     for diaReserva in listaDiasReserva:
                         
-                        print("Contador es " + str(cont))
+                    
                         coincidencia = False
                         
                         if (cont == 1):
-                            print("Dia primero")
                             inicioDia = inicioReserva
                             finalDia = datetime(inicioReserva.year, inicioReserva.month, 
                                                 inicioReserva.day, 23, 59)
                         elif (cont == numDias):
-                            print("Dia Ultimo")
                             inicioDia = datetime(finalReserva.year, finalReserva.month, 
                                                  finalReserva.day, 0, 0)
                             finalDia = finalReserva
                         else:
-                            print("Dia intermedio")
                             inicioDia = datetime(diaReserva.year, diaReserva.month, 
                                                  diaReserva.day, 0, 0)
                             
@@ -714,7 +719,7 @@ def estacionamiento_reserva(request, _id):
                                 monto = Decimal(
                                     esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                                 )
-                                print("monto a agregar " + str(monto))
+                                
                 
                                 request.session['monto'] = float(
                                     esquema_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
@@ -727,7 +732,6 @@ def estacionamiento_reserva(request, _id):
                             monto = Decimal(
                                     esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
                             )
-                            print("monto a agregar " + str(monto))
             
                             request.session['monto'] = float(
                                 esquema_no_feriado.tarifa.calcularPrecio(inicioDia,finalDia)
@@ -736,7 +740,6 @@ def estacionamiento_reserva(request, _id):
                         montoTotal += monto
                         request.session['monto'] = float(montoTotal)
                         cont += 1
-                        print("Monto =" + str(montoTotal))
                     
                 request.session['finalReservaHora']    = finalReserva.hour
                 request.session['finalReservaMinuto']  = finalReserva.minute
@@ -779,24 +782,30 @@ def estacionamiento_reserva(request, _id):
         'reserva.html',
         { 'form': form
         , 'estacionamiento': estacionamiento_selec
+        , 'esquema_no_feriado' : esquema_no_feriado
+        , 'esquema_feriado' : esquema_feriado
         }
     )
 
 def estacionamiento_ingreso(request):
     form = RifForm()
+    
     if request.method == 'POST':
         form = RifForm(request.POST)
         if form.is_valid():
 
-            rif = form.cleaned_data['rif']
-            listaIngresos, ingresoTotal = consultar_ingresos(rif)
+            _rif = form.cleaned_data['rif']
+            estacionamiento_selec = Estacionamiento.objects.get(rif = _rif)
+            listaIngresos, ingresoTotal,listaTransacciones = consultar_ingresos(_rif)
 
             return render(
                 request,
                 'consultar-ingreso.html',
-                { "ingresoTotal"  : ingresoTotal
-                , "listaIngresos" : listaIngresos
-                , "form"          : form
+                { "estacionamiento" : estacionamiento_selec
+                ,  "ingresoTotal"    : ingresoTotal
+                , "listaIngresos"   : listaIngresos
+                , "listaTransacciones" : listaTransacciones
+                , "form"            : form
                 }
             )
 
@@ -927,6 +936,7 @@ def tasa_de_reservacion(request, _id):
         , "datos_ocupacionPesados": datos_ocupacionPesados
         , "ocupacionMotos" : ocupacionMotos
         , "datos_ocupacionMotos": datos_ocupacionMotos
+
         }
     )
 

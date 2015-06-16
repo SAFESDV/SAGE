@@ -12,6 +12,7 @@ class Estacionamiento(models.Model):
     
     nombre      = models.CharField(max_length = 50)
     CI_prop     = models.CharField(max_length = 50)
+    cedulaTipo  = models.CharField(max_length = 1)
     direccion   = models.TextField(max_length = 120)
     telefono1   = models.CharField(blank = True, null = True, max_length = 30)
     telefono2   = models.CharField(blank = True, null = True, max_length = 30)
@@ -42,10 +43,13 @@ class ConfiguracionSMS(models.Model):
 class EsquemaTarifarioM2M(models.Model):  
     #Relaciona estacionamiento con el esquema tarifario con estacionamiento (Many to Many)
     
-    estacionamiento = models.ForeignKey(Estacionamiento)
-    content_type    = models.ForeignKey(ContentType, null = True)
-    object_id       = models.PositiveIntegerField(null = True)
-    tarifa          = GenericForeignKey()    
+    estacionamiento     = models.ForeignKey(Estacionamiento)
+    content_type        = models.ForeignKey(ContentType, null = True)
+    object_id           = models.PositiveIntegerField(null = True)
+    tarifa              = GenericForeignKey()
+    #tarifa_Liviano      = GenericForeignKey()
+    #tarifa_Pesado       = GenericForeignKey()
+    #tarifa_Moto         = GenericForeignKey()
     
 class EsquemaTarifario(models.Model):
 

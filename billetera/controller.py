@@ -7,9 +7,11 @@ from decimal import Decimal
 from collections import OrderedDict
 from django.core.exceptions import ObjectDoesNotExist
 from transacciones.models import *
+
 import hashlib
 import uuid
 from builtins import str
+from billetera.exceptions import *
 
 def autenticar(_id, _pin):
     try:
@@ -21,6 +23,18 @@ def autenticar(_id, _pin):
             return True
     except:
         return False
+
+def verificarPin(pin1,pin2):
+    if pin1!=pin2:
+        return False
+    else:
+        return True
+    
+def modificarPin(Id,pin1):
+    BE = BilleteraElectronica.objects.get(id = Id)
+    salt = uuid.uuid4().hex 
+    BE.PIN = hashlib.sha256(salt.encode() + pin1.encode()).hexdigest() + ':' + salt
+    BE.save()
 
 def consultar_saldo(ID_Billetera):
     
@@ -40,17 +54,21 @@ def consultar_saldo(ID_Billetera):
 
 def recargar_saldo(_id, monto):
     
-    try:
-        BE = BilleteraElectronica.objects.get(id = _id)
-    except:
-        raise
-            
-    if monto + consultar_saldo(BE.id) <= Decimal(10000.00):
+    BE = BilleteraElectronica.objects.get(id = _id)
+    
+    if monto < Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoNegativo
+    
+    elif monto == Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoCero
+    
+    if Decimal(monto).quantize(Decimal("1.00")) + consultar_saldo(BE.id) <= Decimal(10000.00):
     
         trans = Transaccion(
             fecha  = datetime.now(),
             tipo   = 'Recarga',
-            estado = 'Válido'
+            estado = 'Válido',
+            monto  = monto
         )
         
         trans.save()
@@ -63,21 +81,26 @@ def recargar_saldo(_id, monto):
         transBill.save()
         
         return trans.id
-    raise
+    
+    raise SaldoExcedido
         
 def recargar_saldo_TDC(_id, form):
     
-    try:
-        BE = BilleteraElectronica.objects.get(id = _id)
-    except:
-        raise
+    BE = BilleteraElectronica.objects.get(id = _id)
+    
+    if form.cleaned_data['monto'] < Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoNegativo
+    
+    elif form.cleaned_data['monto'] == Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoCero
             
     if form.cleaned_data['monto'] + consultar_saldo(BE.id) <= Decimal(10000.00):
     
         trans = Transaccion(
             fecha  = datetime.now(),
             tipo   = 'Recarga',
-            estado = 'Válido'
+            estado = 'Válido',
+            monto  = form.cleaned_data['monto'],
         )
         
         trans.save()
@@ -101,22 +124,29 @@ def recargar_saldo_TDC(_id, form):
         transBill.save()
         transTdc.save()
         
-        return trans.id
-    raise
+        return transTdc.id
+    raise SaldoExcedido
 
 def consumir_saldo(_id, monto):
     
     try:
         BE = BilleteraElectronica.objects.get(id = _id)
     except:
-        raise
+        raise AutenticacionDenegada
+    
+    if monto < Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoNegativo
+    
+    elif monto == Decimal(0.00).quantize(Decimal("1.00")):
+        raise MontoCero
             
     if consultar_saldo(BE.id) - Decimal(monto).quantize(Decimal("1.00")) >= Decimal(0.00):
     
         trans = Transaccion(
             fecha  = datetime.now(),
             tipo   = 'Reserva',
-            estado = 'Válido'
+            estado = 'Válido',
+            monto  = monto
         )
         
         trans.save()
@@ -130,7 +160,7 @@ def consumir_saldo(_id, monto):
         transBill.save()
         
         return trans.id;
-    raise
+    raise SaldoNegativo
         
 # def consumir_saldo(ID_Billetera, monto):
 #     

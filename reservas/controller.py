@@ -5,23 +5,25 @@ from collections import OrderedDict
 from estacionamientos.models import Estacionamiento
 from reservas.models import Reserva
 from transacciones.models import *
+from transacciones.controller import *
+from billetera.controller import *
 
-def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre):
+def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre, horizonte):
     if inicioReserva >= finReserva:
         return (False, 'El horario de inicio de reservacion debe ser menor al horario de fin de la reserva.')
     if finReserva - inicioReserva < timedelta(hours=1):
         return (False, 'El tiempo de reserva debe ser al menos de 1 hora.')
     if inicioReserva.date() < datetime.now().date():
         return (False, 'La reserva no puede tener lugar en el pasado.')
-    if finReserva.date() > (datetime.now()+timedelta(days=6)).date():
-        return (False, 'La reserva debe estar dentro de los próximos 7 días.')
+    if finReserva.date() > (inicioReserva.date() +timedelta(days=horizonte)):
+        return (False, 'La reserva debe estar dentro de los próximos ' + str(horizonte) + ' día(s).')
     if apertura.hour==0 and apertura.minute==0 \
         and cierre.hour==23 and cierre.minute==59:
         seven_days=timedelta(days=7)
         if finReserva-inicioReserva<=seven_days :
             return (True,'')
         else:
-            return(False,'Se puede reservar un puesto por un maximo de 7 dias.')
+            return(False,"Se puede reservar un puesto por un maximo de " +str(horizonte) + " dias")
     else:
         hora_inicio = time(hour = inicioReserva.hour, minute = inicioReserva.minute)
         hora_final  = time(hour = finReserva.hour   , minute = finReserva.minute)
@@ -75,7 +77,6 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
     
     else:
         return False
-    
 def cancelar_reserva(idReserva):
     
     try:
@@ -83,18 +84,18 @@ def cancelar_reserva(idReserva):
     except:
         raise
     
-    reser.estado = 'Inválido'
+    reser.estado = 'Cancelado'
     reser.save()
     relacion = TransReser.objects.get(reserva = reser)
     trans = relacion.transaccion
-    trans.estado = 'Inválido'
+    trans.estado = 'Cancelado'
     
 def reservas_activas(idEstacionamiento):
     reservasAct = Reserva.objects.filter(estado = 'Válido')
     return reservaAct
 
 def reservas_inactivas(idEstacionamiento):
-    reservasIna = Reserva.objects.filter(estado = 'Inválido')
+    reservasIna = Reserva.objects.filter(estado = 'Cancelado')
     return reservaIna
 
 def get_transacciones(idReserva):

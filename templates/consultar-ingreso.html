@@ -2,44 +2,59 @@
 {% load humanize %}
 
 {% block title %}
-  SAGE - Estacionamiento {{estacionamiento.nombre}}
+  SAGE - Estacionamiento 
 {% endblock %}
 {% block innerContents%}
   <div class="col-sm-10">
-    <h3><i class="fa fa-bus"></i>
-      Estacionamientos
+    <h3><i class="fa fa-usd"></i>
+      Consultar Ingresos - {{estacionamiento.nombre}}
     </h3>
     <hr>
-    <div class="col-md-8">
-      <table class="table table-striped">
-        {% if listaIngresos %}
+    
+        {% if listaTransacciones %}
+    	  <div class="col-md-12">
+      	  <table class="table table-striped">        
           <thead>
             <tr>
               <th></th>
+              <th>ID</th>
               <th>Nombre</th>
+              <th>CI</th>
+              <th>Fecha</th>
+              <th>Vehiculo</th>
               <th>Monto</th>
             </tr>
           </thead>
           <tbody>
-            {% for ingreso in listaIngresos%}
+            {% for transaccion in listaTransacciones%}
               <tr>
                 <td></td>
-                <td>{{ingreso.0}}</td>
-                <td>{{ingreso.1|floatformat:2|intcomma}}</td>
+                <td>{{transaccion.transaccion.id}}</td>
+                <td>{{transaccion.reserva.nombre}} {{transaccion.reserva.apellido}}</td> 
+                <td>{{transaccion.reserva.cedulaTipo}}-{{transaccion.reserva.cedula}}</td>
+                <td>{{transaccion.reserva.inicioReserva}} - {{transaccion.reserva.finalReserva}}</td>
+                <td>{{transaccion.reserva.tipo_vehiculo}}</td>
+                <td>{{transaccion.transaccion.monto}}</td>
               </tr>
             {% endfor %}
             <tr>
               <td></td>
               <td>Ingreso total</td>
+              <td></td> 
+              <td></td>
+              <td></td>
+              <td></td>
               <td>{{ingresoTotal|floatformat:2|intcomma}}</td>
             </tr>
           </tbody>
         {% else %}
+        <div class="col-md-8">
           <h3>Introduzca su RIF</h3>
+          <hr>
+          </div>
         {% endif %}
       </table>
-      <hr>
-    </div>
+    {% if not listaTransacciones %}
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -79,4 +94,5 @@
       </div>
     </div>
   </div>
+  {% endif %}
 {% endblock %}

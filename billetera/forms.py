@@ -386,3 +386,36 @@ class BilleteraRecargaForm(forms.Form):
             }
         )
     )
+
+class CambiarPinForm(forms.Form):
+    
+    pin_validator = RegexValidator(
+        regex   = '^[0-9]{4}$',
+        message = 'El PIN solo puede contener cuatro caracteres numéricos.'
+    )
+    
+    pin = forms.CharField(
+        required   = True,
+        label      = "PIN",
+        validators = [pin_validator],
+        widget = forms.PasswordInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'PIN'
+            , 'pattern'     : pin_validator.regex.pattern
+            , 'message'     : pin_validator.message
+            }
+        )
+    )
+    
+    pin_verificar = forms.CharField(
+        required   = True,
+        label      = "PIN",
+        validators = [pin_validator],
+        widget = forms.PasswordInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Ingrese de Nuevo su Pin'
+            , 'pattern'     : pin_validator.regex.pattern
+            , 'message'     : pin_validator.message
+            }
+        )
+    )
