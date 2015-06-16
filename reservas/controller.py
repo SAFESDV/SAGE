@@ -93,27 +93,30 @@ def cancelar_reserva(idReserva,idbilletera):
     
     try:
         reser = Reserva.objects.get(id = idReserva)
+        print("se puede cancelar!")
     except:
-        return False
+        print("Cai en except")
+        raise
     
     reser.estado = 'Cancelado'
+    print(reser)
     reser.save()
     relacion = TransReser.objects.get(reserva = reser)
+    trans = relacion.transaccion
+    trans.estado = 'Cancelado'
+    trans.save()
     
-    trans = get_transacciones(request.session['reservaid'])
-    monto = transaccion_monto(trans[0].id)
-     
     try:   
-        recargar_saldo(idbilletera, monto)
+        recargar_saldo(idbilletera, relacion.transaccion.monto)
     except:
         return render(
-            request,
-            'cancelar_reserva_confirmar.html',
-            { "color"   : "red"
-             , 'mensaje' : 'No se puede hacer un reembolso a esta billetera porque excede el limite'
-             , 'billetera' : form
-             }
-        )
+                    request,
+                    'cancelar_reserva_confirmar.html',
+                    { "color"   : "red"
+                     , 'mensaje' : 'No se puede hacer un reembolso a esta billetera porque excede el limite'
+                     , 'billetera' : form
+                     }
+                      )
     
 def reservas_activas(idEstacionamiento):
     reservasAct = Reserva.objects.filter(estado = 'Válido')

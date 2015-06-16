@@ -632,8 +632,8 @@ def estacionamiento_reserva(request, _id):
                 )
             
                 montoTotal = calcular_Precio_Reserva(reservaFinal,diasFeriados)
+                
                 request.session['monto'] = float(montoTotal)
-                    
                 request.session['finalReservaHora']    = finalReserva.hour
                 request.session['finalReservaMinuto']  = finalReserva.minute
                 request.session['inicioReservaHora']   = inicioReserva.hour

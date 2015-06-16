@@ -97,9 +97,6 @@ def confirmar_cancelar_reserva(request):
     if request.method == 'POST':
         form = BilleteraLogin(request.POST)
         if form.is_valid():
-            print(form.cleaned_data['id'])
-            print(form.cleaned_data['pin'])
-            print(autenticar(form.cleaned_data['id'], form.cleaned_data['pin']))
             if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
                 return render(
                         request,
@@ -110,9 +107,7 @@ def confirmar_cancelar_reserva(request):
                         }
                     )
                 
-
-                
-            cancelar_reserva(request.session['reservaid'])
+            cancelar_reserva(request.session['reservaid'],form.cleaned_data['id'])
             
             return render(
                     request,
@@ -216,16 +211,21 @@ def Mover_Reserva_buscar_nueva(request):
                 )
             
             if marzullo(_id, NuevoInicio, NuevoFinal, reserva_selec.tipo_vehiculo):
-                reservaNueva = Reserva(
-                    estacionamiento = reserva_selec.estacionamiento,
-                    inicioReserva   = NuevoInicio,
-                    finalReserva    = NuevoFinal,
-                    estado          = 'Válido',
-                    tipo_vehiculo   = reserva_selec.tipo_vehiculo
-                )
                 
                 diasFeriados = DiasFeriadosEscogidos.objects.filter(estacionamiento = reserva_selec.estacionamiento)
                 
+                reservaNueva = Reserva(
+                    estacionamiento = reserva_selec.estacionamiento,
+                    inicioReserva   = reserva_selec.inicioReserva,
+                    finalReserva    = reserva_selec.finalReserva,
+                    estado          = reserva_selec.estado,
+                    tipo_vehiculo   = reserva_selec.tipo_vehiculo,
+                    cedula          = reserva_selec.cedula,
+                    cedulaTipo      = reserva_selec.cedulaTipo,
+                    nombre          = reserva_selec.nombre,
+                    apellido        = reserva_selec.apellido,
+                )
+    
                 montoTotal = calcular_Precio_Reserva(reservaNueva,diasFeriados)
                 diferencia = transreser.transaccion.monto - montoTotal
        
@@ -256,7 +256,7 @@ def Mover_Reserva_buscar_nueva(request):
                   ,'reservaNueva'    : reservaNueva
                   ,'Monto'           : montoTotal
                   ,'diferencia'      : diferencia
-                  , 'mensaje': m_validado[1]
+                  ,'mensaje'         : m_validado[1]
                 }
             )
             
@@ -282,28 +282,27 @@ def Mover_Reserva_comfirmar(request):
         if form.is_valid():
             
             if not (autenticar(form.cleaned_data['id'],form.cleaned_data['pin'])):
+                
                 return render(
-                    request,
-                    'mover-reserva-comfirmar.html',
-                    {  "color"    : "red"
-                     , 'mensaje'  : 'Billetera eletronica no valida'
-                     , "form"     : form
-                    }
-                )            
+                            request,
+                            'mover-reserva-comfirmar.html',
+                            { "form"    : form
+                            , "valido"  : 0
+                            , "color"   : "red"
+                            ,'mensaje'  : "Autenticación denegada."
+                            }
+                        )
             
-            cancelar_reserva(request.session['reservaid'])
+            cancelar_reserva(reserva_selec.id,form.cleaned_data['id'])
             
             return render(
                 request,
                 'mover-reserva-comfirmar.html',
-                { "form"            : form
+                { "form"             : form
                   ,'reserva'         : reserva_selec
                   ,'transreser'      : transreser
                   ,'billetera'       : BilleteraLogin()
-                  ,'reservaNueva'    : reservaNueva
-                  ,'Monto'           : montoTotal
-                  ,'diferencia'      : diferencia
-                  , 'mensaje'        : m_validado[1]
+                  , "valido"         : 1
                 }
             )
             
@@ -311,6 +310,7 @@ def Mover_Reserva_comfirmar(request):
         request,
         'mover-reserva-comfirmar.html',
         { "form"        : form,
+          "valido"  : 0,
          'reserva'      : reserva_selec,
          'transreser'   : transreser,
           'billetera'   : BilleteraLogin(),          
