@@ -14,10 +14,62 @@
       Cambiar Reservas
     </h3>
   <hr>
-  	<div class="col-md-8">
+  	<div class="col-md-4">
       <table class="table table-striped">
           <h3> Ingrese el ID de Reserva y su Cedula</h3>
+          {% if reserva %}
+          <div class="col-md-4">
+      <table class="table table-striped">
+        <thead></thead>
+        <tbody>
+          <tr><td><b><i class="fa fa-car"></i>
+            Nombre del estacionamiento:
+          </b></td></tr>
+          <tr><td>
+            {{reserva.estacionamiento.nombre}}
+          </td></tr>
+
+          <tr><td><b><i class="fa fa-clock-o"></i>
+            Horario inicio de reserva:
+          </b></td></tr>
+          <tr><td>
+            {{reserva.inicioReserva}}
+          </td></tr>
+
+          <tr><td><b><i class="fa fa-clock-o"></i>
+            Horario fin de reserva:
+          </b></td></tr>
+          <tr><td>
+            {{reserva.finalReserva}}
+          </td></tr>
+          <tr><td><b><i class="fa fa-money"></i>
+            Monto:
+          </b></td></tr>
+          <tr><td>
+            BsF. {{transreser.transaccion.monto|floatformat:2|intcomma }}
+          </td></tr>
+          <tr><td>
+          </td></tr>
+        </tbody>          </b></td></tr>
+          <tr><td>
+                <div class="control-group">
+                <label></label>
+                <div class="controls">
+                  <a href="mover_reserva/confirmar">
+              		<button class="btn btn-primary">
+                		Comfirmar
+              		</button>
+            	  </a>
+                </div>
+          </td></tr>
+          <tr><td>
+          </td></tr>
       </table>
+    
+          {% endif %}
+      </table>
+    </div>
+    <div class="col-md-4">
     </div>
   {% if form %}
     <div class="col-md-4">
@@ -26,7 +78,7 @@
           <div class="panel-title">
             <i class="glyphicon glyphicon-wrench pull-right"></i>
             <h4>
-              Cambiar Reservas
+              Buscar Reserva
             </h4>
           </div>
         </div>
@@ -58,7 +110,7 @@
                 <label></label>
                 <div class="controls">
                   <button type="submit" class="btn btn-primary">
-                    Cambiar
+                    Buscar
                   </button>
                 </div>
               </div>

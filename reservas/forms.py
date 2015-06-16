@@ -236,7 +236,7 @@ class MoverReservaNuevaForm(forms.Form):
         )
     )
     
-    inicio = forms.SplitDateTimeField(
+    nuevoInicio = forms.SplitDateTimeField(
         required = True,
         label = 'Horario Inicio Reserva',
         widget= CustomSplitDateTimeWidget(attrs=

@@ -1,7 +1,7 @@
-{% extends "base-estacionamiento.html" %}
+{% extends "base-reserva.html" %}
 {% load humanize %}
 {% block title %}
-  SAGE - Pago
+  SAGE - Estacionamiento {{estacionamiento.nombre}}
 {% endblock %}
 {% block innerContents %}
   <div class="col-sm-10">
@@ -11,19 +11,18 @@
     <hr>
     <div class="row">
         <h5><tr><td><b>
-        Esta es la reservacion que quiere modificar, comfirme su seleccion 
-        </b></td></tr></h5>
-        <h5><tr><td><b>
-        Nota: Al Comfirmar su seleccion se eliminara esta reservacion para hacer una nueva
+        Por razones de seguridad, al comfirmar el cambio deseado se cancelara la reserva 
+        original y se le reembolsara su dinero antes de hacer la nueva reserva
+ 
         </b></td></tr></h5>
       <div class="col-md-8" style="color:{{color}}">
-        {{ mensaje }}
         <hr>
       </div>
     </div>
     
     
     <div class="col-md-4">
+    <b>Reserva Original</b>
       <table class="table table-striped">
         <thead></thead>
         <tbody>
@@ -33,33 +32,63 @@
           <tr><td>
             {{reserva.estacionamiento.nombre}}
           </td></tr>
-
           <tr><td><b><i class="fa fa-clock-o"></i>
             Horario inicio de reserva:
           </b></td></tr>
           <tr><td>
             {{reserva.inicioReserva}}
           </td></tr>
-
           <tr><td><b><i class="fa fa-clock-o"></i>
             Horario fin de reserva:
           </b></td></tr>
           <tr><td>
             {{reserva.finalReserva}}
           </td></tr>
-
           <tr><td><b><i class="fa fa-money"></i>
             Monto:
           </b></td></tr>
           <tr><td>
             BsF. {{transreser.transaccion.monto|floatformat:2|intcomma }}
           </td></tr>
-
           <tr><td>
-            
           </td></tr>
         </tbody>
       </table>
+      {% if reservaNueva %}
+      <b>Reserva Nueva</b>
+      <table class="table table-striped">
+        <thead></thead>
+        <tbody>
+          <tr><td><b><i class="fa fa-car"></i>
+            Nombre del estacionamiento:
+          </b></td></tr>
+          <tr><td>
+            {{reservaNueva.estacionamiento.nombre}}
+          </td></tr>
+          <tr><td><b><i class="fa fa-clock-o"></i>
+            Horario inicio de reserva:
+          </b></td></tr>
+          <tr><td>
+            {{reservaNueva.inicioReserva}}
+          </td></tr>
+          <tr><td><b><i class="fa fa-clock-o"></i>
+            Horario fin de reserva:
+          </b></td></tr>
+          <tr><td>
+            {{reservaNueva.finalReserva}}
+          </td></tr>
+
+          <tr><td><b><i class="fa fa-money"></i>
+            Monto:
+          </b></td></tr>
+          <tr><td>
+            BsF. {{Monto|floatformat:2|intcomma }}
+          </td></tr>
+          <tr><td>
+          </td></tr>
+        </tbody>
+      </table>      
+      {% endif %}
       <hr>
     </div>
     <div class="col-md-4">
@@ -103,16 +132,22 @@
     		  </div>
               <div class="control-group">
                 <label></label>
+				<div class="control-group">
+                <label></label>
                 <div class="controls">
-                  <a href="modopago" onClick="return popup(this, 'Pago de Reserva')">
-              		<button class="btn btn-primary">
-                		Comfirmar
-              		</button>
-            	  </a>
+                  <button type="submit" class="btn btn-primary">
+                    Consultar
+                  </button>
+                  {% if reservaNueva %}
+                   <button type="submit" class="btn btn-primary">
+                    Comfirmar
+                  </button>
+                  {% endif %}
                 </div>
+
+              </div>
               </div>
           </form>
-          
         </div>
       </div>
     </div>
