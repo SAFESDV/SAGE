@@ -138,7 +138,7 @@ def Mover_reserva_buscar_original(request):
             
             numeroReser   = form.cleaned_data['numReser']
             numeroCedula  = form.cleaned_data['cedula']
-            cedulaTipo = form.cleaned['tipoCedula']
+            cedulaTipo      = form.cleaned_data['cedulaTipo']
             try:
                 reserva_selec      = Reserva.objects.get(id = numeroReser, cedula = numeroCedula, 
                                                          cedulaTipo = tipoCedula, estado = 'Válido')
@@ -147,7 +147,7 @@ def Mover_reserva_buscar_original(request):
                     request,
                     'mover-reserva-buscar-original.html',
                     {  "color"    : "red"
-                     , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en la reserva.'
+                     , 'mensaje'  : 'No hay coincidencia entre el ID y la cedula'
                      , "form"     : form
                     }
                 )
