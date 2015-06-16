@@ -125,7 +125,7 @@ def reservas_inactivas(idEstacionamiento):
 def get_transacciones(idReserva):
     
     reserva_selec = Reserva.objects.get(id = idReserva)
-    relacion = TransReser.objects.filter(reserva = reserva_selec)
+    relacion = TransReser.objects.get(reserva = reserva_selec)
     
     return relacion.transaccion
 
