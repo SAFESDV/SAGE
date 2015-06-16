@@ -42,6 +42,10 @@ from transacciones.models import *
 from django.template.context_processors import request
 from django.forms.forms import Form
 from reservas.models import Reserva
+from abc import ABCMeta
+import hashlib
+import uuid
+from builtins import str
 
 def billetera_crear(request):
     form = BilleteraElectronicaForm()
@@ -49,13 +53,14 @@ def billetera_crear(request):
     if request.method == 'POST':
         form = BilleteraElectronicaForm(request.POST)
         if form.is_valid():
+            salt = uuid.uuid4().hex 
             
             billetera = BilleteraElectronica(
                 nombreUsuario    = form.cleaned_data['nombre'],
                 apellidoUsuario  = form.cleaned_data['apellido'],
                 cedulaTipo       = form.cleaned_data['cedulaTipo'],
                 cedula           = form.cleaned_data['cedula'],
-                PIN              = form.cleaned_data['pin']
+                PIN              = hashlib.sha256(salt.encode() + form.cleaned_data['pin'].encode()).hexdigest() + ':' + salt
             )
             
             billetera.save();
@@ -63,6 +68,7 @@ def billetera_crear(request):
                 request,
                 'crearbilletera.html',
                 { "billetera"    : billetera
+                , "pin"     : form.cleaned_data['pin']
                 , "saldo"   : consultar_saldo(billetera.id)
                 , "color"   : "green"
                 , 'mensaje' : "Se ha creado la billetera satisfactoriamente."
@@ -131,12 +137,9 @@ def billetera_pagar(request, _id):
     if request.method == 'POST':
         form = BilleteraLogin(request.POST)
         if form.is_valid():
-            try:
-                BE = BilleteraElectronica.objects.get(
-                    id = form.cleaned_data['id'],
-                    PIN = form.cleaned_data['pin']
-                )                
-            except ObjectDoesNotExist:
+            
+                        
+            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
                 return render(
                         request,
                         'billetera_pagar.html',
@@ -145,6 +148,12 @@ def billetera_pagar(request, _id):
                         ,'mensaje'  : "Autenticación denegada."
                         }
                     )
+                
+            BE = BilleteraElectronica.objects.get(
+                    id = form.cleaned_data['id']
+                )
+            
+            
             
             monto = Decimal(request.session['monto']).quantize(Decimal('1.00'))
             
@@ -287,6 +296,7 @@ def recarga_pago(request):
         { 'form' : form }
     )
 
+
 def Consultar_Historia_Billetera(request):
     
     form = BilleteraLogin()
@@ -326,3 +336,84 @@ def Consultar_Historia_Billetera(request):
         'consultar_historial.html',
         { "form" : form }
     )
+
+    
+def cambiar_pin_verificar(request):
+   
+    form = BilleteraLogin()
+    
+    if request.method == 'POST':
+        form = BilleteraLogin(request.POST)
+        if form.is_valid():
+            
+            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
+                return render(
+                        request,
+                        'billetera_cambiar.html',
+                        { "form"    : form
+                        , "valido"  : 0
+                        , "color"   : "red"
+                        ,'mensaje'  : "Autenticación denegada."
+                        }
+                    )
+                
+            request.session['passbillid'] = form.cleaned_data['id']
+            BillID = request.session['passbillid'] 
+            
+            return render(
+                    request,
+                   'billetera_cambiar.html',
+                    { "form"    : form
+                    , "valido"  : 1
+                    }
+                )
+
+    return render(
+        request,
+        'billetera_cambiar.html',
+        { 'form'   : form
+        , "valido" : 0
+        }
+    )     
+    
+def cambiar_pin(request):
+    
+    form = CambiarPinForm()
+    
+    if request.method == 'POST':
+        form = CambiarPinForm(request.POST)
+        if form.is_valid():
+
+            BillID = request.session['passbillid']
+           
+            pin1 = form.cleaned_data['pin'] 
+            pin2 = form.cleaned_data['pin_verificar']
+
+            if not verificarPin(pin1,pin2):
+                    return render(
+                        request,
+                        'billetera_cambiar_pin.html',
+                        { "form"    : form
+                        , "color"   : "red"
+                        ,'mensaje'  : "Las contraseñas no coinciden"
+                        }
+                    )
+            else:
+                modificarPin(BillID,pin1)
+                return render(
+                        request,
+                        'billetera_cambiar_pin.html',
+                        { "form"    : form
+                        , "color"   : "green"
+                        ,'mensaje'  : "La contraseña se modificó exitosamente "
+                        }
+                    )
+        
+                
+    return render(
+        request,
+        'billetera_cambiar_pin.html',
+        { 'form' : form }
+    )
+    
+

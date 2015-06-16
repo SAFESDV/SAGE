@@ -818,17 +818,32 @@ def tasa_de_reservacion(request, _id):
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
         )
-    ocupacion = tasa_reservaciones(_id)
+    ocupacionLivianos = tasa_reservaciones(_id,'Liviano')
+    ocupacionPesados = tasa_reservaciones(_id,'Pesado')
+    ocupacionMotos = tasa_reservaciones(_id,'Moto')
     calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
-                                estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos,
-                                ocupacion)
-    datos_ocupacion = urlencode(ocupacion) # Se convierten los datos del diccionario en el formato key1=value1&key2=value2&...
+                                estacionamiento.capacidadLivianos,
+                                ocupacionLivianos)
+    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
+                                estacionamiento.capacidadPesados,
+                                ocupacionPesados)
+    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
+                                estacionamiento.capacidadMotos,
+                                ocupacionMotos)
+    datos_ocupacionLivianos = urlencode(ocupacionLivianos) # Se convierten los datos del diccionario en el formato key1=value1&key2=value2&...
+    datos_ocupacionPesados = urlencode(ocupacionPesados)
+    datos_ocupacionMotos = urlencode(ocupacionMotos)
+    
     return render(
         request,
         'tasa-reservacion.html',
-        { "ocupacion" : ocupacion
-        , "estacionamiento" : estacionamiento
-        , "datos_ocupacion": datos_ocupacion
+        { "ocupacionLivianos" : ocupacionLivianos
+        , "datos_ocupacionLivianos": datos_ocupacionLivianos
+        , "ocupacionPesados" : ocupacionPesados
+        , "datos_ocupacionPesados": datos_ocupacionPesados
+        , "ocupacionMotos" : ocupacionMotos
+        , "datos_ocupacionMotos": datos_ocupacionMotos
+
         }
     )
 
@@ -836,22 +851,30 @@ def grafica_tasa_de_reservacion(request):
     
     # Recuperacion del diccionario para crear el grafico
     try:
-        datos_ocupacion = request.GET.dict()
-        datos_ocupacion = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacion.items()))     
+        datos_ocupacionLivianos = request.GET.dict()
+        datos_ocupacionLivianos = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionLivianos.items()))
+        datos_ocupacionPesados = request.GET.dict()
+        datos_ocupacionPesados = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionPesados.items()))
+        datos_ocupacionMotos = request.GET.dict()
+        datos_ocupacionMotos = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionMotos.items()))     
         response = HttpResponse(content_type='image/png')
     except:
         return HttpResponse(status=400) # Bad request
     
     # Si el request no viene con algun diccionario
-    if (not datos_ocupacion):
+    if ((not datos_ocupacionLivianos) or (not datos_ocupacionPesados) or (not datos_ocupacionMotos)):
         return HttpResponse(status=400) # Bad request
     
     # Configuracion y creacion del grafico de barras con la biblioteca pyplot
     pyplot.switch_backend('Agg') # Para que no use Tk y aparezcan problemas con hilos
-    pyplot.bar(range(len(datos_ocupacion)), datos_ocupacion.values(), hold = False, color = '#6495ed')
+    pyplot.bar(range(len(datos_ocupacionLivianos)), datos_ocupacionLivianos.values(), hold = False, color = '#6495ed')
+    pyplot.bar(range(len(datos_ocupacionPesados)), datos_ocupacionPesados.values(), hold = False, color = '#ff00ff')
+    pyplot.bar(range(len(datos_ocupacionMotos)), datos_ocupacionMotos.values(), hold = False, color = '#00ff00')
     pyplot.ylim([0,100])
     pyplot.title('Distribución de los porcentajes por fecha')
-    pyplot.xticks(range(len(datos_ocupacion)), list(datos_ocupacion.keys()), rotation=20)
+    pyplot.xticks(range(len(datos_ocupacionLivianos)), list(datos_ocupacionLivianos.keys()), rotation=20)
+    pyplot.xticks(range(len(datos_ocupacionPesados)), list(datos_ocupacionPesados.keys()), rotation=20)
+    pyplot.xticks(range(len(datos_ocupacionMotos)), list(datos_ocupacionMotos.keys()), rotation=20)
     pyplot.ylabel('Porcentaje (%)')
     pyplot.grid(True, 'major', 'both')
     pyplot.savefig(response, format='png') # Guarda la imagen creada en el HttpResponse creado

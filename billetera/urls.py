@@ -13,5 +13,7 @@ urlpatterns = patterns('',
     url(r'^billeterarecargar$', views.billetera_recargar, name = 'billetera_recargar'),
     url(r'^pagarrecarga$',views.recarga_pago, name = 'recarga_pago'),
     url(r'^verhistorial$',views.Consultar_Historia_Billetera, name = 'consultar_historial'),
+    url(r'^cambiarContraseñaVerificar$',views.cambiar_pin_verificar, name = 'cambiar_pin_verificar'),
+    url(r'^cambiarContraseña$',views.cambiar_pin, name = 'cambiar_pin'),
 
 )
