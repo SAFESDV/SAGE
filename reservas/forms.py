@@ -112,7 +112,7 @@ class ReservaForm(forms.Form):
         )                                  
     )
     
-class CancelarReservaForm(forms.Form):
+class BuscarReservaForm(forms.Form):
     
     transaccion_validator = RegexValidator(
         regex   = '^[0-9]+$',
@@ -123,6 +123,7 @@ class CancelarReservaForm(forms.Form):
         regex   = '^[0-9]+$',
         message = 'La cédula solo puede contener caracteres numéricos.'
     )
+     
     
     numReser = forms.CharField(
         required   = True,
@@ -136,6 +137,18 @@ class CancelarReservaForm(forms.Form):
             }
         )
     )                            
+
+    cedulaTipo = forms.ChoiceField(
+        required = True,
+        label    = 'cedulaTipo',
+        choices  = (
+            ('V', 'V'),
+            ('E', 'E')
+        ),
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )   
     
     cedula = forms.CharField(
         required   = True,
@@ -150,43 +163,6 @@ class CancelarReservaForm(forms.Form):
         )
     ) 
    
-class MoverReservaForm(forms.Form):
-    
-    transaccion_validator = RegexValidator(
-        regex   = '^[0-9]+$',
-        message = 'El numero de transaccion solo puede contener caracteres numéricos.'
-    )
-    
-    cedula_validator = RegexValidator(
-        regex   = '^[0-9]+$',
-        message = 'La cédula solo puede contener caracteres numéricos.'
-    )
-    
-    numReser = forms.CharField(
-        required   = True,
-        label      = "Reserva",
-        validators = [transaccion_validator],
-        widget = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'ID Reserva'
-            , 'pattern'     : transaccion_validator.regex.pattern
-            , 'message'     : transaccion_validator.message
-            }
-        )
-    )                            
-    
-    cedula = forms.CharField(
-        required   = True,
-        label      = "Cédula",
-        validators = [cedula_validator],
-        widget = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'Cédula'
-            , 'pattern'     : cedula_validator.regex.pattern
-            , 'message'     : cedula_validator.message
-            }
-        )
-    ) 
     
 class MoverReservaNuevaForm(forms.Form):
     

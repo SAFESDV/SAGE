@@ -40,9 +40,11 @@
           </tbody>
         {% else %}
           <h3>Introduzca su Cédula</h3>
+          
         {% endif %}
       </table>
       <hr>
+      
     </div>
     <div class="col-md-4">
       <div class="panel panel-default">
@@ -70,6 +72,10 @@
                   </div>
                 </div>
               {% endfor %}
+              <div class="col-md-15" style="color:{{color}}">
+            {{mensaje}}
+            <br>
+            </div>
               <div class="control-group">
                 <label></label>
                 <div class="controls">

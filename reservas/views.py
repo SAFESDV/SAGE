@@ -15,6 +15,7 @@ from collections import OrderedDict
 from billetera.forms import *
 from billetera.models import *
 from billetera.controller import *
+from estacionamientos.forms import *
 
 from reservas.controller import (
     validarHorarioReserva,
@@ -57,15 +58,17 @@ def reserva_detalle(request, _id):
 
 def estacionamiento_cancelar_reserva(request):
     
-    form = CancelarReservaForm()
+    form = BuscarReservaForm()
     if request.method == 'POST':
-        form = CancelarReservaForm(request.POST)
+        form = BuscarReservaForm(request.POST)
         if form.is_valid():
             
             numeroReser   = form.cleaned_data['numReser']
             numeroCedula  = form.cleaned_data['cedula']
+            tipoCedula    = form.cleaned_data['cedulaTipo']
             try:
-                reserva      = Reserva.objects.get(id = numeroReser, cedula = numeroCedula, estado = 'Válido')
+                reserva      = Reserva.objects.get(id = numeroReser, cedula = numeroCedula,
+                                                   cedulaTipo = tipoCedula, estado = 'Válido')
             except:
                 return render(
                     request,
@@ -128,15 +131,17 @@ def confirmar_cancelar_reserva(request):
     
 def Mover_reserva_buscar_original(request):
     
-    form = MoverReservaForm()
+    form = BuscarReservaForm()
     if request.method == 'POST':
-        form = MoverReservaForm(request.POST)
+        form = BuscarReservaForm(request.POST)
         if form.is_valid():
             
             numeroReser   = form.cleaned_data['numReser']
             numeroCedula  = form.cleaned_data['cedula']
+            cedulaTipo = form.cleaned['tipoCedula']
             try:
-                reserva_selec      = Reserva.objects.get(id = numeroReser, cedula = numeroCedula, estado = 'Válido')
+                reserva_selec      = Reserva.objects.get(id = numeroReser, cedula = numeroCedula, 
+                                                         cedulaTipo = tipoCedula, estado = 'Válido')
             except:
                 return render(
                     request,
@@ -272,13 +277,13 @@ def Mover_Reserva_buscar_nueva(request):
 
 def Mover_Reserva_comfirmar(request):
     
-    form = MoverReservaBilletera()
+    form = BilleteraLogin()
     reserva_selec = Reserva.objects.get(id = request.session['reservaid'])
     transreser = TransReser.objects.get(reserva = reserva_selec)
     _id = reserva_selec.estacionamiento.id
     
     if request.method == 'POST':
-        form = MoverReservaBilletera(request.POST)
+        form = BilleteraLogin(request.POST)
         if form.is_valid():
             
             if not (autenticar(form.cleaned_data['id'],form.cleaned_data['pin'])):
@@ -317,3 +322,41 @@ def Mover_Reserva_comfirmar(request):
           }
     )
         
+def Consulta_reserva(request):
+    
+    form = CedulaForm()
+    if request.method == 'POST':
+        form = CedulaForm(request.POST)
+        if form.is_valid():
+            _cedula        = form.cleaned_data['cedula']
+            _cedulaTipo    = form.cleaned_data['cedulaTipo']
+            facturas       = Reserva.objects.filter(cedula = _cedula,cedulaTipo = _cedulaTipo)
+            
+            if ((len(facturas)) == 0):
+                return render(
+                    request,
+                    'consultar-reservas.html',
+                    {  "color"    : "red"
+                     , 'mensaje'  : 'No hay reservas registradas a esta cedula'
+                     , "form"     : form
+                    }
+                )
+                
+            listaFacturas = []
+
+            listaFacturas = sorted(
+                list(facturas),
+                key = lambda r: r.inicioReserva
+            )
+            return render(
+                request,
+                'consultar-reservas.html',
+                { "listaFacturas" : listaFacturas
+                , "form"          : form
+                }
+            )
+    return render(
+        request,
+        'consultar-reservas.html',
+        { "form" : form }
+    )

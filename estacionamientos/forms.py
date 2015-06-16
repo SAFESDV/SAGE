@@ -419,6 +419,18 @@ class CedulaForm(forms.Form):
         message = 'La cédula solo puede contener caracteres numéricos.'
     )
     
+    cedulaTipo = forms.ChoiceField(
+        required = True,
+        label    = 'cedulaTipo',
+        choices  = (
+            ('V', 'V'),
+            ('E', 'E')
+        ),
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )       
+    
     cedula = forms.CharField(
         required   = True,
         label      = "Cédula",
