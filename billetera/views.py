@@ -257,8 +257,7 @@ def billetera_recargar(request):
         { 'form'   : form
         , "valido" : 0
         }
-    )     
-    
+    )      
 
 def recarga_pago(request):
     form = BilleteraRecargaForm()
