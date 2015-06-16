@@ -42,6 +42,10 @@ from transacciones.models import *
 from django.template.context_processors import request
 from django.forms.forms import Form
 from reservas.models import Reserva
+from abc import ABCMeta
+import hashlib
+import uuid
+from builtins import str
 
 def billetera_crear(request):
     form = BilleteraElectronicaForm()
@@ -49,13 +53,14 @@ def billetera_crear(request):
     if request.method == 'POST':
         form = BilleteraElectronicaForm(request.POST)
         if form.is_valid():
+            salt = uuid.uuid4().hex 
             
             billetera = BilleteraElectronica(
                 nombreUsuario    = form.cleaned_data['nombre'],
                 apellidoUsuario  = form.cleaned_data['apellido'],
                 cedulaTipo       = form.cleaned_data['cedulaTipo'],
                 cedula           = form.cleaned_data['cedula'],
-                PIN              = form.cleaned_data['pin']
+                PIN              = hashlib.sha256(salt.encode() + form.cleaned_data['pin'].encode()).hexdigest() + ':' + salt
             )
             
             billetera.save();
@@ -64,6 +69,7 @@ def billetera_crear(request):
                 request,
                 'crearbilletera.html',
                 { "billetera"    : billetera
+                , "pin"     : form.cleaned_data['pin']
                 , "saldo"   : consultar_saldo(billetera.id)
                 , "color"   : "green"
                 , 'mensaje' : "Se ha creado la billetera satisfactoriamente."

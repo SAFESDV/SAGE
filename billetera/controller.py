@@ -7,13 +7,20 @@ from decimal import Decimal
 from collections import OrderedDict
 from django.core.exceptions import ObjectDoesNotExist
 from transacciones.models import *
+import hashlib
+import uuid
+from builtins import str
 
 def autenticar(_id, _pin):
     try:
-        BE = BilleteraElectronica.objects.get(id = _id, PIN = _pin)
+        BE = BilleteraElectronica.objects.get(id = _id)
+        PIN_prueba, salt = BE.PIN.split(':')
+        if PIN_prueba != hashlib.sha256(salt.encode() + _pin.encode()).hexdigest():
+            return False
+        else:
+            return True
     except:
         return False
-    return True
 
 def consultar_saldo(ID_Billetera):
     
