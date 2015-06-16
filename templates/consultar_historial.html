@@ -10,7 +10,7 @@
       Consultar Historial de Billetera Electronica
     </h3>
     <hr>
-         {% if transacciones %}
+         {% if valido = 1 %}
           <h4>
           Billetera #{{billetera.id}}
     	  </h4>
@@ -19,6 +19,7 @@
       	  <table class="table table-striped">        
           <thead>
             <tr>
+            {% if transacciones %}
               <th></th>
               <th>ID</th>
               <th>Tipo</th>
@@ -27,6 +28,7 @@
             </tr>
           </thead>
           <tbody>
+          
             {% for transaccion in transacciones %}
               <tr>
                 <td></td>
@@ -56,6 +58,11 @@
               <td>{{saldoTotal|floatformat:2|intcomma}}</td>
             </tr>
           </tbody>
+		{% elif not transacciones %}
+            
+            <h4>No existen transacciones para esta billetera</h4>
+            
+            {% endif %}          
         {% else %}
         <div class="col-md-8">
           <h3>Introduzca el ID de su billetera electronica y su PIN</h3>
@@ -63,13 +70,13 @@
           </div>
         {% endif %}
       </table>
-    {% if not transacciones %}
+    {% if valido = 0 %}
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
           <div class="panel-title">
             <i class="glyphicon glyphicon-wrench pull-right"></i>
-            <h4>Consultar Ingresos</h4>
+            <h4>Consultar Historial</h4>
           </div>
         </div>
         <div class="panel-body">

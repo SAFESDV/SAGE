@@ -216,8 +216,8 @@ def Mover_Reserva_buscar_nueva(request):
                 
                 reservaNueva = Reserva(
                     estacionamiento = reserva_selec.estacionamiento,
-                    inicioReserva   = reserva_selec.inicioReserva,
-                    finalReserva    = reserva_selec.finalReserva,
+                    inicioReserva   = NuevoInicio,
+                    finalReserva    = NuevoFinal,
                     estado          = reserva_selec.estado,
                     tipo_vehiculo   = reserva_selec.tipo_vehiculo,
                     cedula          = reserva_selec.cedula,
