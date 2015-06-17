@@ -169,7 +169,8 @@ def estacionamiento_detail(request, _id):
                     'puestosMotos' : estacionamiento.capacidadMotos,
                     'esquema' : esquema_no_feriado.tarifa.__class__.__name__,
                     'esquemaFeriado': esquema_feriado.tarifa.__class__.__name__,
-                    'horizonte' : estacionamiento.horizonte
+                    'horizonte' : estacionamiento.horizonte,
+                    'fronteraTarifa' : 
                 }
                 form = EstacionamientoExtendedForm(data = form_data)
                 

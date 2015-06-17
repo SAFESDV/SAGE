@@ -389,7 +389,22 @@ class EstacionamientoExtendedForm(forms.Form):
             , 'message'     : 'La entrada debe ser un número entero no negativo.'
             }
         )
-                                   )    
+    )
+    
+    choices_frontera = [
+        ('PrecioTarifaMasTiempo', 'Cálculo de la frontera por tarifa con más tiempo'),
+        ('PrecioTarifaMasCara', 'Cálculo de la frontera usando la tarifa más cara'),
+        ('PrecioProporcional', 'Cálculo de la frontera de manera proporcional'),
+    ]
+
+    fronteraTarifa = forms.ChoiceField(
+        required = True,
+        choices  = choices_frontera,
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )
+    
 
 
 class RifForm(forms.Form):

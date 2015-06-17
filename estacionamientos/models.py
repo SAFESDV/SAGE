@@ -42,24 +42,7 @@ class ConfiguracionSMS(models.Model):
     def __str__(self):
         return self.estacionamiento.nombre+' ('+str(self.inicioReserva)+','+str(self.finalReserva)+')'
 
-'''class EsquemaTarifarioM2M(models.Model):  
-    #Relaciona estacionamiento con el esquema tarifario con estacionamiento (Many to Many)
-    
-    estacionamiento     = models.ForeignKey(Estacionamiento)
-    content_type        = models.ForeignKey(ContentType, null = True)
-    object_id           = models.PositiveIntegerField(null = True)
-    tarifa              = GenericForeignKey()
-    #tarifa_Liviano      = GenericForeignKey()
-    #tarifa_Pesado       = GenericForeignKey()
-    #tarifa_Moto         = GenericForeignKey()
-'''
-        
 class FronterasTarifarias(models.Model):  
-    
-    content_type        = models.ForeignKey(ContentType, null = True)
-    object_id           = models.PositiveIntegerField(null = True)
-    tarifa              = GenericForeignKey()
-    tarifaFeriado       = GenericForeignKey()
     
     class Meta:
         abstract = True
@@ -95,6 +78,18 @@ class PrecioProporcional(FronterasTarifarias):
     def tipoFrontera(self):
     
         return("Precio porporcional")
+
+class EsquemaTarifarioM2M(models.Model):  
+    #Relaciona estacionamiento con el esquema tarifario con estacionamiento (Many to Many)
+    
+    estacionamiento     = models.ForeignKey(Estacionamiento)
+    content_type        = models.ForeignKey(ContentType, null = True)
+    object_id           = models.PositiveIntegerField(null = True)
+    tarifa              = GenericForeignKey()
+    #tarifa_Liviano      = GenericForeignKey()
+    #tarifa_Pesado       = GenericForeignKey()
+    #tarifa_Moto         = GenericForeignKey()
+
         
 class EsquemaTarifario(models.Model):
 
