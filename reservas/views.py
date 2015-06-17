@@ -138,10 +138,10 @@ def Mover_reserva_buscar_original(request):
             
             numeroReser   = form.cleaned_data['numReser']
             numeroCedula  = form.cleaned_data['cedula']
-            cedulaTipo      = form.cleaned_data['cedulaTipo']
+            cedulaTipo    = form.cleaned_data['cedulaTipo']
             try:
                 reserva_selec      = Reserva.objects.get(id = numeroReser, cedula = numeroCedula, 
-                                                         cedulaTipo = tipoCedula, estado = 'Válido')
+                                                         cedulaTipo = cedulaTipo, estado = 'Válido')
             except:
                 return render(
                     request,
@@ -151,6 +151,18 @@ def Mover_reserva_buscar_original(request):
                      , "form"     : form
                     }
                 )
+            
+            if not(reserva_Cambiable(reserva_selec.inicioReserva,reserva_selec.finalReserva,
+                                     reserva_selec.estacionamiento.horizonte)):
+                return render(
+                    request,
+                    'mover-reserva-buscar-original.html',
+                    {  "color"    : "red"
+                     , 'mensaje'  : 'Esta reserva esta muy alejada del horizonte del estacionamiento'
+                     , "form"     : form
+                    }
+                )
+                
             
             transreser = TransReser.objects.get(reserva = reserva_selec)
                     

@@ -26,7 +26,7 @@ def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre, horizonte
         return (False, 'El tiempo de reserva debe ser al menos de 1 hora.')
     if inicioReserva.date() < datetime.now().date():
         return (False, 'La reserva no puede tener lugar en el pasado.')
-    if finReserva.date() > (inicioReserva.date() +timedelta(days=horizonte)):
+    if finReserva.date() > (datetime.now().date() + timedelta(days=horizonte)):
         return (False, 'La reserva debe estar dentro de los próximos ' + str(horizonte) + ' día(s).')
     if apertura.hour==0 and apertura.minute==0 \
         and cierre.hour==23 and cierre.minute==59:
@@ -46,6 +46,38 @@ def validarHorarioReserva(inicioReserva, finReserva, apertura, cierre, horizonte
             return (False, 'No puede haber reservas entre dos dias distintos')
         return (True,'')
     
+def reserva_Cambiable(inicioReserva,finReserva,horizonte):
+    
+    tiempo_reserva    = 0
+    tiempo_diferencia = 0
+    fecha_maxima      = datetime.now() + timedelta(days=horizonte)
+    minuto            = timedelta(minutes=1)
+    #fecha_maxima      = datetime.combine((datetime.now().date() + timedelta(days=horizonte)), datetime.now().time())
+    
+    
+    # Calculamos la diferencia entre el inicio de la reserva y el final
+    
+    fecha_Temp        = inicioReserva
+    
+    while fecha_Temp < finReserva:
+        fecha_Temp += minuto
+        tiempo_reserva += 1
+        
+    # Calculamos la diferencia entre el final de la reserva y la fecha maxima permitida
+        
+    fecha_Temp        = fecha_maxima   
+        
+    while fecha_Temp < finReserva:
+        fecha_Temp += minuto
+        tiempo_diferencia += 1
+    
+    if (tiempo_diferencia <= tiempo_reserva/2):
+        return True
+        
+    else:
+        return False
+
+
 def marzullo(idEstacionamiento, hIn, hOut, tipo):
     e = Estacionamiento.objects.get(id = idEstacionamiento)
     ocupacion = []
@@ -142,7 +174,7 @@ def calcular_Precio_Reserva(reserva,diasFeriados):
     while (iniReserva.day <= reserva.finalReserva.day):
         
         listaDiasReserva.append(iniReserva)
-        iniReserva += timedelta(days = 1) 
+        iniReserva += timedelta(days = 1)
     
     estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = reserva.estacionamiento )
 
