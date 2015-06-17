@@ -20,14 +20,16 @@ class Estacionamiento(models.Model):
     rif         = models.CharField(max_length = 12)
     horizonte   = models.IntegerField(blank = True, null = True)
 
-    # Campos para referenciar al esquema de tarifa
 
     apertura     = models.TimeField(blank = True, null = True)
     cierre       = models.TimeField(blank = True, null = True)
     capacidadLivianos  = models.IntegerField(blank = True, null = True)
     capacidadPesados   = models.IntegerField(blank = True, null = True)
     capacidadMotos     = models.IntegerField(blank = True, null = True)
-
+    content_type        = models.ForeignKey(ContentType, null = True)
+    object_id           = models.PositiveIntegerField(null = True)
+    fronterasTarifarias = GenericForeignKey()
+    
     def __str__(self):
         return self.nombre+' '+str(self.id)
 
@@ -40,7 +42,7 @@ class ConfiguracionSMS(models.Model):
     def __str__(self):
         return self.estacionamiento.nombre+' ('+str(self.inicioReserva)+','+str(self.finalReserva)+')'
 
-class EsquemaTarifarioM2M(models.Model):  
+'''class EsquemaTarifarioM2M(models.Model):  
     #Relaciona estacionamiento con el esquema tarifario con estacionamiento (Many to Many)
     
     estacionamiento     = models.ForeignKey(Estacionamiento)
@@ -50,7 +52,50 @@ class EsquemaTarifarioM2M(models.Model):
     #tarifa_Liviano      = GenericForeignKey()
     #tarifa_Pesado       = GenericForeignKey()
     #tarifa_Moto         = GenericForeignKey()
+'''
+        
+class FronterasTarifarias(models.Model):  
     
+    content_type        = models.ForeignKey(ContentType, null = True)
+    object_id           = models.PositiveIntegerField(null = True)
+    tarifa              = GenericForeignKey()
+    tarifaFeriado       = GenericForeignKey()
+    
+    class Meta:
+        abstract = True
+        
+    def __str__(self):
+        return str(self.tarifa)
+    
+class PrecioTarifaMasTiempo(FronterasTarifarias):
+    #Se calcula en base a la tarifa que ocupe mas tiempo en el cruce
+    
+    def calcularPrecioFrontera(self):
+        pass #aqui iran los calculos locos
+
+    def tipoFrontera(self):
+    
+        return("Precio completo no feriados")
+
+class PrecioTarifaMasCara(FronterasTarifarias):
+    #Se calcula en base a la tarifa mas cara
+    
+    def calcularPrecioFrontera(self):
+        pass
+    
+    def tipoFrontera(self):
+    
+        return("Precio tarifa mas cara")
+
+class PrecioProporcional(FronterasTarifarias):
+    #Se calcula en base a las porporciones de la reserva
+    def calcularPrecioFrontera(self):
+        pass 
+    
+    def tipoFrontera(self):
+    
+        return("Precio porporcional")
+        
 class EsquemaTarifario(models.Model):
 
     tarifa              = models.DecimalField(max_digits=20, decimal_places=2)
