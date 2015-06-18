@@ -27,7 +27,7 @@ class Estacionamiento(models.Model):
     capacidadLivianos  = models.IntegerField(blank = True, null = True)
     capacidadPesados   = models.IntegerField(blank = True, null = True)
     capacidadMotos     = models.IntegerField(blank = True, null = True)
-
+    capacidadDiscapacitados = models.IntegerField(blank = True, null = True)
     def __str__(self):
         return self.nombre+' '+str(self.id)
 

@@ -86,6 +86,15 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
                 return False
         return True
     
+    elif (tipo == 'Discapacitados'):
+        
+        count = 0
+        for r in sorted(ocupacion):
+            count += r[1]
+            if count > capacidadDiscapacitados:
+                return False
+        return True
+    
     else:
         return False
 def cancelar_reserva(idReserva):

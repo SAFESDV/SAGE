@@ -3,7 +3,7 @@
   <thead></thead>
   <tbody>
 
-    {% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos  %}
+    {% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos or estacionamiento.capacidadDiscapacitados %}
       <tr><td><b><i class="fa fa-clock-o"></i> Horario apertura:</b></td></tr>
       <tr><td>{{estacionamiento.apertura}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Horario cierre:</b></td></tr>
@@ -51,7 +51,7 @@
     
   </tbody>
 </table>
-{% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos %}
+{% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos or estacionamiento.capacidadDiscapacitados %}
 	<a href="./diasFeriados">
 	    <div class="control-group">
 	        <div class="controls">
