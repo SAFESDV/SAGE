@@ -447,9 +447,6 @@ def Consultar_Historia_Billetera(request):
                         ,'mensaje'  : "Autenticación denegada."
                         }
                     )
-            
-            
-
     return render(
         request,
         'consultar_historial.html',

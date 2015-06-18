@@ -220,6 +220,20 @@ class EstacionamientoExtendedForm(forms.Form):
         )
     )
     
+    puestosDiscapacitados = forms.IntegerField(
+        required  = True,
+        min_value = 0,
+        label     = 'Número de Puestos para Discapacitados',
+        widget    = forms.NumberInput(attrs=
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Número de Puestos Discapacitados'
+            , 'min'         : "0"
+            , 'pattern'     : '^[0-9]+'
+            , 'message'     : 'La entrada debe ser un número entero no negativo.'
+            }
+        )
+    )
+    
     horarioin = forms.TimeField(
         required = True,
         label    = 'Horario Apertura',

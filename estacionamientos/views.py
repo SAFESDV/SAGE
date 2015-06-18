@@ -172,6 +172,7 @@ def estacionamiento_detail(request, _id):
                     'puestosLivianos' : estacionamiento.capacidadLivianos,
                     'puestosPesados' : estacionamiento.capacidadPesados,
                     'puestosMotos' : estacionamiento.capacidadMotos,
+                    'puestosDiscapacitados' : estacionamiento.capacidadDiscapacitados,
                     'horizonte' : estacionamiento.horizonte
                 }   
             form_dataL = {}
@@ -341,9 +342,10 @@ def estacionamiento_detail(request, _id):
             estacionamiento.capacidadLivianos = form.cleaned_data['puestosLivianos']
             estacionamiento.capacidadPesados = form.cleaned_data['puestosPesados']
             estacionamiento.capacidadMotos = form.cleaned_data['puestosMotos']
+            estacionamiento.capacidadDiscapacitados = form.cleaned_data['puestosDiscapacitados']
             estacionamiento.horizonte = horizonte
 
-            if (estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos <= 0):
+            if (estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos + estacionamiento.capacidadDiscapacitados <= 0):
                 return render(
                     request,
                     'template-mensaje.html',
@@ -916,6 +918,7 @@ def tasa_de_reservacion(request, _id):
     ocupacionLivianos = tasa_reservaciones(_id,'Liviano')
     ocupacionPesados = tasa_reservaciones(_id,'Pesado')
     ocupacionMotos = tasa_reservaciones(_id,'Moto')
+    ocupacionDiscapacitados = tasa_reservaciones(_id,'Discapacitados')
     calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
                                 estacionamiento.capacidadLivianos,
                                 ocupacionLivianos)
@@ -925,9 +928,13 @@ def tasa_de_reservacion(request, _id):
     calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
                                 estacionamiento.capacidadMotos,
                                 ocupacionMotos)
+    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
+                                estacionamiento.capacidadDiscapacitados,
+                                ocupacionDiscapacitados)
     datos_ocupacionLivianos = urlencode(ocupacionLivianos) # Se convierten los datos del diccionario en el formato key1=value1&key2=value2&...
     datos_ocupacionPesados = urlencode(ocupacionPesados)
     datos_ocupacionMotos = urlencode(ocupacionMotos)
+    datos_ocupacionDiscapacitados = urlencode(ocupacionDiscapacitados)
     
     return render(
         request,
@@ -938,7 +945,8 @@ def tasa_de_reservacion(request, _id):
         , "datos_ocupacionPesados": datos_ocupacionPesados
         , "ocupacionMotos" : ocupacionMotos
         , "datos_ocupacionMotos": datos_ocupacionMotos
-
+        , "ocupacionDiscapacitados" : ocupacionDiscapacitados
+        , "datos_ocupacionDiscapacitados": datos_ocupacionDiscapacitados
         }
     )
 
@@ -951,13 +959,15 @@ def grafica_tasa_de_reservacion(request):
         datos_ocupacionPesados = request.GET.dict()
         datos_ocupacionPesados = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionPesados.items()))
         datos_ocupacionMotos = request.GET.dict()
-        datos_ocupacionMotos = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionMotos.items()))     
+        datos_ocupacionMotos = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionMotos.items())) 
+        datos_ocupacionDiscapacitados = request.GET.dict()
+        datos_ocupacionDiscapacitados = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionDiscapacitados.items()))    
         response = HttpResponse(content_type='image/png')
     except:
         return HttpResponse(status=400) # Bad request
     
     # Si el request no viene con algun diccionario
-    if ((not datos_ocupacionLivianos) or (not datos_ocupacionPesados) or (not datos_ocupacionMotos)):
+    if ((not datos_ocupacionLivianos) or (not datos_ocupacionPesados) or (not datos_ocupacionMotos) or (not datos_ocupacionDiscapacitados)):
         return HttpResponse(status=400) # Bad request
     
     # Configuracion y creacion del grafico de barras con la biblioteca pyplot
@@ -965,11 +975,13 @@ def grafica_tasa_de_reservacion(request):
     pyplot.bar(range(len(datos_ocupacionLivianos)), datos_ocupacionLivianos.values(), hold = False, color = '#6495ed')
     pyplot.bar(range(len(datos_ocupacionPesados)), datos_ocupacionPesados.values(), hold = False, color = '#ff00ff')
     pyplot.bar(range(len(datos_ocupacionMotos)), datos_ocupacionMotos.values(), hold = False, color = '#00ff00')
+    pyplot.bar(range(len(datos_ocupacionDiscapacitados)), datos_ocupacionDiscapacitados.values(), hold = False, color = '#00ff00')
     pyplot.ylim([0,100])
     pyplot.title('Distribución de los porcentajes por fecha')
     pyplot.xticks(range(len(datos_ocupacionLivianos)), list(datos_ocupacionLivianos.keys()), rotation=20)
     pyplot.xticks(range(len(datos_ocupacionPesados)), list(datos_ocupacionPesados.keys()), rotation=20)
     pyplot.xticks(range(len(datos_ocupacionMotos)), list(datos_ocupacionMotos.keys()), rotation=20)
+    pyplot.xticks(range(len(datos_ocupacionDiscapacitados)), list(datos_ocupacionDiscapacitados.keys()), rotation=20)
     pyplot.ylabel('Porcentaje (%)')
     pyplot.grid(True, 'major', 'both')
     pyplot.savefig(response, format='png') # Guarda la imagen creada en el HttpResponse creado

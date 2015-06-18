@@ -105,7 +105,8 @@ class ReservaForm(forms.Form):
         choices  = (
             ('Liviano', 'Liviano'),
             ('Pesado', 'Pesado'),
-            ('Moto', 'Moto')
+            ('Moto', 'Moto'),
+            ('Discapacitados', 'Discapacitados')
         ),
         widget   = forms.Select(attrs =
             { 'class' : 'form-control' }

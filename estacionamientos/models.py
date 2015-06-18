@@ -26,6 +26,7 @@ class Estacionamiento(models.Model):
     capacidadLivianos  = models.IntegerField(blank = True, null = True)
     capacidadPesados   = models.IntegerField(blank = True, null = True)
     capacidadMotos     = models.IntegerField(blank = True, null = True)
+    capacidadDiscapacitados = models.IntegerField(blank = True, null = True)
     content_type        = models.ForeignKey(ContentType, null = True)
     object_id           = models.PositiveIntegerField(null = True)
     fronterasTarifarias = GenericForeignKey()
