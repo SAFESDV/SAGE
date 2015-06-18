@@ -21,6 +21,43 @@
           </div>
         </div>
       {% endfor %}
+      
+      {% for field in formLiviano %}
+        <div class="control-group">
+          <div class="controls">
+            {{ field }}
+            <span class='error' id='{{field.name}}_error' aria-live="polite">
+              {{ field.errors }}
+            </span>
+            <p>
+          </div>
+        </div>
+      {% endfor %}
+      
+      {% for field in formPesado %}
+        <div class="control-group">
+          <div class="controls">
+            {{ field }}
+            <span class='error' id='{{field.name}}_error' aria-live="polite">
+              {{ field.errors }}
+            </span>
+            <p>
+          </div>
+        </div>
+      {% endfor %}
+      
+      {% for field in formMoto %}
+        <div class="control-group">
+          <div class="controls">
+            {{ field }}
+            <span class='error' id='{{field.name}}_error' aria-live="polite">
+              {{ field.errors }}
+            </span>
+            <p>
+          </div>
+        </div>
+      {% endfor %}
+      
       <div class="control-group">
         <label></label>
         <div class="controls">

@@ -178,11 +178,6 @@ class EstacionamientoExtendedForm(forms.Form):
                 raise forms.ValidationError("Debe haber al menos un puesto en el estacionamiento")
             
         
-    tarifa_validator = RegexValidator(
-        regex   = '^([0-9]+(\.[0-9]+)?)$',
-        message = 'Sólo debe contener dígitos.'
-    )
-    
     puestosLivianos = forms.IntegerField(
         required  = True,
         min_value = 0,
@@ -265,30 +260,7 @@ class EstacionamientoExtendedForm(forms.Form):
         )
     )
 
-    tarifa = forms.DecimalField(
-        required   = True,
-        validators = [tarifa_validator],
-        widget     = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa'
-            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
-            , 'message'     : 'La entrada debe ser un número decimal.'
-            }
-        )
-    )
-
-    tarifa2 = forms.DecimalField(
-            required   = False,
-            validators = [tarifa_validator],
-            widget     = forms.TextInput(attrs = {
-                'class'       : 'form-control',
-                'placeholder' : 'Tarifa 2',
-                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
-                'message'     : 'La entrada debe ser un número decimal.'
-            }
-        )
-    )
-
+    #Inicio de la hora pico, día no feriado
     inicioTarifa2 = forms.TimeField(
         required = False,
         label    = 'Inicio Horario Especial',
@@ -301,6 +273,7 @@ class EstacionamientoExtendedForm(forms.Form):
         )
     )
 
+    #Fin de la hora pico, día no feriado
     finTarifa2 = forms.TimeField(
         required = False,
         label    = 'Fin Horario Especial',
@@ -329,30 +302,7 @@ class EstacionamientoExtendedForm(forms.Form):
         )
     )
     
-    tarifaFeriado = forms.DecimalField(
-        required   = False,
-        validators = [tarifa_validator],
-        widget     = forms.TextInput(attrs =
-            { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa Dia Feriado'
-            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
-            , 'message'     : 'La entrada debe ser un número decimal.'
-            }
-        )
-    )
-
-    tarifaFeriado2 = forms.DecimalField(
-            required   = False,
-            validators = [tarifa_validator],
-            widget     = forms.TextInput(attrs = {
-                'class'       : 'form-control',
-                'placeholder' : 'Tarifa 2 Dia Feriado',
-                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
-                'message'     : 'La entrada debe ser un número decimal.'
-            }
-        )
-    )
-
+    #Inicio de la hora pico, día feriado
     inicioTarifaFeriado2 = forms.TimeField(
         required = False,
         label    = 'Inicio Horario Especial',
@@ -365,6 +315,7 @@ class EstacionamientoExtendedForm(forms.Form):
         )
     )
 
+    #Fin de la hora pico, día no feriado
     finTarifaFeriado2 = forms.TimeField(
         required = False,
         label    = 'Fin Horario Especial',
@@ -405,8 +356,175 @@ class EstacionamientoExtendedForm(forms.Form):
         )
     )
     
+    
+class EsquemaTarifarioLiviano(forms.Form):
 
+    tarifa_validator = RegexValidator(
+        regex   = '^([0-9]+(\.[0-9]+)?)$',
+        message = 'Sólo debe contener dígitos.'
+    )
+    #Tarifas para diferentes tipos de vehiculos en dias no feriados
+    
+    tarifaLivianos = forms.DecimalField(
+        required   = True,
+        validators = [tarifa_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Tarifa vehículos livianos para días no feriados'
+            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
+            , 'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
 
+    tarifaLivianos2 = forms.DecimalField(
+            required   = False,
+            validators = [tarifa_validator],
+            widget     = forms.TextInput(attrs = {
+                'class'       : 'form-control',
+                'placeholder' : 'Tarifa especial vehículos livianos para días no feriados',
+                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
+                'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+        
+    #Tarifas para diferentes tipos de vehiculos en dias feriados 
+    tarifaLivianosF = forms.DecimalField(
+        required   = True,
+        validators = [tarifa_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Tarifa vehículos livianos para días no feriados'
+            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
+            , 'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    tarifaLivianos2F = forms.DecimalField(
+            required   = False,
+            validators = [tarifa_validator],
+            widget     = forms.TextInput(attrs = {
+                'class'       : 'form-control',
+                'placeholder' : 'Tarifa especial vehículos livianos para días no feriados',
+                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
+                'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+class EsquemaTarifarioPesado(forms.Form):
+
+    tarifa_validator = RegexValidator(
+        regex   = '^([0-9]+(\.[0-9]+)?)$',
+        message = 'Sólo debe contener dígitos.'
+    )
+
+    tarifaPesados  = forms.DecimalField(
+        required   = True,
+        validators = [tarifa_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Tarifa vehículos pesados para días no feriados'
+            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
+            , 'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    tarifaPesados2 = forms.DecimalField(
+            required   = False,
+            validators = [tarifa_validator],
+            widget     = forms.TextInput(attrs = {
+                'class'       : 'form-control',
+                'placeholder' : 'Tarifa especial vehículos pesados para días no feriados',
+                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
+                'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    
+    tarifaPesadosF  = forms.DecimalField(
+        required   = True,
+        validators = [tarifa_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Tarifa vehículos pesados para días no feriados'
+            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
+            , 'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    tarifaPesados2F = forms.DecimalField(
+            required   = False,
+            validators = [tarifa_validator],
+            widget     = forms.TextInput(attrs = {
+                'class'       : 'form-control',
+                'placeholder' : 'Tarifa especial vehículos pesados para días no feriados',
+                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
+                'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+class EsquemaTarifarioMoto(forms.Form):
+
+    tarifa_validator = RegexValidator(
+        regex   = '^([0-9]+(\.[0-9]+)?)$',
+        message = 'Sólo debe contener dígitos.'
+    )
+    
+    tarifaMotos = forms.DecimalField(
+        required   = True,
+        validators = [tarifa_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Tarifa motos para días no feriados'
+            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
+            , 'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    tarifaMotos2 = forms.DecimalField(
+            required   = False,
+            validators = [tarifa_validator],
+            widget     = forms.TextInput(attrs = {
+                'class'       : 'form-control',
+                'placeholder' : 'Tarifa especial motos para días no feriados',
+                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
+                'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    tarifaMotosF = forms.DecimalField(
+        required   = True,
+        validators = [tarifa_validator],
+        widget     = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Tarifa motos para días no feriados'
+            , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
+            , 'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+
+    tarifaMotos2F = forms.DecimalField(
+            required   = False,
+            validators = [tarifa_validator],
+            widget     = forms.TextInput(attrs = {
+                'class'       : 'form-control',
+                'placeholder' : 'Tarifa especial motos para días no feriados',
+                'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
+                'message'     : 'La entrada debe ser un número decimal.'
+            }
+        )
+    )
+    
 class RifForm(forms.Form):
     
     rif_validator = RegexValidator(

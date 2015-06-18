@@ -86,19 +86,16 @@ class EsquemaTarifarioM2M(models.Model):
     content_type        = models.ForeignKey(ContentType, null = True)
     object_id           = models.PositiveIntegerField(null = True)
     tarifa              = GenericForeignKey()
-    #tarifa_Liviano      = GenericForeignKey()
-    #tarifa_Pesado       = GenericForeignKey()
-    #tarifa_Moto         = GenericForeignKey()
-
         
 class EsquemaTarifario(models.Model):
 
     tarifa              = models.DecimalField(max_digits=20, decimal_places=2)
-    tarifa2             = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
+    tarifaEspecial      = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
     estacionamiento     = models.ForeignKey(Estacionamiento)
     inicioEspecial      = models.TimeField(blank = True, null = True)
     finEspecial         = models.TimeField(blank = True, null = True)
     tipoDia             = models.CharField(max_length = 50)
+    tipoVehiculo        = models.CharField(max_length = 50)
     
     class Meta:
         abstract = True
@@ -180,7 +177,7 @@ class TarifaFinDeSemana(EsquemaTarifario):
             
         return Decimal(
             minutosNormales*self.tarifa/60 +
-            minutosFinDeSemana*self.tarifa2/60
+            minutosFinDeSemana*self.tarifaEspecial/60
         ).quantize(Decimal('1.00'))
 
     def tipo(self):
@@ -204,7 +201,7 @@ class TarifaHoraPico(EsquemaTarifario):
             tiempoActual += minuto
             
         return Decimal(
-            minutosPico*self.tarifa2/60 +
+            minutosPico*self.tarifaEspecial/60 +
             minutosValle*self.tarifa/60
         ).quantize(Decimal('1.00'))
 
