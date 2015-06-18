@@ -160,3 +160,41 @@ def limpiarEsquemasTarifarios(_id):
         estacionamientotarifa.delete()
         estacionamientotarifa = TarifaMinuto.objects.filter(estacionamiento = _id)
         estacionamientotarifa.delete()
+
+def guardarEsquemasNormal(esquema, tarifa, tarifaEspecial, estacionamiento, inicioTarifa2, finTarifa2, tipoVehiculo):
+    
+    esquemaTarifa = eval(esquema)(
+        tarifa          = tarifa,
+        tarifaEspecial  = tarifaEspecial,
+        estacionamiento = estacionamiento,
+        inicioEspecial  = inicioTarifa2,
+        finEspecial     = finTarifa2,
+        tipoDia         = 'Dia Normal',
+        tipoVehiculo    = tipoVehiculo
+    )
+    esquemaTarifa.save()
+    return esquemaTarifa
+    
+def guardarEsquemasFeriado(esquemaFeriado, tarifaF, tarifaEspecialF, estacionamiento, inicioTarifa2F, finTarifa2F, tipoVehiculo):
+    
+    esquemaTarifaF = eval(esquemaFeriado)(
+        tarifa           = tarifaF,
+        tarifaEspecial   = tarifaEspecialF,
+        estacionamiento  = estacionamiento,
+        inicioEspecial   = inicioTarifa2F,
+        finEspecial      = finTarifa2F,
+        tipoDia          = 'Dia Feriado',
+        tipoVehiculo     = tipoVehiculo
+    )
+    esquemaTarifaF.save()
+    return esquemaTarifaF
+
+def guardarEsquemasTarifarios(estacionamiento, esquemaTarifa):
+    
+    esquema = EsquemaTarifarioM2M(
+                estacionamiento= estacionamiento,
+                tarifa = esquemaTarifa
+            )
+            
+    esquema.save()
+            

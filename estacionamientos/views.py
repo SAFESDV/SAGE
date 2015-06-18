@@ -26,7 +26,10 @@ from estacionamientos.controller import (
     consultar_ingresos,
     seleccionar_feriados,
     seleccionar_feriado_extra,
-    limpiarEsquemasTarifarios
+    limpiarEsquemasTarifarios,
+    guardarEsquemasNormal,
+    guardarEsquemasFeriado,
+    guardarEsquemasTarifarios,
 )
 
 from billetera.forms import (
@@ -219,7 +222,7 @@ def estacionamiento_detail(request, _id):
                         
                         esquemaPesadosF  = esquema
                         
-                elif esquema.tipoVehiculo == 'Moto':
+                elif esquema.tarifa.tipoVehiculo == 'Moto':
                     
                     if esquema.tarifa.tipoDia == 'Dia Normal':
                         form_dataM.update({'tarifaMotos': esquema.tarifa.tarifa,
@@ -273,71 +276,38 @@ def estacionamiento_detail(request, _id):
             finTarifaFeriado2       = form.cleaned_data['finTarifaFeriado2']
             horizonte               = form.cleaned_data['horizonte']
             
-            esquemaTarifaLiviano = eval(esquema)(
-                tarifa          = tarifaLivianos,
-                tarifaEspecial  = tarifaLivianos2,
-                estacionamiento = estacionamiento,
-                inicioEspecial  = inicioTarifa2,
-                finEspecial     = finTarifa2,
-                tipoDia         = 'Dia Normal',
-                tipoVehiculo    = 'Liviano'
-            )
-            esquemaTarifaLiviano.save()
+            esquemaTarifaLivianos = guardarEsquemasNormal(
+                                esquema, tarifaLivianos, tarifaLivianos2, 
+                                estacionamiento, inicioTarifa2, finTarifa2,
+                                'Liviano'
+                                )
+            esquemaTarifaLivianosF = guardarEsquemasFeriado(
+                                esquemaFeriado, tarifaLivianosF, tarifaLivianos2F, 
+                                estacionamiento, inicioTarifa2, finTarifa2,
+                                'Liviano'
+                                )
             
-            esquemaTarifaLivianoF = eval(esquemaFeriado)(
-                tarifa           = tarifaLivianosF,
-                tarifaEspecial   = tarifaLivianos2F,
-                estacionamiento  = estacionamiento,
-                inicioEspecial   = inicioTarifaFeriado2,
-                finEspecial      = finTarifaFeriado2,
-                tipoDia          = 'Dia Feriado',
-                tipoVehiculo     = 'Liviano'
-            )
-            esquemaTarifaLivianoF.save()
+            esquemaTarifaPesados = guardarEsquemasNormal(
+                                esquema, tarifaPesados, tarifaPesados2, 
+                                estacionamiento, inicioTarifa2, finTarifa2,
+                                'Pesado'
+                                )
+            esquemaTarifaPesadosF = guardarEsquemasFeriado(
+                                esquemaFeriado, tarifaPesadosF, tarifaPesados2F, 
+                                estacionamiento, inicioTarifa2, finTarifa2,
+                                'Pesado'
+                                )
             
-            esquemaTarifaPesado = eval(esquema)(
-                tarifa          = tarifaLivianos,
-                tarifaEspecial  = tarifaLivianos2,
-                estacionamiento = estacionamiento,
-                inicioEspecial  = inicioTarifa2,
-                finEspecial     = finTarifa2,
-                tipoDia         = 'Dia Normal',
-                tipoVehiculo    = 'Pesado'
-            )
-            esquemaTarifaPesado.save()
-            
-            esquemaTarifaPesadoF = eval(esquemaFeriado)(
-                tarifa           = tarifaPesados,
-                tarifaEspecial   = tarifaPesados2,
-                estacionamiento  = estacionamiento,
-                inicioEspecial   = inicioTarifaFeriado2,
-                finEspecial      = finTarifaFeriado2,
-                tipoDia          = 'Dia Feriado',
-                tipoVehiculo     = 'Pesado'
-            )
-            esquemaTarifaPesadoF.save()
-            
-            esquemaTarifaMotos = eval(esquema)(
-                tarifa          = tarifaMotos,
-                tarifaEspecial  = tarifaMotos2,
-                estacionamiento = estacionamiento,
-                inicioEspecial  = inicioTarifa2,
-                finEspecial     = finTarifa2,
-                tipoDia         = 'Dia Normal',
-                tipoVehiculo    = 'Moto'
-            )
-            esquemaTarifaMotos.save()
-            
-            esquemaTarifaMotosF = eval(esquemaFeriado)(
-                tarifa           = tarifaMotosF,
-                tarifaEspecial   = tarifaMotos2F,
-                estacionamiento  = estacionamiento,
-                inicioEspecial   = inicioTarifaFeriado2,
-                finEspecial      = finTarifaFeriado2,
-                tipoDia          = 'Dia Feriado',
-                tipoVehiculo     = 'Moto'
-            )
-            esquemaTarifaMotosF.save()
+            esquemaTarifaMotos = guardarEsquemasNormal(
+                                esquema, tarifaMotos, tarifaMotos2, 
+                                estacionamiento, inicioTarifa2, finTarifa2,
+                                'Moto'
+                                )
+            esquemaTarifaMotosF = guardarEsquemasFeriado(
+                                esquemaFeriado, tarifaMotosF, tarifaMotos2F, 
+                                estacionamiento, inicioTarifa2, finTarifa2,
+                                'Moto'
+                                )
             
             if not HorarioEstacionamiento(horaIn, horaOut):
                 return render(
@@ -349,52 +319,18 @@ def estacionamiento_detail(request, _id):
                 )
                 
             # debería funcionar con excepciones
-            esquemaLivianos = EsquemaTarifarioM2M(
-                estacionamiento= estacionamiento,
-                tarifa = esquemaTarifaLiviano
-            )
             
-            esquemaLivianos.save()
+            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaLivianos)
+            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaLivianosF)
+            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaPesados)
+            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaPesadosF)
+            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaMotos)
+            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaMotosF)
             
-            esquemaLivianosF = EsquemaTarifarioM2M(
-                estacionamiento= estacionamiento,
-                tarifa = esquemaTarifaLivianoF
-            )
-            
-            esquemaLivianosF.save()
-            
-            esquemaPesados = EsquemaTarifarioM2M(
-                estacionamiento= estacionamiento,
-                tarifa = esquemaTarifaPesado
-            )
-            
-            esquemaPesados.save()
-            
-            esquemaPesadosF = EsquemaTarifarioM2M(
-                estacionamiento= estacionamiento,
-                tarifa = esquemaTarifaPesadoF
-            )
-            
-            esquemaPesadosF.save()
-            
-            esquemaMotos = EsquemaTarifarioM2M(
-                estacionamiento= estacionamiento,
-                tarifa = esquemaTarifaMotos
-            )
-            
-            esquemaMotos.save()
-            
-            esquemaMotosF = EsquemaTarifarioM2M(
-                estacionamiento= estacionamiento,
-                tarifa = esquemaTarifaMotosF
-            )
-            
-            esquemaMotosF.save()
-            
-            esquemaLivianos  = esquemaTarifaLiviano 
-            esquemaLivianosF = esquemaTarifaLivianoF
-            esquemaPesados   = esquemaTarifaPesado
-            esquemaPesadosF  = esquemaTarifaPesadoF
+            esquemaLivianos  = esquemaTarifaLivianos 
+            esquemaLivianosF = esquemaTarifaLivianosF
+            esquemaPesados   = esquemaTarifaPesados
+            esquemaPesadosF  = esquemaTarifaPesadosF
             esquemaMotos     = esquemaTarifaMotos
             esquemaMotosF    = esquemaTarifaMotosF
             
