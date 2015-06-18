@@ -18,7 +18,6 @@ from reservas.controller import (
     calcular_Precio_Reserva,
 )
 
-
 from estacionamientos.controller import (
     HorarioEstacionamiento,
     get_client_ip,
@@ -277,6 +276,7 @@ def estacionamiento_detail(request, _id):
             finTarifaFeriado2       = form.cleaned_data['finTarifaFeriado2']
             horizonte               = form.cleaned_data['horizonte']
             
+            #Guardando las diferentes tarifas por los diferentes tipos de vehiculo
             esquemaTarifaLivianos = guardarEsquemasNormal(
                                 esquema, tarifaLivianos, tarifaLivianos2, 
                                 estacionamiento, inicioTarifa2, finTarifa2,
@@ -319,15 +319,15 @@ def estacionamiento_detail(request, _id):
                     }
                 )
                 
-            # debería funcionar con excepciones
-            
+            #Guardando la relacion de las tarifas con el estacionamiento
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaLivianos)
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaLivianosF)
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaPesados)
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaPesadosF)
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaMotos)
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaMotosF)
-            
+
+            #Parametros parqa el render            
             esquemaLivianos  = esquemaTarifaLivianos 
             esquemaLivianosF = esquemaTarifaLivianosF
             esquemaPesados   = esquemaTarifaPesados

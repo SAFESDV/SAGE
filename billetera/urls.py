@@ -15,5 +15,4 @@ urlpatterns = patterns('',
     url(r'^verhistorial$',views.Consultar_Historia_Billetera, name = 'consultar_historial'),
     url(r'^cambiarContraseñaVerificar$',views.cambiar_pin_verificar, name = 'cambiar_pin_verificar'),
     url(r'^cambiarContraseña$',views.cambiar_pin, name = 'cambiar_pin'),
-
 )

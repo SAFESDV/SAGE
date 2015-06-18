@@ -35,6 +35,7 @@ def modificarPin(Id,pin1):
     salt = uuid.uuid4().hex 
     BE.PIN = hashlib.sha256(salt.encode() + pin1.encode()).hexdigest() + ':' + salt
     BE.save()
+    return True
 
 def consultar_saldo(ID_Billetera):
     
@@ -177,7 +178,6 @@ def consumir_saldo(_id, monto):
 #     except ObjectDoesNotExist:
 #         pass
 #     
- 
 def consultar_historial(_id):
     
     Billetera_Selec = BilleteraElectronica.objects.get(id = _id)
