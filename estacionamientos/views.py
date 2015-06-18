@@ -41,6 +41,7 @@ from estacionamientos.forms import (
     EsquemaTarifarioLiviano,
     EsquemaTarifarioPesado,
     EsquemaTarifarioMoto,
+    EsquemaTarifarioDiscapacitados,
     EstacionamientoForm,
     EditarEstacionamientoForm,
     RifForm,
@@ -154,16 +155,21 @@ def estacionamiento_detail(request, _id):
     if request.method == 'GET':
         estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
 
-        form = EstacionamientoExtendedForm()
-        formLiviano = EsquemaTarifarioLiviano()
-        formPesado = EsquemaTarifarioPesado()
-        formMoto = EsquemaTarifarioMoto()
-        esquemaLivianos  = None 
-        esquemaLivianosF = None
-        esquemaPesados   = None
-        esquemaPesadosF  = None
-        esquemaMotos     = None
-        esquemaMotosF    = None
+        form               = EstacionamientoExtendedForm()
+        formLiviano        = EsquemaTarifarioLiviano()
+        formPesado         = EsquemaTarifarioPesado()
+        formMoto           = EsquemaTarifarioMoto()
+        formDiscapacitados = EsquemaTarifarioDiscapacitados()
+        
+        esquemaLivianos        = None 
+        esquemaLivianosF       = None
+        esquemaPesados         = None
+        esquemaPesadosF        = None
+        esquemaMotos           = None
+        esquemaMotosF          = None
+        esquemaDiscapacitados  = None
+        esquemaDiscapacitadosF = None
+            
         
         if len(estacionamientotarifa)> 0:
             form_data = {
@@ -178,6 +184,7 @@ def estacionamiento_detail(request, _id):
             form_dataL = {}
             form_dataP = {}
             form_dataM = {}
+            form_dataD = {}
             
             for esquema in estacionamientotarifa:
                     
@@ -238,11 +245,28 @@ def estacionamiento_detail(request, _id):
                                         })
 
                         esquemaMotosF    = esquema
+            
+                if esquema.tarifa.tipoVehiculo == 'Discapacitados':
+                    
+                    if esquema.tarifa.tipoDia == 'Dia Normal':
+                        form_dataD.update({'tarifaLivianos': esquema.tarifa.tarifa,
+                                          'tarifaLivianos2' : esquema.tarifa.tarifaEspecial,
+                                        })
+                    
+                        esquemaDiscapacitados  = esquema
                         
-            form = EstacionamientoExtendedForm(form_data)
-            formLiviano = EsquemaTarifarioLiviano(form_dataL)
-            formPesado = EsquemaTarifarioPesado(form_dataP)
-            formMoto = EsquemaTarifarioMoto(form_dataM)
+                    else: #Es feriado
+                        form_dataD.update({'tarifaLivianosF': esquema.tarifa.tarifa,
+                                          'tarifaLivianos2F' : esquema.tarifa.tarifaEspecial,
+                                        })
+                        
+                        esquemaDiscapacitadosF = esquema
+            
+            form               = EstacionamientoExtendedForm(form_data)
+            formLiviano        = EsquemaTarifarioLiviano(form_dataL)
+            formPesado         = EsquemaTarifarioPesado(form_dataP)
+            formMoto           = EsquemaTarifarioMoto(form_dataM)
+            formDiscapacitados = EsquemaTarifarioDiscapacitados(form_dataD)
 
     elif request.method == 'POST':
         
@@ -253,8 +277,9 @@ def estacionamiento_detail(request, _id):
         formLiviano = EsquemaTarifarioLiviano(request.POST)
         formPesado = EsquemaTarifarioPesado(request.POST)
         formMoto = EsquemaTarifarioMoto(request.POST)
+        formDiscapacitados = EsquemaTarifarioDiscapacitados(request.POST)
 
-        if form.is_valid() and formLiviano.is_valid() and formPesado.is_valid() and formMoto.is_valid(): 
+        if form.is_valid() and formLiviano.is_valid() and formPesado.is_valid() and formMoto.is_valid() and formDiscapacitados.is_valid(): 
             horaIn                  = form.cleaned_data['horarioin']
             horaOut                 = form.cleaned_data['horarioout']
             tarifaLivianos          = formLiviano.cleaned_data['tarifaLivianos'] 
@@ -263,6 +288,8 @@ def estacionamiento_detail(request, _id):
             tarifaPesados2          = formPesado.cleaned_data['tarifaPesados2']
             tarifaMotos             = formMoto.cleaned_data['tarifaMotos']
             tarifaMotos2            = formMoto.cleaned_data['tarifaMotos2']
+            tarifaDiscapacitados    = formDiscapacitados.cleaned_data['tarifaDiscapacitados']
+            tarifaDiscapacitados2   = formDiscapacitados.cleaned_data['tarifaDiscapacitados2']
             inicioTarifa2           = form.cleaned_data['inicioTarifa2']
             finTarifa2              = form.cleaned_data['finTarifa2']
             esquema                 = form.cleaned_data['esquema']
@@ -272,6 +299,8 @@ def estacionamiento_detail(request, _id):
             tarifaPesados2F         = formPesado.cleaned_data['tarifaPesados2F']
             tarifaMotosF            = formMoto.cleaned_data['tarifaMotosF']
             tarifaMotos2F           = formMoto.cleaned_data['tarifaMotos2F']
+            tarifaDiscapacitadosF   = formDiscapacitados.cleaned_data['tarifaDiscapacitadosF']
+            tarifaDiscapacitados2F  = formDiscapacitados.cleaned_data['tarifaDiscapacitados2F']
             esquemaFeriado          = form.cleaned_data['esquemaFeriado']
             inicioTarifaFeriado2    = form.cleaned_data['inicioTarifaFeriado2']
             finTarifaFeriado2       = form.cleaned_data['finTarifaFeriado2']
@@ -310,6 +339,16 @@ def estacionamiento_detail(request, _id):
                                 estacionamiento, inicioTarifa2, finTarifa2,
                                 'Moto'
                                 )
+            esquemaTarifaDiscapacitados = guardarEsquemasNormal(
+                                esquema, tarifaDiscapacitados, tarifaDiscapacitados2, 
+                                estacionamiento, inicioTarifa2, finTarifa2,
+                                'Discapacitados'
+                                )
+            esquemaTarifaDiscapacitadosF = guardarEsquemasFeriado(
+                                esquemaFeriado, tarifaDiscapacitadosF, tarifaDiscapacitados2F, 
+                                estacionamiento, inicioTarifa2, finTarifa2,
+                                'Discapacitados'
+                                )
             
             if not HorarioEstacionamiento(horaIn, horaOut):
                 return render(
@@ -327,15 +366,18 @@ def estacionamiento_detail(request, _id):
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaPesadosF)
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaMotos)
             guardarEsquemasTarifarios(estacionamiento, esquemaTarifaMotosF)
-
-            #Parametros parqa el render            
-            esquemaLivianos  = esquemaTarifaLivianos 
-            esquemaLivianosF = esquemaTarifaLivianosF
-            esquemaPesados   = esquemaTarifaPesados
-            esquemaPesadosF  = esquemaTarifaPesadosF
-            esquemaMotos     = esquemaTarifaMotos
-            esquemaMotosF    = esquemaTarifaMotosF
+            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaDiscapacitados)
+            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaDiscapacitadosF)
             
+            #Parametros parqa el render            
+            esquemaLivianos        = esquemaTarifaLivianos 
+            esquemaLivianosF       = esquemaTarifaLivianosF
+            esquemaPesados         = esquemaTarifaPesados
+            esquemaPesadosF        = esquemaTarifaPesadosF
+            esquemaMotos           = esquemaTarifaMotos
+            esquemaMotosF          = esquemaTarifaMotosF
+            esquemaDiscapacitados  = esquemaTarifaDiscapacitados
+            esquemaDiscapacitadosF = esquemaTarifaDiscapacitadosF
 
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
@@ -358,27 +400,32 @@ def estacionamiento_detail(request, _id):
             form = EstacionamientoExtendedForm()
             
         else:
-            esquemaLivianos  = None 
-            esquemaLivianosF = None
-            esquemaPesados   = None
-            esquemaPesadosF  = None
-            esquemaMotos     = None
-            esquemaMotosF    = None
-                
+            esquemaLivianos        = None 
+            esquemaLivianosF       = None
+            esquemaPesados         = None
+            esquemaPesadosF        = None
+            esquemaMotos           = None
+            esquemaMotosF          = None
+            esquemaDiscapacitados  = None
+            esquemaDiscapacitadosF = None
+            
     return render(
         request,
         'detalle-estacionamiento.html',
-        { 'form'            : form
-        , 'formLiviano'     : formLiviano
-        , 'formPesado'      : formPesado
-        , 'formMoto'        : formMoto
-        , 'estacionamiento' : estacionamiento
-        , 'esquemaLivianos' : esquemaLivianos 
-        , 'esquemaLivianosF': esquemaLivianosF
-        , 'esquemaPesados'  : esquemaPesados
-        , 'esquemaPesadosF' : esquemaPesadosF
-        , 'esquemaMotos'    : esquemaMotos
-        , 'esquemaMotosF'   : esquemaMotosF
+        { 'form'                   : form
+        , 'formLiviano'            : formLiviano
+        , 'formPesado'             : formPesado
+        , 'formMoto'               : formMoto
+        , 'formDiscapacitados'     : formDiscapacitados 
+        , 'estacionamiento'        : estacionamiento
+        , 'esquemaLivianos'        : esquemaLivianos 
+        , 'esquemaLivianosF'       : esquemaLivianosF
+        , 'esquemaPesados'         : esquemaPesados
+        , 'esquemaPesadosF'        : esquemaPesadosF
+        , 'esquemaMotos'           : esquemaMotos
+        , 'esquemaMotosF'          : esquemaMotosF
+        , 'esquemaDiscapacitados'  : esquemaDiscapacitados
+        , 'esquemaDiscapacitadosF' : esquemaDiscapacitadosF
         }
     )
     
