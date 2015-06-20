@@ -370,7 +370,6 @@ class EstacionamientoExtendedForm(forms.Form):
         )
     )
     
-    
 class EsquemaTarifarioLiviano(forms.Form):
 
     tarifa_validator = RegexValidator(

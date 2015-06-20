@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from estacionamientos.models import Estacionamiento, TarifaMinuto,\
-    TarifaHorayFraccion, TarifaHora, TarifaHoraPico, TarifaFinDeSemana, DiasFeriadosEscogidos,EsquemaTarifarioM2M
+    TarifaHorayFraccion, TarifaHora, TarifaHoraPico, TarifaFinDeSemana,\
+    DiasFeriadosEscogidos,EsquemaTarifarioM2M, PrecioTarifaMasTiempo,\
+    PrecioTarifaMasCara, PrecioProporcional
 
 
 admin.site.register(Estacionamiento)
@@ -12,3 +14,6 @@ admin.site.register(TarifaHoraPico)
 admin.site.register(TarifaFinDeSemana)
 admin.site.register(DiasFeriadosEscogidos)
 admin.site.register(EsquemaTarifarioM2M)
+admin.site.register(PrecioTarifaMasTiempo)
+admin.site.register(PrecioTarifaMasCara)
+admin.site.register(PrecioProporcional)

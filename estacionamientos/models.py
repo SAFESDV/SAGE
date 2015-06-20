@@ -29,7 +29,7 @@ class Estacionamiento(models.Model):
     capacidadDiscapacitados = models.IntegerField(blank = True, null = True)
     content_type        = models.ForeignKey(ContentType, null = True)
     object_id           = models.PositiveIntegerField(null = True)
-    fronterasTarifarias = GenericForeignKey()
+    fronteraTarifaria = GenericForeignKey()
     
     def __str__(self):
         return self.nombre+' '+str(self.id)
@@ -47,9 +47,9 @@ class FronterasTarifarias(models.Model):
     
     class Meta:
         abstract = True
-        
+    
     def __str__(self):
-        return str(self.tarifa)
+        return str(self.id)
     
 class PrecioTarifaMasTiempo(FronterasTarifarias):
     #Se calcula en base a la tarifa que ocupe mas tiempo en el cruce
@@ -92,8 +92,8 @@ class EsquemaTarifario(models.Model):
 
     tarifa              = models.DecimalField(max_digits=20, decimal_places=2)
     tarifaEspecial      = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
-    estacionamiento     = models.ForeignKey(Estacionamiento)
     inicioEspecial      = models.TimeField(blank = True, null = True)
+    estacionamiento     = models.ForeignKey(Estacionamiento)
     finEspecial         = models.TimeField(blank = True, null = True)
     tipoDia             = models.CharField(max_length = 50)
     tipoVehiculo        = models.CharField(max_length = 50)
