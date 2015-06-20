@@ -119,7 +119,6 @@ class EsquemaTarifario(models.Model):
     tarifa              = models.DecimalField(max_digits=20, decimal_places=2)
     tarifaEspecial      = models.DecimalField(blank = True, null = True, max_digits=10, decimal_places=2)
     inicioEspecial      = models.TimeField(blank = True, null = True)
-    estacionamiento     = models.ForeignKey(Estacionamiento)
     finEspecial         = models.TimeField(blank = True, null = True)
     tipoDia             = models.CharField(max_length = 50)
     tipoVehiculo        = models.CharField(max_length = 50)
