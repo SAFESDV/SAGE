@@ -3,6 +3,7 @@
 from django.conf.urls import patterns, url
 
 from estacionamientos import views
+from estacionamientos.views import *
 from billetera.views import billetera_pagar
 from reservas.views import *
 
@@ -40,9 +41,14 @@ urlpatterns = patterns('',
     
     url(r'^sms$', views.receive_sms, name='receive_sms'),
     
-    # Tasa de reservacion
+    # Tasas de Reservacion
     
-    url(r'^(?P<_id>\d+)/tasa$', views.tasa_de_reservacion, name = 'tasa_de_reservacion'),
+    url(r'^(?P<_id>\d+)/tasaDiscapacitados$', views.tasa_de_reservacionDiscapacitados, name = 'tasa_de_reservacionDiscapacitados'),
+    url(r'^(?P<_id>\d+)/tasaPesados$', views.tasa_de_reservacionPesados, name = 'tasa_de_reservacionPesados'),
+    url(r'^(?P<_id>\d+)/tasaMotos$', views.tasa_de_reservacionMotos, name = 'tasa_de_reservacionMotos'),
+    url(r'^(?P<_id>\d+)/tasaLivianos$', views.tasa_de_reservacionLivianos, name = 'tasa_de_reservacionLivianos'),
+    
+    
     url(r'^grafica/.*$', views.grafica_tasa_de_reservacion, name = 'grafica_tasa_de_reservacion'),
     
     # Editar estacionamiento

@@ -21,17 +21,23 @@
 		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionLivianos}}">
     </div>
     
-   
     
-    <div class="col-md-6">
-    <br>
-		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionPesados}}">
-    </div>
-    
-    <div class="col-md-6">
-    <br>
+<a href="./{{estacionamiento.id}}tasaPesados">
+          <button class="btn btn-primary">
+            Tasa de Pesados
+          </button>
+        </a>
 
-		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionMotos}}">
-    </div>
-  </div>
+<a href="./{{estacionamiento.id}}tasaMotos">
+          <button class="btn btn-primary">
+            Tasa de Motos
+          </button>
+        </a>
+        
+<a href="./{{estacionamiento.id}}tasaDiscapacitados">
+          <button class="btn btn-primary">
+            Tasa de puestos para Discapacitados
+          </button>
+        </a>
+    
 {% endblock %}
