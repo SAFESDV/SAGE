@@ -954,7 +954,7 @@ def receive_sms(request):
     
     return HttpResponse('')
     
-def tasa_de_reservacion(request, _id):
+def tasa_de_reservacionDiscapacitados(request, _id):
     _id = int(_id)
     # Verificamos que el objeto exista antes de continuar
     try:
@@ -968,38 +968,101 @@ def tasa_de_reservacion(request, _id):
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
         )
-    ocupacionLivianos = tasa_reservaciones(_id,'Liviano')
-    ocupacionPesados = tasa_reservaciones(_id,'Pesado')
-    ocupacionMotos = tasa_reservaciones(_id,'Moto')
     ocupacionDiscapacitados = tasa_reservaciones(_id,'Discapacitados')
-    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
-                                estacionamiento.capacidadLivianos,
-                                ocupacionLivianos)
-    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
-                                estacionamiento.capacidadPesados,
-                                ocupacionPesados)
-    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
-                                estacionamiento.capacidadMotos,
-                                ocupacionMotos)
     calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
                                 estacionamiento.capacidadDiscapacitados,
                                 ocupacionDiscapacitados)
-    datos_ocupacionLivianos = urlencode(ocupacionLivianos) # Se convierten los datos del diccionario en el formato key1=value1&key2=value2&...
-    datos_ocupacionPesados = urlencode(ocupacionPesados)
-    datos_ocupacionMotos = urlencode(ocupacionMotos)
     datos_ocupacionDiscapacitados = urlencode(ocupacionDiscapacitados)
     
+    return render(
+        request,
+        'tasa-reservacion-discapacitados.html',
+        { "ocupacionDiscapacitados" : ocupacionDiscapacitados
+        , "datos_ocupacionDiscapacitados": datos_ocupacionDiscapacitados
+        }
+    )
+    
+def tasa_de_reservacionLivianos(request, _id):
+    _id = int(_id)
+        # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+    if (estacionamiento.apertura is None):
+        return render(
+            request, 'template-mensaje.html',
+            { 'color'   : 'red'
+            , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
+            }
+        )
+    ocupacionLivianos = tasa_reservaciones(_id,'Liviano')
+    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
+                                estacionamiento.capacidadLivianos,
+                                ocupacionLivianos)
+    datos_ocupacionLivianos = urlencode(ocupacionLivianos) # Se convierten los datos del diccionario en el formato key1=value1&key2=value2&...
+        
     return render(
         request,
         'tasa-reservacion.html',
         { "ocupacionLivianos" : ocupacionLivianos
         , "datos_ocupacionLivianos": datos_ocupacionLivianos
-        , "ocupacionPesados" : ocupacionPesados
+        }
+    )
+       
+def tasa_de_reservacionPesados(request, _id):
+    _id = int(_id)
+    # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+    if (estacionamiento.apertura is None):
+        return render(
+            request, 'template-mensaje.html',
+            { 'color'   : 'red'
+            , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
+            }
+        )
+    ocupacionPesados = tasa_reservaciones(_id,'Pesado')
+    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
+                                estacionamiento.capacidadPesados,
+                                ocupacionPesados)
+    datos_ocupacionPesados = urlencode(ocupacionPesados)
+    return render(
+        request,
+        'tasa-reservacion-pesados.html',
+        { "ocupacionPesados" : ocupacionPesados
         , "datos_ocupacionPesados": datos_ocupacionPesados
-        , "ocupacionMotos" : ocupacionMotos
+        }
+        )
+        
+def tasa_de_reservacionMotos(request, _id):
+    _id = int(_id)
+        # Verificamos que el objeto exista antes de continuar
+    try:
+        estacionamiento = Estacionamiento.objects.get(id = _id)
+    except ObjectDoesNotExist:
+        raise Http404
+    if (estacionamiento.apertura is None):
+        return render(
+            request, 'template-mensaje.html',
+            { 'color'   : 'red'
+            , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
+            }
+        )
+    ocupacionMotos = tasa_reservaciones(_id,'Moto')
+    calcular_porcentaje_de_tasa(estacionamiento.apertura, estacionamiento.cierre,
+                                estacionamiento.capacidadMotos,
+                                ocupacionMotos)
+
+    datos_ocupacionMotos = urlencode(ocupacionMotos)
+       
+    return render(
+        request,
+        'tasa-reservacion-motos.html',
+        { "ocupacionMotos" : ocupacionMotos
         , "datos_ocupacionMotos": datos_ocupacionMotos
-        , "ocupacionDiscapacitados" : ocupacionDiscapacitados
-        , "datos_ocupacionDiscapacitados": datos_ocupacionDiscapacitados
         }
     )
 
@@ -1009,32 +1072,19 @@ def grafica_tasa_de_reservacion(request):
     try:
         datos_ocupacionLivianos = request.GET.dict()
         datos_ocupacionLivianos = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionLivianos.items()))
-        datos_ocupacionPesados = request.GET.dict()
-        datos_ocupacionPesados = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionPesados.items()))
-        datos_ocupacionMotos = request.GET.dict()
-        datos_ocupacionMotos = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionMotos.items())) 
-        datos_ocupacionDiscapacitados = request.GET.dict()
-        datos_ocupacionDiscapacitados = OrderedDict(sorted((k, float(v)) for k, v in datos_ocupacionDiscapacitados.items()))    
         response = HttpResponse(content_type='image/png')
     except:
         return HttpResponse(status=400) # Bad request
     
     # Si el request no viene con algun diccionario
-    if ((not datos_ocupacionLivianos) or (not datos_ocupacionPesados) or (not datos_ocupacionMotos) or (not datos_ocupacionDiscapacitados)):
+    if (not datos_ocupacionLivianos):
         return HttpResponse(status=400) # Bad request
     
     # Configuracion y creacion del grafico de barras con la biblioteca pyplot
     pyplot.switch_backend('Agg') # Para que no use Tk y aparezcan problemas con hilos
     pyplot.bar(range(len(datos_ocupacionLivianos)), datos_ocupacionLivianos.values(), hold = False, color = '#6495ed')
-    pyplot.bar(range(len(datos_ocupacionPesados)), datos_ocupacionPesados.values(), hold = False, color = '#ff00ff')
-    pyplot.bar(range(len(datos_ocupacionMotos)), datos_ocupacionMotos.values(), hold = False, color = '#00ff00')
-    pyplot.bar(range(len(datos_ocupacionDiscapacitados)), datos_ocupacionDiscapacitados.values(), hold = False, color = '#00ff00')
     pyplot.ylim([0,100])
     pyplot.title('Distribución de los porcentajes por fecha')
-    pyplot.xticks(range(len(datos_ocupacionLivianos)), list(datos_ocupacionLivianos.keys()), rotation=20)
-    pyplot.xticks(range(len(datos_ocupacionPesados)), list(datos_ocupacionPesados.keys()), rotation=20)
-    pyplot.xticks(range(len(datos_ocupacionMotos)), list(datos_ocupacionMotos.keys()), rotation=20)
-    pyplot.xticks(range(len(datos_ocupacionDiscapacitados)), list(datos_ocupacionDiscapacitados.keys()), rotation=20)
     pyplot.ylabel('Porcentaje (%)')
     pyplot.grid(True, 'major', 'both')
     pyplot.savefig(response, format='png') # Guarda la imagen creada en el HttpResponse creado
