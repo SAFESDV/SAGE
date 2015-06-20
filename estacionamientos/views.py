@@ -173,13 +173,14 @@ def estacionamiento_detail(request, _id):
         
         if len(estacionamientotarifa)> 0:
             form_data = {
-                    'horarioin' : estacionamiento.apertura,
-                    'horarioout' : estacionamiento.cierre,
-                    'puestosLivianos' : estacionamiento.capacidadLivianos,
-                    'puestosPesados' : estacionamiento.capacidadPesados,
-                    'puestosMotos' : estacionamiento.capacidadMotos,
+                    'horarioin'             : estacionamiento.apertura,
+                    'horarioout'            : estacionamiento.cierre,
+                    'puestosLivianos'       : estacionamiento.capacidadLivianos,
+                    'puestosPesados'        : estacionamiento.capacidadPesados,
+                    'puestosMotos'          : estacionamiento.capacidadMotos,
                     'puestosDiscapacitados' : estacionamiento.capacidadDiscapacitados,
-                    'horizonte' : estacionamiento.horizonte
+                    'horizonte'             : estacionamiento.horizonte,
+                    'fronteraTarifa'        : estacionamiento.fronterasTarifarias
                 }   
             form_dataL = {}
             form_dataP = {}
@@ -282,6 +283,10 @@ def estacionamiento_detail(request, _id):
         if form.is_valid() and formLiviano.is_valid() and formPesado.is_valid() and formMoto.is_valid() and formDiscapacitados.is_valid(): 
             horaIn                  = form.cleaned_data['horarioin']
             horaOut                 = form.cleaned_data['horarioout']
+            puestosLivianos         = form.cleaned_data['puestosLivianos']
+            puestosPesados          = form.cleaned_data['puestosPesados']
+            puestosMotos            = form.cleaned_data['puestosMotos']
+            puestosDiscapacitados   = form.cleaned_data['puestosDiscapacitados']
             tarifaLivianos          = formLiviano.cleaned_data['tarifaLivianos'] 
             tarifaLivianos2         = formLiviano.cleaned_data['tarifaLivianos2'] 
             tarifaPesados           = formPesado.cleaned_data['tarifaPesados']
@@ -305,6 +310,7 @@ def estacionamiento_detail(request, _id):
             inicioTarifaFeriado2    = form.cleaned_data['inicioTarifaFeriado2']
             finTarifaFeriado2       = form.cleaned_data['finTarifaFeriado2']
             horizonte               = form.cleaned_data['horizonte']
+            fronteraTarifa          = form.cleaned_data['fronteraTarifa']
             
             #Guardando las diferentes tarifas por los diferentes tipos de vehiculo
             esquemaTarifaLivianos = guardarEsquemasNormal(
@@ -379,13 +385,15 @@ def estacionamiento_detail(request, _id):
             esquemaDiscapacitados  = esquemaTarifaDiscapacitados
             esquemaDiscapacitadosF = esquemaTarifaDiscapacitadosF
 
+            #parametrizando estacionamiento
             estacionamiento.apertura  = horaIn
             estacionamiento.cierre    = horaOut
-            estacionamiento.capacidadLivianos = form.cleaned_data['puestosLivianos']
-            estacionamiento.capacidadPesados = form.cleaned_data['puestosPesados']
-            estacionamiento.capacidadMotos = form.cleaned_data['puestosMotos']
-            estacionamiento.capacidadDiscapacitados = form.cleaned_data['puestosDiscapacitados']
+            estacionamiento.capacidadLivianos = puestosLivianos 
+            estacionamiento.capacidadPesados = puestosPesados 
+            estacionamiento.capacidadMotos = puestosMotos 
+            estacionamiento.capacidadDiscapacitados = puestosDiscapacitados 
             estacionamiento.horizonte = horizonte
+            estacionamiento.fronterasTarifarias = fronteraTarifa
 
             if (estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos + estacionamiento.capacidadDiscapacitados <= 0):
                 return render(
