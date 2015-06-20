@@ -55,7 +55,15 @@ class PrecioTarifaMasTiempo(FronterasTarifarias):
     #Se calcula en base a la tarifa que ocupe mas tiempo en el cruce
     
     def calcularPrecioFrontera(self):
-        pass #aqui iran los calculos locos
+        #De alguna manera cada frontera debe calcularsele su porcentaje
+        #supongamos que existe una funcion que calcula el porcentaje que se llama porcentajeFrontera
+        
+        mayorTiempo = 0
+        for frontera in FronterasTarifas:
+            if porcentajeFrontera(frontera) > mayorTiempo:
+                mayorTiempo = porcentajeFrontera(frontera)
+                
+        return mayorTiempo
 
     def tipoFrontera(self):
     
@@ -65,7 +73,18 @@ class PrecioTarifaMasCara(FronterasTarifarias):
     #Se calcula en base a la tarifa mas cara
     
     def calcularPrecioFrontera(self):
-        pass
+        lista_fronteras_precios = []
+        for frontera in FronterasTarifarias:
+            lista_fronteras_precios.append(frontera.calcularPrecio(horaInicio, horaFinal))
+            
+        i = 1
+        mayor = lista_fronteras_precios[0]
+        
+        for i in range(1,lista_fronte_precios.length()):
+            if lista_fronteras_precios[1] > mayor:
+                mayor = lista_fronteras_precios[1]
+                
+        return mayor
     
     def tipoFrontera(self):
     
@@ -73,8 +92,15 @@ class PrecioTarifaMasCara(FronterasTarifarias):
 
 class PrecioProporcional(FronterasTarifarias):
     #Se calcula en base a las porporciones de la reserva
-    def calcularPrecioFrontera(self):
-        pass 
+    #supongamos que existe una funcion que calcula el porcentaje que se llama porcentajeFrontera
+    def calcularPrecioFrontera(self, horaInicio, horaFinal):
+        #ASUMO QUE SOLO LLEGO A ESTE CODIGO SI YA IDENTIFIQUE LA FRONTERA    
+        total = 0
+        for frontera in FronterasTarifarias:
+            precioCompleto = frontera.calcularPrecio(horaInicio, horaFinal)
+            total = total + (precioCompleto/porcentajeFrontera(frontera))
+            
+        return total
     
     def tipoFrontera(self):
     
