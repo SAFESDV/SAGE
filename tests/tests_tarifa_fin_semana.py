@@ -26,7 +26,7 @@ class FinDeSemanaTestCase(TestCase):
     # 16 17 18 19 20 21 22
     def test_tarifa_fin_de_semana_n_horas_desde_la_medianoche_antes_del_lunes(self): #(11) bordes
         for n in range(11):
-            tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+            tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
             inicioReserva = datetime(2015,3,9,0,0) #medianoche domingo-lunes
             finReserva = inicioReserva + timedelta(hours=n+1) # n+1 horas m�s tarde
             valor = tarifa.calcularPrecio(inicioReserva,finReserva)
@@ -34,7 +34,7 @@ class FinDeSemanaTestCase(TestCase):
 
     def test_tarifa_fin_de_semana_n_horas_hasta_la_medianoche_antes_del_sabado(self): #(11) bordes
         for n in range(11):
-            tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+            tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
             finReserva = datetime(2015,3,14,0,0) #medianoche viernes-s�bado
             inicioReserva = finReserva - timedelta(hours=n+1) # n+1 horas m�s temprano
             valor = tarifa.calcularPrecio(inicioReserva,finReserva)
@@ -42,7 +42,7 @@ class FinDeSemanaTestCase(TestCase):
 
     def test_tarifa_fin_de_semana_n_horas_desde_la_medianoche_antes_del_sabado(self): #(11) bordes
         for n in range(11):
-            tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+            tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
             inicioReserva = datetime(2015,3,14,0,0) #medianoche viernes-s�bado
             finReserva = inicioReserva + timedelta(hours=n+1) # n+1 horas m�s tarde
             valor = tarifa.calcularPrecio(inicioReserva,finReserva)
@@ -50,21 +50,21 @@ class FinDeSemanaTestCase(TestCase):
 
     def test_tarifa_fin_de_semana_n_horas_hasta_la_medianoche_antes_del_lunes(self): #(11) bordes
         for n in range(11):
-            tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+            tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
             finReserva = datetime(2015,3,9,0,0) #medianoche domingo-lunes
             inicioReserva = finReserva - timedelta(hours=n+1) # n+1 horas m�s temprano
             valor = tarifa.calcularPrecio(inicioReserva,finReserva)
             self.assertEqual(valor,5*(n+1))
 
     def test_tarifa_fin_de_semana_semana_de_trabajo_completa(self): #esquina
-        tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+        tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
         inicioReserva = datetime(2015,3,9,0,0) #medianoche domingo-lunes
         finReserva = datetime(2015,3,14,0,0) #medianoche viernes-s�bado
         valor = tarifa.calcularPrecio(inicioReserva,finReserva)
         self.assertEqual(valor,2*24*5)
 
     def test_tarifa_fin_de_semana_fin_de_semana_completo(self): #esquina
-        tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+        tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
         inicioReserva = datetime(2015,3,14,0,0) #medianoche viernes-s�bado
         finReserva = datetime(2015,3,16,0,0) #medianoche domingo-lunes
         valor = tarifa.calcularPrecio(inicioReserva,finReserva)
@@ -72,7 +72,7 @@ class FinDeSemanaTestCase(TestCase):
 
     def test_tarifa_fin_de_semana_n_horas_domingo_lunes(self): #(11) bordes
         for n in range(11):
-            tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+            tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
             inicioReserva = datetime(2015,3,15,14,0) + timedelta(hours=n) #domingo en la tarde
             finReserva = inicioReserva + timedelta(hours=10) # diez horas m�s tarde
             valor = tarifa.calcularPrecio(inicioReserva,finReserva)
@@ -80,7 +80,7 @@ class FinDeSemanaTestCase(TestCase):
 
     def test_tarifa_fin_de_semana_n_horas_viernes_sabado(self): #(11) bordes
         for n in range(11):
-            tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+            tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
             inicioReserva = datetime(2015,3,13,14,0) + timedelta(hours=n) #viernes en la tarde
             finReserva = inicioReserva + timedelta(hours=10) # diez horas m�s tarde
             valor = tarifa.calcularPrecio(inicioReserva,finReserva)
@@ -88,7 +88,7 @@ class FinDeSemanaTestCase(TestCase):
 
     def test_tarifa_fin_de_semana_n_horas_domingo_lunes_empezando_a_un_cuarto_de_hora(self): #(10) malicia
         for n in range(10):
-            tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+            tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
             inicioReserva = datetime(2015,3,15,14,15) + timedelta(hours=n) #domingo en la tarde
             finReserva = inicioReserva + timedelta(hours=10) # diez horas m�s tarde
             valor = tarifa.calcularPrecio(inicioReserva,finReserva)
@@ -96,7 +96,7 @@ class FinDeSemanaTestCase(TestCase):
 
     def test_tarifa_fin_de_semana_n_horas_viernes_sabado_empezando_a_un_cuarto_de_hora(self): #(10) malicia
         for n in range(10):
-            tarifa = TarifaFinDeSemana(tarifa=2,tarifa2=5)
+            tarifa = TarifaFinDeSemana(tarifa=2,tarifaEspecial=5)
             inicioReserva = datetime(2015,3,13,14,15) + timedelta(hours=n) #viernes en la tarde
             finReserva = inicioReserva + timedelta(hours=10) # diez horas m�s tarde
             valor = tarifa.calcularPrecio(inicioReserva,finReserva)

@@ -9,7 +9,7 @@ from estacionamientos.models import TarifaHorayFraccion
 
 
 ###################################################################
-# TARIFA HORA Y FRACCION
+#                     TARIFA HORA Y FRACCION
 ###################################################################
 
 class TarifaHoraFraccionTestCase(TestCase):
