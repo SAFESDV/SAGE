@@ -43,14 +43,6 @@ class ConfiguracionSMS(models.Model):
     def __str__(self):
         return self.estacionamiento.nombre+' ('+str(self.inicioReserva)+','+str(self.finalReserva)+')'
 
-class FronterasTarifarias(models.Model):  
-    
-    class Meta:
-        abstract = True
-    
-    def __str__(self):
-        return str(self.id)
-    
 class EsquemaTarifarioM2M(models.Model):  
     #Relaciona estacionamiento con el esquema tarifario con estacionamiento (Many to Many)
     
@@ -188,10 +180,14 @@ class DiasFeriadosEscogidos(models.Model):
     def __str__(self):
         return ' ('+str(self.fecha)+')'
     
+class FronterasTarifarias(models.Model):  
     
-class PrecioTarifaMasTiempo(FronterasTarifarias):
-    #Se calcula en base a la tarifa que ocupe mas tiempo en el cruce
-       
+    class Meta:
+        abstract = True
+    
+    def __str__(self):
+        return str(self.id)
+    
     def porcentajeEsquema(self,inicioReserva,finReserva,estacionamiento_id):
         #Esta funcion determinará qué porcentaje de tiempo ocupa un esquema tarifario en una reserva
         
@@ -233,20 +229,35 @@ class PrecioTarifaMasTiempo(FronterasTarifarias):
                 tiempoActual += minuto
             
         return (minutosFeriados/tiempo_reserva_min*100, minutosNoFeriados/tiempo_reserva_min*100) 
+
+    def consultarEsquemaTarifario(self, inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo):
         
+        esquemaTarifario = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
+        
+        if len(esquemaTarifario)>0:
+            for esquema in esquemaTarifario:
+                print(esquema.tarifa)
+                if (esquema.tarifa.tipoVehiculo == tipo_vehiculo and esquema.tarifa.tipoDia == 'Dia Feriado'):
+                    precio1 = esquema.tarifa.calcularPrecio(inicioReserva, finReserva)
+        
+                elif (esquema.tarifa.tipoVehiculo == tipo_vehiculo and esquema.tarifa.tipoDia == 'Dia Normal'):
+                    precio2 = esquema.tarifa.calcularPrecio(inicioReserva, finReserva)
+                    
+        return (precio1, precio2)
+        
+class PrecioTarifaMasTiempo(FronterasTarifarias):
+    #Se calcula en base a la tarifa que ocupe mas tiempo en el cruce
+       
     def calcularPrecioFrontera(self, inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo):
         
-        (porcentajeNormal,porcentajeFeriado) = porcentajeEsquema(inicioReserva,finReserva,estacionamiento_id)
-    
+        (porcentajeNormal, porcentajeFeriado) = self.porcentajeEsquema(inicioReserva,finReserva,estacionamiento_id)
+        (precio1, precio2) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
+        
         if porcentajeFeriado > porcentajeNormal:
-            esquemaTarifario = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-            esquemaTarifarioVehiculo = esquemaTarifario.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Feriado')
-            return esquemaTarifarioVehiculo.calcularPrecio( inicioReserva, finReserva)
+            return precio1
          
         else: 
-            esquemaTarifario = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-            esquemaTarifarioVehiculo = esquemaTarifario.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Normal')
-            return esquemaTarifarioVehiculo.calcularPrecio( inicioReserva, finReserva)    
+            return precio2    
 
     def tipoFrontera(self):
     
@@ -256,19 +267,15 @@ class PrecioTarifaMasCara(FronterasTarifarias):
     #Se calcula en base a la tarifa mas cara
     
     def calcularPrecioFrontera(self, inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo):
-        
-        esquemaTarifario1 = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-        esquemaTarifarioVehiculo1 = esquemaTarifario1.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Feriado')
-        precio1 = esquemaTarifarioVehiculo1.calcularPrecio( inicioReserva, finReserva)
-         
-        esquemaTarifario2 = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-        esquemaTarifarioVehiculo2 = esquemaTarifario2.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Normal')
-        precio2 = esquemaTarifarioVehiculo2.calcularPrecio( inicioReserva, finReserva)    
-        
-        if precio1>precio2:
+
+        (precio1, precio2) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
+                    
+        if precio1 > precio2:
             return precio1
         else:
             return precio2
+    
+        return -1
     
     def tipoFrontera(self):
     
@@ -276,59 +283,11 @@ class PrecioTarifaMasCara(FronterasTarifarias):
 
 class PrecioProporcional(FronterasTarifarias):
 
-    def porcentajeEsquema(self,inicioReserva,finReserva,estacionamiento_id):
-        #Esta funcion determinará qué porcentaje de tiempo ocupa un esquema tarifario en una reserva
-        
-        diasFeriados = DiasFeriadosEscogidos.objects.filter(id = estacionamiento_id)
-        
-        tiempo_reserva = finReserva - inicioReserva
-        tiempo_reserva_min = tiempo_reserva.minutes + (tiempo_reserva.days*24*60)  
-        
-        minutosNoFeriados = 0
-        minutosFeriados = 0
-        minuto = timedelta(minutes=1)
-
-        coincidencia = False
-        
-        # Se define el inicio y el final de cada dia
-            
-        tiempoActual = inicioReserva
-        minuto       = timedelta(minutes=1)
-        
-        while tiempoActual < finReserva:
-            horaActual = tiempoActual.time()
-            
-            for diaFeriado in diasFeriados:
-                 
-                if (tiempoActual.day == diaFeriado.fecha.day and 
-                    tiempoActual.month == diaFeriado.fecha.month) or not coincidencia:
-                    
-                    coincidencia = True
-                    minutosFeriados += 1
-                    tiempoActual += minuto
-                    
-                    if tiempoActual.day != (tiempoActual + minuto).day:
-                        coincidencia = False
-                    break
-                     
-            if (not coincidencia):
-               
-                minutosNoFeriados += 1
-                tiempoActual += minuto
-            
-        return (minutosFeriados/tiempo_reserva_min*100, minutosNoFeriados/tiempo_reserva_min*100) 
-
     def calcularPrecioFrontera(self,inicioReserva,finReserva,estacionamiento_id):
 
-        esquemaTarifario1 = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-        esquemaTarifarioVehiculo1 = esquemaTarifario1.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Feriado')
-        precio1 = esquemaTarifarioVehiculo1.calcularPrecio( inicioReserva, finReserva)
-         
-        esquemaTarifario2 = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-        esquemaTarifarioVehiculo2 = esquemaTarifario2.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Normal')
-        precio2 = esquemaTarifarioVehiculo2.calcularPrecio( inicioReserva, finReserva) 
+        (precio1, precio2) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
         
-        (porcentajeNormal,porcentajeFeriado) = porcentajeEsquema(inicioReserva,finReserva,estacionamiento_id)
+        (porcentajeNormal,porcentajeFeriado) = self.porcentajeEsquema(inicioReserva,finReserva,estacionamiento_id)
         
         return precio1*porcentajeNormal + precio2*porcentajeFeriado
     

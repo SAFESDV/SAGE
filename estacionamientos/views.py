@@ -315,42 +315,6 @@ def estacionamiento_detail(request, _id):
             horizonte               = form.cleaned_data['horizonte']
             fronteraTarifa          = form.cleaned_data['fronteraTarifa']
             
-            #Guardando las diferentes tarifas por los diferentes tipos de vehiculo
-            esquemaTarifaLivianos = guardarEsquemasNormal(
-                                esquema, tarifaLivianos, tarifaLivianos2, 
-                                inicioTarifa2, finTarifa2,'Liviano'
-                                )
-            esquemaTarifaLivianosF = guardarEsquemasFeriado(
-                                esquemaFeriado, tarifaLivianosF, tarifaLivianos2F, 
-                                inicioTarifa2, finTarifa2, 'Liviano'
-                                )
-            
-            esquemaTarifaPesados = guardarEsquemasNormal(
-                                esquema, tarifaPesados, tarifaPesados2, 
-                                inicioTarifa2, finTarifa2,'Pesado'
-                                )
-            esquemaTarifaPesadosF = guardarEsquemasFeriado(
-                                esquemaFeriado, tarifaPesadosF, tarifaPesados2F, 
-                                inicioTarifa2, finTarifa2, 'Pesado'
-                                )
-            
-            esquemaTarifaMotos = guardarEsquemasNormal(
-                                esquema, tarifaMotos, tarifaMotos2, 
-                                inicioTarifa2, finTarifa2, 'Moto'
-                                )
-            esquemaTarifaMotosF = guardarEsquemasFeriado(
-                                esquemaFeriado, tarifaMotosF, tarifaMotos2F, 
-                                inicioTarifa2, finTarifa2, 'Moto'
-                                )
-            esquemaTarifaDiscapacitados = guardarEsquemasNormal(
-                                esquema, tarifaDiscapacitados, tarifaDiscapacitados2, 
-                                inicioTarifa2, finTarifa2,'Discapacitados'
-                                )
-            esquemaTarifaDiscapacitadosF = guardarEsquemasFeriado(
-                                esquemaFeriado, tarifaDiscapacitadosF, tarifaDiscapacitados2F, 
-                                inicioTarifa2, finTarifa2,'Discapacitados'
-                                )
-            
             if not HorarioEstacionamiento(horaIn, horaOut):
                 return render(
                     request,
@@ -360,15 +324,52 @@ def estacionamiento_detail(request, _id):
                     }
                 )
                 
-            #Guardando la relacion de las tarifas con el estacionamiento
-            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaLivianos)
-            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaLivianosF)
-            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaPesados)
-            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaPesadosF)
-            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaMotos)
-            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaMotosF)
-            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaDiscapacitados)
-            guardarEsquemasTarifarios(estacionamiento, esquemaTarifaDiscapacitadosF)
+            #Guardando las diferentes tarifas por los diferentes tipos de vehiculo
+            esquemaTarifaLivianos = guardarEsquemasNormal(
+                                esquema, tarifaLivianos, tarifaLivianos2, 
+                                inicioTarifa2, finTarifa2,'Liviano',
+                                estacionamiento
+                                )
+            esquemaTarifaLivianosF = guardarEsquemasFeriado(
+                                esquemaFeriado, tarifaLivianosF, tarifaLivianos2F, 
+                                inicioTarifa2, finTarifa2, 'Liviano',
+                                estacionamiento
+                                )
+            
+            esquemaTarifaPesados = guardarEsquemasNormal(
+                                esquema, tarifaPesados, tarifaPesados2, 
+                                inicioTarifa2, finTarifa2,'Pesado',
+                                estacionamiento
+                                )
+            
+            esquemaTarifaPesadosF = guardarEsquemasFeriado(
+                                esquemaFeriado, tarifaPesadosF, tarifaPesados2F, 
+                                inicioTarifa2, finTarifa2, 'Pesado',
+                                estacionamiento
+                                )
+            
+            esquemaTarifaMotos = guardarEsquemasNormal(
+                                esquema, tarifaMotos, tarifaMotos2, 
+                                inicioTarifa2, finTarifa2, 'Moto',
+                                estacionamiento
+                                )
+            
+            esquemaTarifaMotosF = guardarEsquemasFeriado(
+                                esquemaFeriado, tarifaMotosF, tarifaMotos2F, 
+                                inicioTarifa2, finTarifa2, 'Moto',
+                                estacionamiento
+                                )
+            
+            esquemaTarifaDiscapacitados = guardarEsquemasNormal(
+                                esquema, tarifaDiscapacitados, tarifaDiscapacitados2, 
+                                inicioTarifa2, finTarifa2,'Discapacitados',
+                                estacionamiento
+                                )
+            esquemaTarifaDiscapacitadosF = guardarEsquemasFeriado(
+                                esquemaFeriado, tarifaDiscapacitadosF, tarifaDiscapacitados2F, 
+                                inicioTarifa2, finTarifa2,'Discapacitados',
+                                estacionamiento
+                                )
             
             #Parametros parqa el render            
             esquemaLivianos        = esquemaTarifaLivianos 

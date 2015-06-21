@@ -152,32 +152,6 @@ def limpiarEsquemasTarifarios(_id):
         for esquema in estacionamientotarifa:
             esquema.tarifa.delete()
         estacionamientotarifa.delete()
-        
-def guardarEsquemasNormal(esquema, tarifa, tarifaEspecial, inicioTarifa2, finTarifa2, tipoVehiculo):
-    
-    esquemaTarifa = eval(esquema)(
-        tarifa          = tarifa,
-        tarifaEspecial  = tarifaEspecial,
-        inicioEspecial  = inicioTarifa2,
-        finEspecial     = finTarifa2,
-        tipoDia         = 'Dia Normal',
-        tipoVehiculo    = tipoVehiculo
-    )
-    esquemaTarifa.save()
-    return esquemaTarifa
-    
-def guardarEsquemasFeriado(esquemaFeriado, tarifaF, tarifaEspecialF, inicioTarifa2F, finTarifa2F, tipoVehiculo):
-    
-    esquemaTarifaF = eval(esquemaFeriado)(
-        tarifa           = tarifaF,
-        tarifaEspecial   = tarifaEspecialF,
-        inicioEspecial   = inicioTarifa2F,
-        finEspecial      = finTarifa2F,
-        tipoDia          = 'Dia Feriado',
-        tipoVehiculo     = tipoVehiculo
-    )
-    esquemaTarifaF.save()
-    return esquemaTarifaF
 
 def guardarEsquemasTarifarios(estacionamiento, esquemaTarifa):
     
@@ -188,3 +162,34 @@ def guardarEsquemasTarifarios(estacionamiento, esquemaTarifa):
             
     esquema.save()
             
+def guardarEsquemasNormal(esquema, tarifa, tarifaEspecial, inicioTarifa2, finTarifa2, tipoVehiculo, estacionamiento):
+
+    esquemaTarifa = eval(esquema)(
+        tarifa          = tarifa,
+        tarifaEspecial  = tarifaEspecial,
+        inicioEspecial  = inicioTarifa2,
+        finEspecial     = finTarifa2,
+        tipoDia         = 'Dia Normal',
+        tipoVehiculo    = tipoVehiculo
+    )
+    esquemaTarifa.save()
+    
+    guardarEsquemasTarifarios(estacionamiento, esquemaTarifa)
+    
+    return esquemaTarifa
+    
+def guardarEsquemasFeriado(esquemaFeriado, tarifaF, tarifaEspecialF, inicioTarifa2F, finTarifa2F, tipoVehiculo, estacionamiento):
+    
+    esquemaTarifaF = eval(esquemaFeriado)(
+        tarifa           = tarifaF,
+        tarifaEspecial   = tarifaEspecialF,
+        inicioEspecial   = inicioTarifa2F,
+        finEspecial      = finTarifa2F,
+        tipoDia          = 'Dia Feriado',
+        tipoVehiculo     = tipoVehiculo
+    )
+    esquemaTarifaF.save()
+    
+    guardarEsquemasTarifarios(estacionamiento, esquemaTarifaF)
+    
+    return esquemaTarifaF
