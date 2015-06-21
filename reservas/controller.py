@@ -175,7 +175,7 @@ def get_transacciones(idReserva):
     return relacion.transaccion
 
 def calcular_Precio_Reserva(reserva,estacionamiento):
-    montoReserva = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(reserva.inicioReserva,reserva.finReserva,reserva.estacionamiento.id)
+    montoReserva = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(reserva.inicioReserva,reserva.finalReserva,reserva.estacionamiento.id,reserva.tipo_vehiculo)
     return montoReserva
 
 def calcular_Precio_Reserva2(reserva,diasFeriados):

@@ -258,11 +258,11 @@ class PrecioTarifaMasCara(FronterasTarifarias):
     def calcularPrecioFrontera(self, inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo):
         
         esquemaTarifario1 = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-        esquemaTarifarioVehiculo1 = esquemaTarifario.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Feriado')
+        esquemaTarifarioVehiculo1 = esquemaTarifario1.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Feriado')
         precio1 = esquemaTarifarioVehiculo1.calcularPrecio( inicioReserva, finReserva)
          
         esquemaTarifario2 = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-        esquemaTarifarioVehiculo2 = esquemaTarifario.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Normal')
+        esquemaTarifarioVehiculo2 = esquemaTarifario2.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Normal')
         precio2 = esquemaTarifarioVehiculo2.calcularPrecio( inicioReserva, finReserva)    
         
         if precio1>precio2:
@@ -321,11 +321,11 @@ class PrecioProporcional(FronterasTarifarias):
     def calcularPrecioFrontera(self,inicioReserva,finReserva,estacionamiento_id):
 
         esquemaTarifario1 = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-        esquemaTarifarioVehiculo1 = esquemaTarifario.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Feriado')
+        esquemaTarifarioVehiculo1 = esquemaTarifario1.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Feriado')
         precio1 = esquemaTarifarioVehiculo1.calcularPrecio( inicioReserva, finReserva)
          
         esquemaTarifario2 = EsquemaTarifarioM2M.objects.filter(estacionamiento = estacionamiento_id)
-        esquemaTarifarioVehiculo2 = esquemaTarifario.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Normal')
+        esquemaTarifarioVehiculo2 = esquemaTarifario2.objects.filter(tipoVehiculo = tipo_vehiculo, tipoDia = 'Dia Normal')
         precio2 = esquemaTarifarioVehiculo2.calcularPrecio( inicioReserva, finReserva) 
         
         (porcentajeNormal,porcentajeFeriado) = porcentajeEsquema(inicioReserva,finReserva,estacionamiento_id)
