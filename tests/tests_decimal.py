@@ -51,14 +51,14 @@ class DecimalTestCase(TestCase):
     def test_tarifa_pico_decimal(self):
         inicio = time(6,0)
         fin = time(18,0)
-        tarifa = TarifaHoraPico(tarifa=0.1,tarifa2=0.3,inicioEspecial=inicio,finEspecial=fin)
+        tarifa = TarifaHoraPico(tarifa=0.1,tarifaEspecial=0.3,inicioEspecial=inicio,finEspecial=fin)
         inicioReserva = datetime(2015,1,1,15)
         finReserva = datetime(2015,1,1,20)
         valor = tarifa.calcularPrecio(inicioReserva,finReserva)
         self.assertEqual(valor,Decimal('1.10'))
         
     def test_tarifa_fin_de_semana_decimal(self):
-        tarifa = TarifaFinDeSemana(tarifa=0.1,tarifa2=0.3)
+        tarifa = TarifaFinDeSemana(tarifa=0.1,tarifaEspecial=0.3)
         inicioReserva = datetime(2015,3,6,22)
         finReserva = datetime(2015,3,7,3)
         valor = tarifa.calcularPrecio(inicioReserva,finReserva)
