@@ -28,7 +28,7 @@ from estacionamientos.models import (
 )
 
 ###################################################################
-#                 Frontera Tarifaria Mas Tiempo                      #
+#                 Frontera Tarifaria Mas Tiempo                   #
 ###################################################################
 
 class FronteraMasTiempoTestCase(TestCase):
@@ -225,12 +225,12 @@ class FronteraMasTiempoTestCase(TestCase):
         tarifaE = 10.05
         tarifaFeriado = 11.01
         tarifaFeriadoE = 11.05
-        horaPicoIni = time(22, 0)
+        horaPicoIni = time(0, 1)
         horaPicoFin = time(4, 0)
         estacionamientoTarifa = guardarEsquemasNormal('TarifaHoraPico', tarifa, tarifaE, horaPicoIni, horaPicoFin, 'Liviano', estacionamiento)
         estacionamientoTarifa = guardarEsquemasFeriado('TarifaHoraPico', tarifaFeriado, tarifaFeriadoE, horaPicoIni, horaPicoFin, 'Liviano', estacionamiento)
         inicioReserva = datetime(2015, 6, 27, 18, 30)
         finReserva = datetime(2015, 6, 28, 1, 0)
         monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
-        self.assertEqual(monto, Decimal(71.78).quantize(Decimal('1.00')))
+        self.assertEqual(monto, Decimal(71.60).quantize(Decimal('1.00')))
             

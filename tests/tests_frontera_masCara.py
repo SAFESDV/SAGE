@@ -28,13 +28,13 @@ from estacionamientos.models import (
 )
 
 ###################################################################
-#                 Frontera Tarifaria Mas Tiempo                      #
+#                 Frontera Tarifaria Mas Cara                     #
 ###################################################################
 
-class FronteraMasTiempoTestCase(TestCase):
+class FronteraMasCaraTestCase(TestCase):
 
     def crearEstacionamiento(self):
-        fronteraTarifa = PrecioTarifaMasTiempo() 
+        fronteraTarifa = PrecioTarifaMasCara() 
         fronteraTarifa.save()
         
         estacionamiento = Estacionamiento(

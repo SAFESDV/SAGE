@@ -195,7 +195,6 @@ class FronterasTarifarias(models.Model):
         
         tiempo_reserva = finReserva - inicioReserva
         tiempo_reserva_min = tiempo_reserva.seconds/60 + (tiempo_reserva.days*24*60)  
-        print(tiempo_reserva_min)
         minutosNoFeriados = 0
         minutosFeriados = 0
         minuto = timedelta(minutes=1)
@@ -217,21 +216,20 @@ class FronterasTarifarias(models.Model):
                     
                     coincidencia = True
                     minutosFeriados += 1
-                    print('feriado')
-                    print(minutosFeriados)
-                    
+
                     if tiempoActual.day != (tiempoActual + minuto).day:
                         coincidencia = False
                     break
                      
             if (not coincidencia):
                 minutosNoFeriados += 1
-                print('No feriado')
-                print(minutosNoFeriados)
                 
             tiempoActual += minuto
+        minutosNoFeriados -= 1
+        proporcionFeriado = Decimal(minutosFeriados/tiempo_reserva_min).quantize(Decimal('1.00'))
+        proporcionNoFeriado =  Decimal(minutosNoFeriados/tiempo_reserva_min).quantize(Decimal('1.00'))
             
-        return (minutosFeriados/tiempo_reserva_min, minutosNoFeriados/tiempo_reserva_min) 
+        return (proporcionFeriado, proporcionNoFeriado) 
 
     def consultarEsquemaTarifario(self, inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo):
         
@@ -240,12 +238,12 @@ class FronterasTarifarias(models.Model):
         if len(esquemaTarifario)>0:
             for esquema in esquemaTarifario:
                 if (esquema.tarifa.tipoVehiculo == tipo_vehiculo and esquema.tarifa.tipoDia == 'Dia Feriado'):
-                    precio1 = esquema.tarifa.calcularPrecio(inicioReserva, finReserva)
+                    precioFeriado = esquema.tarifa.calcularPrecio(inicioReserva, finReserva)
         
                 elif (esquema.tarifa.tipoVehiculo == tipo_vehiculo and esquema.tarifa.tipoDia == 'Dia Normal'):
-                    precio2 = esquema.tarifa.calcularPrecio(inicioReserva, finReserva)
+                    precioNoFeriado = esquema.tarifa.calcularPrecio(inicioReserva, finReserva)
                     
-        return (precio1, precio2)
+        return (precioFeriado, precioNoFeriado)
         
 class PrecioTarifaMasTiempo(FronterasTarifarias):
     #Se calcula en base a la tarifa que ocupe mas tiempo en el cruce
@@ -254,13 +252,13 @@ class PrecioTarifaMasTiempo(FronterasTarifarias):
         
         (porcentajeFeriado, porcentajeNormal) = self.porcentajeEsquema(inicioReserva,finReserva,estacionamiento_id)
         print(porcentajeNormal, porcentajeFeriado)
-        (precio1, precio2) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
+        (precioFeriado, precioNoFeriado) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
         
         if porcentajeFeriado > porcentajeNormal:
-            return precio1
+            return precioFeriado
          
         else: 
-            return precio2    
+            return precioNoFeriado    
 
     def tipoFrontera(self):
     
@@ -271,12 +269,12 @@ class PrecioTarifaMasCara(FronterasTarifarias):
     
     def calcularPrecioFrontera(self, inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo):
 
-        (precio1, precio2) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
+        (precioFeriado, precioNoFeriado) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
                     
-        if precio1 > precio2:
-            return precio1
+        if precioFeriado > precioNoFeriado:
+            return precioFeriado
         else:
-            return precio2
+            return precioNoFeriado
     
         return -1
     
@@ -288,11 +286,19 @@ class PrecioProporcional(FronterasTarifarias):
 
     def calcularPrecioFrontera(self, inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo):
 
-        (precio1, precio2) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
-        
+        (precioFeriado, precioNoferiado) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
+        print(precioFeriado, precioNoferiado)
         (porcentajeFeriado, porcentajeNormal) = self.porcentajeEsquema(inicioReserva,finReserva,estacionamiento_id)
+        print("Porcentajes")
+        print(porcentajeFeriado, porcentajeNormal)
         
-        return precio1*Decimal(porcentajeNormal).quantize(Decimal('1.00')) + precio2*Decimal(porcentajeFeriado).quantize(Decimal('1.00'))
+        precioF = Decimal(precioFeriado*porcentajeFeriado).quantize(Decimal('1.00'))
+        precioNF = Decimal(precioNoferiado*porcentajeNormal).quantize(Decimal('1.00'))
+        print( 'precios')
+        print(precioF, precioNF)
+        precioTotal = precioF + precioNF
+        print(precioTotal)  
+        return  precioTotal
     
     def tipoFrontera(self):
     
