@@ -35,217 +35,217 @@ class consultaReservaTestCase(TestCase):
         self.assertTrue(len(lista) == 1 and total == 0)
 
     # TDD
-#     def test_un_estacionamiento_un_pago(self):
-#         e = Estacionamiento(
-#             nombre      = "nom",
-#             direccion   = "dir",
-#             rif         = "J-123456789",
-#             capacidadLivianos = 20,
-#             capacidadPesados  = 20,
-#             capacidadMotos    = 20,
-#             apertura    = time(0,0),
-#             cierre      = time(23,59),
-#         )
-#         e.save()
-#         
-#         r = Reserva(
-#             cedulaTipo      = 'V',
-#             cedula          = '12345678',
-#             nombre          = 'Julia',
-#             apellido        = 'Suárez',
-#             estacionamiento = e,
-#             inicioReserva = datetime(2015,3,10,3,0),
-#             finalReserva  = datetime(2015,3,10,5,0),
-#             estado = "Válido",
-#             tipo_vehiculo = "Liviano"
-#         )
-#         r.save()
-#         
-#         trans = Transaccion(
-#                     fecha            = datetime.now(),
-#                     tipo             = 'Reserva',
-#                     estado           = 'Válido'
-#                 )
-#         trans.save()
-#         
-#         tdc =   TransTDC(
-#                     nombre           = 'Karla',
-#                     cedulaTipo       = 'V',
-#                     cedula           = '87654321',
-#                     tarjetaTipo      = 'VISTA',
-#                     tarjeta          = '5689',
-#                     monto            = 100,
-#                     transaccion      = trans
-#                 )
-#         tdc.save()
-#         
-#         relacion =  TransReser(
-#                         transaccion = trans,
-#                         reserva = r
-#                     )
-#         relacion.save()
-#         
-#         lista, total = consultar_ingresos("J-123456789")
-#         self.assertTrue(len(lista) == 1 and total == 150)
-#         
-#     # TDD malicia
-#     def test_un_estacionamiento_muchos_pagos(self):
-#         n = 1000
-#         e = Estacionamiento(
-#             nombre      = "nom",
-#             direccion   = "dir",
-#             rif         = "J-123456789",
-#             capacidadPesados   = n,
-#             capacidadLivianos   = n,
-#             capacidadMotos   = n,
-#             apertura    = time(0,0),
-#             cierre      = time(23,59),
-#         )
-#         e.save()
-#         for i in range(0,n):
-#             r = Reserva(
-#                 cedulaTipo      = 'V',
-#                 cedula          = '12345678',
-#                 nombre          = 'Julia',
-#                 apellido        = 'Suárez',
-#                 estacionamiento = e,
-#                 inicioReserva = datetime(2015,3,10,3,0),
-#                 finalReserva  = datetime(2015,3,10,5,0),
-#                 estado = "Válido",
-#                 tipo_vehiculo = "Liviano"
-#             )
-#             r.save()
-#             
-#             trans = Transaccion(
-#                         fecha            = datetime.now(),
-#                         tipo             = 'Reserva',
-#                         estado           = 'Válido'
-#                     )
-#             trans.save()
-#             
-#             tdc =   TransTDC(
-#                         nombre           = 'Karla',
-#                         cedulaTipo       = 'V',
-#                         cedula           = '87654321',
-#                         tarjetaTipo      = 'VISTA',
-#                         tarjeta          = '5689',
-#                         monto            = 100,
-#                         transaccion      = trans
-#                     )
-#             tdc.save()
-#             
-#             relacion =  TransReser(
-#                             transaccion = trans,
-#                             reserva = r
-#                         )
-#             relacion.save()
-#                 
-#         lista, total = consultar_ingresos("J-123456789")
-#         self.assertTrue(len(lista) == 1 and total == n*100)
-# 
-#     # malicia
-#     def test_dos_estacionamiento_muchos_pagos(self):
-#         n  = 1000
-#         e1 = Estacionamiento(
-#             nombre      = "nom1",
-#             direccion   = "dir1",
-#             rif         = "J-123456789",
-#             capacidadLivianos = n,
-#             capacidadPesados  = n,
-#             capacidadMotos    = n,
-#             apertura    = time(0,0),
-#             cierre      = time(23,59),
-#         )
-#         e2 = Estacionamiento(
-#             nombre      = "nom2",
-#             direccion   = "dir3",
-#             rif         = "J-123456789",
-#             capacidadLivianos = n,
-#             capacidadPesados  = n,
-#             capacidadMotos    = n,
-#             apertura    = time(0,0),
-#             cierre      = time(23,59),
-#         )
-#         e1.save()
-#         e2.save()
-#         
-#         for i in range(0,n):
-#             r = Reserva(
-#                     cedulaTipo      = 'V',
-#                     cedula          = '12345678',
-#                     nombre          = 'Julia',
-#                     apellido        = 'Suárez',
-#                     estacionamiento = e1,
-#                     inicioReserva = datetime(2015,3,10,3,0),
-#                     finalReserva  = datetime(2015,3,10,5,0),
-#                     estado = "Válido",
-#                     tipo_vehiculo = "Liviano"
-#                 )
-#             r.save()
-#             
-#             trans = Transaccion(
-#                         fecha            = datetime.now(),
-#                         tipo             = 'Reserva',
-#                         estado           = 'Válido'
-#                     )
-#             trans.save()
-#             
-#             tdc =   TransTDC(
-#                         nombre           = 'Karla',
-#                         cedulaTipo       = 'V',
-#                         cedula           = '87654321',
-#                         tarjetaTipo      = 'VISTA',
-#                         tarjeta          = '5689',
-#                         monto            = 100,
-#                         transaccion      = trans
-#                     )
-#             tdc.save()
-#             
-#             relacion =  TransReser(
-#                             transaccion = trans,
-#                             reserva = r
-#                         )
-#             relacion.save()
-#         
-#         for i in range(0,n):
-#             r = Reserva(
-#                     cedulaTipo      = 'V',
-#                     cedula          = '12345678',
-#                     nombre          = 'Julia',
-#                     apellido        = 'Suárez',
-#                     estacionamiento = e2,
-#                     inicioReserva = datetime(2015,3,10,3,0),
-#                     finalReserva  = datetime(2015,3,10,5,0),
-#                     estado = "Válido",
-#                     tipo_vehiculo = "Liviano"
-#                 )
-#             r.save()
-#             
-#             trans = Transaccion(
-#                         fecha            = datetime.now(),
-#                         tipo             = 'Reserva',
-#                         estado           = 'Válido'
-#                     )
-#             trans.save()
-#             
-#             tdc =   TransTDC(
-#                         nombre           = 'Karla',
-#                         cedulaTipo       = 'V',
-#                         cedula           = '87654321',
-#                         tarjetaTipo      = 'VISTA',
-#                         tarjeta          = '5689',
-#                         monto            = 100,
-#                         transaccion      = trans
-#                     )
-#             tdc.save()
-#             
-#             relacion =  TransReser(
-#                             transaccion = trans,
-#                             reserva = r
-#                         )
-#             relacion.save()
-#         lista, total = consultar_ingresos("J-123456789")
-#         self.assertTrue(len(lista) == 2 and total == 2*n*100)
+    def test_un_estacionamiento_un_pago(self):
+        e = Estacionamiento(
+            nombre      = "nom",
+            direccion   = "dir",
+            rif         = "J-123456789",
+            capacidadLivianos = 20,
+            capacidadPesados  = 20,
+            capacidadMotos    = 20,
+            apertura    = time(0,0),
+            cierre      = time(23,59),
+        )
+        e.save()
+         
+        r = Reserva(
+            cedulaTipo      = 'V',
+            cedula          = '12345678',
+            nombre          = 'Julia',
+            apellido        = 'Suárez',
+            estacionamiento = e,
+            inicioReserva = datetime(2015,3,10,3,0),
+            finalReserva  = datetime(2015,3,10,5,0),
+            estado = "Válido",
+            tipo_vehiculo = "Liviano"
+        )
+        r.save()
+         
+        trans = Transaccion(
+                    fecha            = datetime.now(),
+                    tipo             = 'Reserva',
+                    estado           = 'Válido'
+                )
+        trans.save()
+         
+        tdc =   TransTDC(
+                    nombre           = 'Karla',
+                    cedulaTipo       = 'V',
+                    cedula           = '87654321',
+                    tarjetaTipo      = 'VISTA',
+                    tarjeta          = '5689',
+                    monto            = 150,
+                    transaccion      = trans
+                )
+        tdc.save()
+         
+        relacion =  TransReser(
+                        transaccion = trans,
+                        reserva = r
+                    )
+        relacion.save()
+         
+        lista, total = consultar_ingresos("J-123456789")
+        self.assertTrue(len(lista) == 1 and total == 150)
+         
+    # TDD malicia
+    def test_un_estacionamiento_muchos_pagos(self):
+        n = 1000
+        e = Estacionamiento(
+            nombre      = "nom",
+            direccion   = "dir",
+            rif         = "J-123456789",
+            capacidadPesados   = n,
+            capacidadLivianos   = n,
+            capacidadMotos   = n,
+            apertura    = time(0,0),
+            cierre      = time(23,59),
+        )
+        e.save()
+        for i in range(0,n):
+            r = Reserva(
+                cedulaTipo      = 'V',
+                cedula          = '12345678',
+                nombre          = 'Julia',
+                apellido        = 'Suárez',
+                estacionamiento = e,
+                inicioReserva = datetime(2015,3,10,3,0),
+                finalReserva  = datetime(2015,3,10,5,0),
+                estado = "Válido",
+                tipo_vehiculo = "Liviano"
+            )
+            r.save()
+             
+            trans = Transaccion(
+                        fecha            = datetime.now(),
+                        tipo             = 'Reserva',
+                        estado           = 'Válido'
+                    )
+            trans.save()
+             
+            tdc =   TransTDC(
+                        nombre           = 'Karla',
+                        cedulaTipo       = 'V',
+                        cedula           = '87654321',
+                        tarjetaTipo      = 'VISTA',
+                        tarjeta          = '5689',
+                        monto            = 100,
+                        transaccion      = trans
+                    )
+            tdc.save()
+             
+            relacion =  TransReser(
+                            transaccion = trans,
+                            reserva = r
+                        )
+            relacion.save()
+                 
+        lista, total = consultar_ingresos("J-123456789")
+        self.assertTrue(len(lista) == 1 and total == n*100)
+ 
+    # malicia
+    def test_dos_estacionamiento_muchos_pagos(self):
+        n  = 1000
+        e1 = Estacionamiento(
+            nombre      = "nom1",
+            direccion   = "dir1",
+            rif         = "J-123456789",
+            capacidadLivianos = n,
+            capacidadPesados  = n,
+            capacidadMotos    = n,
+            apertura    = time(0,0),
+            cierre      = time(23,59),
+        )
+        e2 = Estacionamiento(
+            nombre      = "nom2",
+            direccion   = "dir3",
+            rif         = "J-123456789",
+            capacidadLivianos = n,
+            capacidadPesados  = n,
+            capacidadMotos    = n,
+            apertura    = time(0,0),
+            cierre      = time(23,59),
+        )
+        e1.save()
+        e2.save()
+         
+        for i in range(0,n):
+            r = Reserva(
+                    cedulaTipo      = 'V',
+                    cedula          = '12345678',
+                    nombre          = 'Julia',
+                    apellido        = 'Suárez',
+                    estacionamiento = e1,
+                    inicioReserva = datetime(2015,3,10,3,0),
+                    finalReserva  = datetime(2015,3,10,5,0),
+                    estado = "Válido",
+                    tipo_vehiculo = "Liviano"
+                )
+            r.save()
+             
+            trans = Transaccion(
+                        fecha            = datetime.now(),
+                        tipo             = 'Reserva',
+                        estado           = 'Válido'
+                    )
+            trans.save()
+             
+            tdc =   TransTDC(
+                        nombre           = 'Karla',
+                        cedulaTipo       = 'V',
+                        cedula           = '87654321',
+                        tarjetaTipo      = 'VISTA',
+                        tarjeta          = '5689',
+                        monto            = 100,
+                        transaccion      = trans
+                    )
+            tdc.save()
+             
+            relacion =  TransReser(
+                            transaccion = trans,
+                            reserva = r
+                        )
+            relacion.save()
+         
+        for i in range(0,n):
+            r = Reserva(
+                    cedulaTipo      = 'V',
+                    cedula          = '12345678',
+                    nombre          = 'Julia',
+                    apellido        = 'Suárez',
+                    estacionamiento = e2,
+                    inicioReserva = datetime(2015,3,10,3,0),
+                    finalReserva  = datetime(2015,3,10,5,0),
+                    estado = "Válido",
+                    tipo_vehiculo = "Liviano"
+                )
+            r.save()
+             
+            trans = Transaccion(
+                        fecha            = datetime.now(),
+                        tipo             = 'Reserva',
+                        estado           = 'Válido'
+                    )
+            trans.save()
+             
+            tdc =   TransTDC(
+                        nombre           = 'Karla',
+                        cedulaTipo       = 'V',
+                        cedula           = '87654321',
+                        tarjetaTipo      = 'VISTA',
+                        tarjeta          = '5689',
+                        monto            = 100,
+                        transaccion      = trans
+                    )
+            tdc.save()
+             
+            relacion =  TransReser(
+                            transaccion = trans,
+                            reserva = r
+                        )
+            relacion.save()
+        lista, total = consultar_ingresos("J-123456789")
+        self.assertTrue(len(lista) == 2 and total == 2*n*100)
 # 
 #     def test_muchos_estacionamiento_mitad_sin_pagos(self):
 #         n  = 100 

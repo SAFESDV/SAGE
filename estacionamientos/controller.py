@@ -81,7 +81,6 @@ def consultar_ingresos(rif):
     listaEstacionamientos = Estacionamiento.objects.filter(rif = rif)
     ingresoTotal = 0
     listaIngresos = []
-    listaTransacciones = []
 
     for estacionamiento in listaEstacionamientos:
         transreser = TransReser.objects.filter(
@@ -89,6 +88,7 @@ def consultar_ingresos(rif):
             reserva__estado = 'Válido'
         )
         
+        listaTransacciones = []
 
         for	tr in transreser:
             listaTransacciones += [tr.transaccion]
