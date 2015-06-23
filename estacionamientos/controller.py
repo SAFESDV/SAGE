@@ -12,6 +12,10 @@ from estacionamientos.models import (
     TarifaHoraPico,
     DiasFeriadosEscogidos,
 )
+from reservas.models import (
+    Reserva,
+)
+
 from datetime import datetime, timedelta, time
 from decimal import Decimal
 from collections import OrderedDict
@@ -33,11 +37,11 @@ def get_client_ip(request):
 		
 	return ip
 
-def tasa_reservaciones(id_estacionamiento,prt=False):
+def tasa_reservaciones(id_estacionamiento,tipo_V,prt=False):
 	
 	e = Estacionamiento.objects.get(id = id_estacionamiento)
 	ahora = datetime.today().replace(hour=0,minute=0,second=0,microsecond=0)
-	reservas_filtradas = e.reserva_set.filter(finalReserva__gt=ahora)
+	reservas_filtradas = e.reserva_set.filter(finalReserva__gt=ahora, tipo_vehiculo = tipo_V)
 	lista_fechas=[(ahora+timedelta(i)).date() for i in range(7)]
 	lista_valores=[0 for i in range(7)]
 	ocupacion_por_dia = OrderedDict(zip(lista_fechas,lista_valores))
@@ -76,34 +80,31 @@ def calcular_porcentaje_de_tasa(hora_apertura,hora_cierre, capacidad, ocupacion)
 	for i in ocupacion.keys():
 		ocupacion[i] = (Decimal(ocupacion[i])*100/(factor_divisor*capacidad)).quantize(Decimal('1.0'))
 
+
+
 def consultar_ingresos(rif):
 	
-    listaEstacionamientos = Estacionamiento.objects.filter(rif = rif)
+    estacionamiento = Estacionamiento.objects.get(rif = rif)
     ingresoTotal = 0
     listaIngresos = []
+    listaTransacciones = []
 
-    for estacionamiento in listaEstacionamientos:
-        transreser = TransReser.objects.filter(
-            reserva__estacionamiento__nombre = estacionamiento.nombre,
-            reserva__estado = 'Válido'
-        )
-        
-        listaTransacciones = []
+    transreser = TransReser.objects.filter(
+        reserva__estacionamiento__nombre = estacionamiento.nombre,
+        reserva__estado = 'Válido',
+    )
+    
+    for	tr in transreser:
+        ingreso = transaccion_monto(tr.transaccion.id)
+        tr.transaccion.monto = ingreso
+        listaTransacciones += [tr]
+        ingresoTotal  += ingreso
 
-        for	tr in transreser:
-            listaTransacciones += [tr.transaccion]
-		
-        ingreso = [estacionamiento.nombre, 0]
-		
-        for trans in listaTransacciones:
-            ingreso[1] += transaccion_monto(trans.id)
-        listaIngresos += [ingreso]
-        ingresoTotal  += ingreso[1]
-
-    return listaIngresos, ingresoTotal
+    return listaIngresos, ingresoTotal, listaTransacciones
    
+
+
 def seleccionar_feriados(diaFeriado, estacionamiento): #una lista de objeto que contiene la fecha y la descripción del día feriado
-	
 
 	feriadosEscogidos = DiasFeriadosEscogidos.objects.all()
 	
@@ -140,6 +141,8 @@ def seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento): #una l
 											descripcion = diaDescripcion,
 											estacionamiento = estacionamiento)
 	feriadosEscogidos.save()
+    
+    
 
 def limpiarEsquemasTarifarios(_id):
 	

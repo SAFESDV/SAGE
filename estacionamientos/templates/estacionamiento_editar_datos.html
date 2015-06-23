@@ -1,4 +1,4 @@
-{% extends "estacionamiento_base.html" %}
+{% extends "base-estacionamiento.html" %}
 
 {% block title %}
   SAGE - Edicion de datos de estacionamiento {{estacionamiento.nombre}}
@@ -13,7 +13,7 @@
       {% include "datos.html" %}
     </div>
     <div class="col-md-4">
-      {% include "estacionamiento_parametros.html" %}
+      {% include "parametros.html" %}
     </div>
     <div class="col-md-4">
       <div class="panel panel-default">
@@ -28,6 +28,13 @@
         <div class="panel-body">
           <form action="./editar" method="post" class="form">
             {% csrf_token %}
+				<div class="controls">
+                  {{ form.cedulaTipo }}
+                  <span class='error' id='{{form.cedulaTipo.name}}_error' aria-live="polite">
+                    {{ form.cedulaTipo.errors }}
+                  </span>
+                  <p>
+                </div>             
               <div class="control-group">
                 <div class="controls">
                   {{ form.CI_prop }}

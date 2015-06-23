@@ -16,7 +16,8 @@ class ExtendedFormTestCase(TestCase):
     def test_estacionamiento_extended_form_un_campo(self):
         form_data = { 'puestosLivianos': 2,
                       'puestosPesados': 2,
-                      'puestosMotos' : 2}
+                      'puestosMotos' : 2,
+                      'horizonte' : 15}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
 
@@ -25,7 +26,8 @@ class ExtendedFormTestCase(TestCase):
         form_data = { 'puestosLivianos': 2,
                       'puestosPesados': 2,
                       'puestosMotos' : 2,
-                      'horarioin': time(hour = 6,  minute = 0)}
+                      'horarioin': time(hour = 6,  minute = 0),
+                      'horizonte' : 15}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
 
@@ -35,7 +37,8 @@ class ExtendedFormTestCase(TestCase):
                       'puestosPesados': 2,
                       'puestosMotos' : 2,
                       'horarioin': time( hour = 6,  minute = 0),
-                      'horarioout': time(hour = 19,  minute = 0)}
+                      'horarioout': time(hour = 19,  minute = 0),
+                      'horizonte' : 15}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
         
@@ -46,7 +49,8 @@ class ExtendedFormTestCase(TestCase):
                       'puestosMotos' : 2,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12'                    
+                      'tarifa': 12 ,
+                      'horizonte' : 15                   
                     }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
@@ -60,7 +64,9 @@ class ExtendedFormTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaMinuto',
-                      'esquemaFeriado' : 'TarifaSinFeriado'
+                      'esquemaFeriado' : 'TarifaMinuto',
+                      'tarifaFeriado' : 15,
+                      'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
@@ -74,7 +80,9 @@ class ExtendedFormTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaHora',
-                      'esquemaFeriado' : 'TarifaSinFeriado'}
+                      'esquemaFeriado' : 'TarifaMinuto',
+                      'tarifaFeriado' : 15,
+                      'horizonte' : 15}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
 
@@ -87,7 +95,9 @@ class ExtendedFormTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaHora',
-                      'esquemaFeriado' : 'TarifaSinFeriado'}
+                      'esquemaFeriado' : 'TarifaMinuto',
+                      'tarifaFeriado' : 15,
+                      'horizonte' : 15}
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertRaises(Exception,form.is_valid())
 
@@ -100,7 +110,9 @@ class ExtendedFormTestCase(TestCase):
                       'horarioout': time(hour = 6,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaHora',
-                      'esquemaFeriado' : 'TarifaSinFeriado'
+                      'esquemaFeriado' : 'TarifaMinuto',
+                      'tarifaFeriado' : 15,
+                      'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
@@ -114,7 +126,9 @@ class ExtendedFormTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaHora',
-                      'esquemaFeriado' : 'TarifaSinFeriado'
+                      'esquemaFeriado' : 'TarifaMinuto',
+                      'tarifaFeriado' : 15,
+                      'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
@@ -128,7 +142,9 @@ class ExtendedFormTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaHora',
-                      'esquemaFeriado' : 'TarifaSinFeriado'
+                      'esquemaFeriado' : 'TarifaMinuto',
+                      'tarifaFeriado' : 15,
+                      'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
@@ -142,7 +158,9 @@ class ExtendedFormTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': None,
                       'esquema':'TarifaHora',
-                      'esquemaFeriado' : 'TarifaSinFeriado'
+                      'esquemaFeriado' : 'TarifaMinuto',
+                      'tarifaFeriado' : 15,
+                      'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())
@@ -154,12 +172,16 @@ class ExtendedFormTestCase(TestCase):
 
     #malicia
     def test_estacionamiento_extended_form_esquemaFeriado_esquemaNoValido(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos': 2,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12',
+                      'tarifa': 12,
                       'esquema':'TarifaMinuto',
-                      'esquemaFeriado' : 'ñalskdj'
+                      'esquemaFeriado' : 'ñalskdj',
+                      'tarifaFeriado' : 15,
+                      'horizonte' : 15
                     }
         
         form = EstacionamientoExtendedForm(data = form_data)
@@ -167,13 +189,17 @@ class ExtendedFormTestCase(TestCase):
         
     #borde
     def test_estacionamiento_extended_form_tarifaFeriado_NoValido(self):
-        form_data = { 'puestos': 2,
+        
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos': 2,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12',
-                      'esquema':'TarifaMinuto',
-                      'esquemaFeriado' : 'TarifaHoraDiaFeriado',
-                      'tarifaFeriado' : -1.001
+                      'tarifa': 12,
+                      'esquema':'TarifaHora',
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : 'esta tarifa no es valida',
+                      'horizonte' : 15
                     }
         
         form = EstacionamientoExtendedForm(data = form_data)
@@ -181,13 +207,16 @@ class ExtendedFormTestCase(TestCase):
         
     #borde todos los campos bien     
     def test_estacionamiento_extended_form_valido_con_esquemaFeriado(self):
-        form_data = { 'puestos': 2,
+        form_data = { 'puestosLivianos': 2,
+                      'puestosPesados': 2,
+                      'puestosMotos': 2,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaMinuto',
-                      'esquemaFeriado' : 'TarifaHoraDiaFeriado',
-                      'tarifaFeriado' : 5.05
+                      'esquemaFeriado' : 'TarifaHora',
+                      'tarifaFeriado' : 5.05,
+                      'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())

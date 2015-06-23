@@ -11,7 +11,7 @@ class BilleteraElectronica(models.Model):
     apellidoUsuario  = models.CharField(max_length = 50)
     cedulaTipo       = models.CharField(max_length = 1)
     cedula           = models.CharField(max_length = 10)
-    PIN              = models.CharField(max_length = 4)
+    PIN              = models.CharField(max_length = 1000)
     
     def __str__(self):
         return str(self.id)+" "+ str(self.cedula)

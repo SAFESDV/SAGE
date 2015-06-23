@@ -126,12 +126,26 @@ class EstacionamientoForm(forms.Form):
         )
     )
 
+        
+
     
 class EditarEstacionamientoForm(forms.Form):
     
     id_validator = RegexValidator(
         regex   = '^[0-9]+$',
         message = 'La cédula solo puede contener caracteres numéricos.'
+    )
+    
+    cedulaTipo = forms.ChoiceField(
+        required = True,
+        label    = 'cedulaTipo',
+        choices  = (
+            ('V', 'V'),
+            ('E', 'E')
+        ),
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
     )
     
     CI_prop = forms.CharField(
@@ -362,6 +376,20 @@ class EstacionamientoExtendedForm(forms.Form):
             }
         )
     )
+    
+    horizonte = forms.IntegerField(
+        required    = True,
+        label       = "Horizonte de reservacion",
+        widget      = forms.NumberInput(attrs=
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'Horizonte'
+            , 'min'         : "1"
+            , 'max'         : "999"
+            , 'pattern'     : '^[0-9]+'
+            , 'message'     : 'La entrada debe ser un número entero no negativo.'
+            }
+        )
+                                   )    
 
 
 class RifForm(forms.Form):
@@ -390,6 +418,18 @@ class CedulaForm(forms.Form):
         regex   = '^[0-9]+$',
         message = 'La cédula solo puede contener caracteres numéricos.'
     )
+    
+    cedulaTipo = forms.ChoiceField(
+        required = True,
+        label    = 'cedulaTipo',
+        choices  = (
+            ('V', 'V'),
+            ('E', 'E')
+        ),
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )       
     
     cedula = forms.CharField(
         required   = True,

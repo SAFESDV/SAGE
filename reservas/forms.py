@@ -112,7 +112,7 @@ class ReservaForm(forms.Form):
         )                                  
     )
     
-class CancelarReservaForm(forms.Form):
+class BuscarReservaForm(forms.Form):
     
     transaccion_validator = RegexValidator(
         regex   = '^[0-9]+$',
@@ -123,6 +123,7 @@ class CancelarReservaForm(forms.Form):
         regex   = '^[0-9]+$',
         message = 'La cédula solo puede contener caracteres numéricos.'
     )
+     
     
     numReser = forms.CharField(
         required   = True,
@@ -136,6 +137,18 @@ class CancelarReservaForm(forms.Form):
             }
         )
     )                            
+
+    cedulaTipo = forms.ChoiceField(
+        required = True,
+        label    = 'cedulaTipo',
+        choices  = (
+            ('V', 'V'),
+            ('E', 'E')
+        ),
+        widget   = forms.Select(attrs =
+            { 'class' : 'form-control' }
+        )
+    )   
     
     cedula = forms.CharField(
         required   = True,
@@ -149,6 +162,58 @@ class CancelarReservaForm(forms.Form):
             }
         )
     ) 
+   
+    
+class MoverReservaNuevaForm(forms.Form):
+    
+    nuevoInicio = forms.SplitDateTimeField(
+        required = True,
+        label = 'Horario Inicio Reserva',
+        widget= CustomSplitDateTimeWidget(attrs=
+            { 'class'       : 'form-control'
+            , 'type'        : 'date'
+            , 'placeholder' : 'Hora Inicio Reserva'
+            }
+        )
+    )                 
+
+class MoverReservaBilletera(forms.Form):
+    
+    id_validator = RegexValidator(
+        regex   = '^[0-9]+$',
+        message = 'El ID solo puede contener caracteres numéricos.'
+    )
+    
+    pin_validator = RegexValidator(
+        regex   = '^[0-9]{4}$',
+        message = 'El PIN solo puede contener cuatro caracteres numéricos.'
+    )
+    
+    id = forms.CharField(
+        required   = True,
+        label      = "ID de la Billetera a recargar",
+        validators = [id_validator],
+        widget = forms.TextInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'ID'
+            , 'pattern'     : id_validator.regex.pattern
+            , 'message'     : id_validator.message
+            }
+        )
+    )
+    
+    pin = forms.CharField(
+        required   = True,
+        label      = "PIN",
+        validators = [pin_validator],
+        widget = forms.PasswordInput(attrs =
+            { 'class'       : 'form-control'
+            , 'placeholder' : 'PIN'
+            , 'pattern'     : pin_validator.regex.pattern
+            , 'message'     : pin_validator.message
+            }
+        )
+    )                 
    
 class PagoForm(forms.Form):
     

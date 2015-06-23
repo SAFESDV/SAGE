@@ -11,6 +11,7 @@ class Transaccion(models.Model):
     fecha            = models.DateTimeField()
     tipo             = models.CharField(max_length = 10)
     estado           = models.CharField(max_length = 25)
+    monto            = models.DecimalField(decimal_places = 2, max_digits = 256)
 
     def __str__(self):
         return str(self.id)

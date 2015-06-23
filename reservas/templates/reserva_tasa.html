@@ -1,3 +1,40 @@
+{% extends "base-estacionamiento.html" %}
+
+{% block title %}
+  SAGE - Estacionamiento {{estacionamiento.nombre}}
+{% endblock %}
+{% block innerContents%}
+  <div class="col-sm-10">
+    <h3><i class="fa fa-bar-chart-o"></i>
+      Tasa de Reservacion del Estacionamiento {{estacionamiento.nombre}}
+    </h3>
+    <hr>
+    
+    <div class="col-md-6">
+      {% include "tabla-tasa-reservacion.html" %}
+    </div>
+    
+    <div class="col-md-6">
+    	 <br>
+         </br>
+   
+		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionLivianos}}">
+    </div>
+    
+   
+    
+    <div class="col-md-6">
+    <br>
+		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionPesados}}">
+    </div>
+    
+    <div class="col-md-6">
+    <br>
+
+		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionMotos}}">
+    </div>
+  </div>
+{% endblock %}
 {% extends "estacionamiento_base.html" %}
 
 {% block title %}
