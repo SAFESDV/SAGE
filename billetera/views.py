@@ -432,6 +432,7 @@ def Consultar_Historia_Billetera(request):
                     request,
                     'consultar_historial.html',
                     { "billetera" : billetera_selec
+                     , "valido"          : 1
                     ,  "transacciones"    : transacciones
                     , "saldoTotal"   : saldoTotal
                     , "form"            : form
@@ -443,6 +444,7 @@ def Consultar_Historia_Billetera(request):
                         request,
                         'consultar_historial.html',
                         { "form"    : form
+                        , "valido"          : 0
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
                         }
@@ -450,5 +452,6 @@ def Consultar_Historia_Billetera(request):
     return render(
         request,
         'consultar_historial.html',
-        { "form" : form }
+        { "form" : form
+         , "valido"          : 0 }
     )
