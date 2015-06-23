@@ -27,6 +27,9 @@ TEMPLATE_DIRS = [
                 os.path.join(BASE_DIR, 'templates'),
                 os.path.join(BASE_DIR, 'billetera/templates'),
                 os.path.join(BASE_DIR, 'estacionamientos/templates'),
+                os.path.join(BASE_DIR, 'index/templates'),
+                os.path.join(BASE_DIR, 'propietarios/templates'),
+                os.path.join(BASE_DIR, 'reservas/templates')
                 ]
 
 ALLOWED_HOSTS = []

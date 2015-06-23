@@ -67,6 +67,7 @@ from django.template.context_processors import request
 from django.forms.forms import Form
 from unittest.case import _id
 from transacciones.models import *
+from transacciones.controller import *
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -545,7 +546,7 @@ def estacionamiento_modo_pago(request, _id):
     
     return render(
         request,
-        'ModoPago.html'
+        'billetera_modo_pago.html'
     )
 
 def estacionamiento_reserva(request, _id):
@@ -790,6 +791,18 @@ def estacionamiento_ingreso(request):
         if form.is_valid():
 
             rif = form.cleaned_data['rif']
+                                    
+            transreser = TransReser.objects.filter(
+                     reserva__estacionamiento__rif = rif
+                    )
+            
+            trans = []
+            
+            
+            for t in transreser:
+                tran += t.transaccion
+            
+            
             listaIngresos, ingresoTotal = consultar_ingresos(rif)
 
             return render(

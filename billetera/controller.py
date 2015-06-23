@@ -67,13 +67,15 @@ def recargar_saldo_TDC(_id, form):
     
     BE = BilleteraElectronica.objects.get(id = _id)
     
+    monto = form.cleaned_data['monto'];
+    
     if monto < Decimal(0.00).quantize(Decimal("1.00")):
         raise MontoNegativo
     
     elif monto == Decimal(0.00).quantize(Decimal("1.00")):
         raise MontoCero
             
-    if form.cleaned_data['monto'] + consultar_saldo(BE.id) <= Decimal(10000.00):
+    if monto + consultar_saldo(BE.id) <= Decimal(10000.00):
     
         trans = Transaccion(
             fecha  = datetime.now(),
