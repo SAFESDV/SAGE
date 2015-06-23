@@ -19,7 +19,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     # caso borde
     def test_solo_un_campo_necesario(self):
         form_data = {
-            'CI_prop': '12345678'
+            'CI_prop': '12345678',
         }
         form = EstacionamientoForm(data = form_data)
         self.assertFalse(form.is_valid())
@@ -28,6 +28,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_dos_campos_necesarios(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco'
         }
         form = EstacionamientoForm(data = form_data)
@@ -37,6 +38,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_tres_campos_necesarios(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas'
         }

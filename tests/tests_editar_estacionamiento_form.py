@@ -19,7 +19,8 @@ class EditarEstacionamientoFormTestCase(TestCase):
     # malicia
     def test_CI_propietario_valida(self):
         form_data = {
-            'CI_prop': '19564959'
+            'CI_prop': '19564959',
+            'cedulaTipo' : 'V'
         }
         form = EditarEstacionamientoForm(data = form_data)
         self.assertTrue(form.is_valid())
@@ -27,7 +28,8 @@ class EditarEstacionamientoFormTestCase(TestCase):
     # malicia
     def test_CI_propietario_invalido_caracteres_en_campo(self):
         form_data = {
-            'CI_prop': 'as19564959sa'
+            'CI_prop': 'as19564959sa',
+            'cedulaTipo' : 'V',
         }
         form = EditarEstacionamientoForm(data = form_data)
         self.assertFalse(form.is_valid())
@@ -35,7 +37,8 @@ class EditarEstacionamientoFormTestCase(TestCase):
     # malicia
     def test_CI_propietario_invalido_simbolos_especiales(self):
         form_data = {
-            'CI_prop': '!19564959!'
+            'CI_prop': '!19564959!',
+            'cedulaTipo' : 'V',
         }
         form = EditarEstacionamientoForm(data = form_data)
         self.assertFalse(form.is_valid())

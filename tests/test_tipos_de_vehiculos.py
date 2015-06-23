@@ -22,6 +22,7 @@ class TiposDeVehiculoTestCase(TestCase):
         e = Estacionamiento(
             nombre      = 'nombre',
             CI_prop     = '1234567',
+            cedulaTipo  = 'V',
             direccion   = 'Caracas',
             telefono1   = '02125555555',
             email1      = 'estacionamiento@gmail.com',
@@ -52,10 +53,10 @@ class TiposDeVehiculoTestCase(TestCase):
                       'puestosMotos' : 0,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
-                      'horizonte' : 15}
+                      'horizonte' : 15
+                    }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertRaises(Exception,form.is_valid())
     
@@ -69,9 +70,10 @@ class TiposDeVehiculoTestCase(TestCase):
                       'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
-                      'horizonte' : 15}
+                      'horizonte' : 15
+                    }
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertTrue(form.is_valid())     
+        self.assertFalse(form.is_valid())     
         
     def testEstacionamientoSoloDePesados(self):
         form_data = { 'puestosLivianos': 0,
@@ -82,9 +84,10 @@ class TiposDeVehiculoTestCase(TestCase):
                       'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
-                      'horizonte' : 15}
+                      'horizonte' : 15
+                    }
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertTrue(form.is_valid())       
+        self.assertFalse(form.is_valid())       
 
         
     def testEstacionamientoSoloDeMotos(self):
@@ -98,7 +101,7 @@ class TiposDeVehiculoTestCase(TestCase):
                       'esquemaFeriado' : 'TarifaHora',
                       'horizonte' : 15}
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertTrue(form.is_valid())       
+        self.assertFalse(form.is_valid())       
 
         
     def testEstacionamientoMotosyLivianos(self):

@@ -110,7 +110,7 @@ class TestTasaEstacionamiento(TestCase):
         fecha_inicio=ahora+timedelta(1)
         fecha_fin=ahora+timedelta(days=2)
         Reserva(estacionamiento= e,inicioReserva=fecha_inicio,finalReserva=fecha_fin).save()
-        self.assertEqual(tasa_reservaciones(e.id),salida)
+        self.assertEqual(tasa_reservaciones(e.id, 'Liviano'),salida)
         
     def test_estacionamiento_reserva_un_dia_dos_casillas(self): #Borde
         e=self.crear_estacionamiento(1)
