@@ -62,7 +62,7 @@ def billetera_crear(request):
             
             return render(
                 request,
-                'crearbilletera.html',
+                'billetera_crear.html',
                 { "billetera"    : billetera
                 , "saldo"   : consultar_saldo(billetera.id)
                 , "color"   : "green"
@@ -72,7 +72,7 @@ def billetera_crear(request):
     
     return render(
         request,
-        'crearbilletera.html',
+        'billetera_crear.html',
         {
          'form' : form
         }

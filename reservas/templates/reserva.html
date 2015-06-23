@@ -1,4 +1,4 @@
-{% extends "base-estacionamiento.html" %}
+{% extends "estacionamiento_base.html" %}
 
 {% block title %}
   SAGE - Reservar en estacionamiento {{estacionamiento.nombre}}
@@ -13,10 +13,10 @@
       {% include "datos.html" %}
     </div>
     <div class="col-md-4">
-      {% include "parametros.html" %}
+      {% include "estacionamiento_parametros.html" %}
     </div>
     <div class="col-md-4">
-      {% include "reservar-form.html" %}
+      {% include "reserva_form.html" %}
     </div>
   </div>
 {% endblock %}

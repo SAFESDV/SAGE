@@ -1,4 +1,4 @@
-{% extends "base-estacionamiento.html" %}
+{% extends "estacionamiento_base.html" %}
 
 {% block title %}
   SAGE - Edicion de datos de estacionamiento {{estacionamiento.nombre}}
@@ -13,7 +13,7 @@
       {% include "datos.html" %}
     </div>
     <div class="col-md-4">
-      {% include "parametros.html" %}
+      {% include "estacionamiento_parametros.html" %}
     </div>
     <div class="col-md-4">
       <div class="panel panel-default">

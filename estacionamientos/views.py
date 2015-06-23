@@ -86,7 +86,7 @@ def estacionamientos_all(request):
         if len(estacionamientos) >= 5:
             return render(
                 request, 
-                'catalogo-estacionamientos.html',
+                'estacionamiento_catalogo.html',
                 {'color'   : 'red'
                 , 'mensaje' : 'No se pueden agregar más estacionamientos'
                 }
@@ -104,7 +104,7 @@ def estacionamientos_all(request):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'catalogo-estacionamientos.html',
+                        'estacionamiento_catalogo.html',
                         { "form"    : form
                         , 'estacionamientos': estacionamientos
                         , "color"   : "red"
@@ -131,7 +131,7 @@ def estacionamientos_all(request):
 
     return render(
         request,
-        'catalogo-estacionamientos.html',
+        'estacionamiento_catalogo.html',
         { 'form': form
         , 'estacionamientos': estacionamientos
         }
@@ -273,7 +273,7 @@ def estacionamiento_detail(request, _id):
                 
     return render(
         request,
-        'detalle-estacionamiento.html',
+        'estacionamiento_detalle.html',
         { 'form': form
          , 'estacionamiento' : estacionamiento
         , 'estacionamientoTarifa' : estacionamientoTarifa
@@ -312,7 +312,7 @@ def estacionamiento_editar(request, _id):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'editar-datos-estacionamiento.html',
+                        'estacionamiento_editar_datos.html',
                         { "form"    : form
                         , 'estacionamientos': estacionamiento
                         , 'estacionamiento': estacionamiento
@@ -330,7 +330,7 @@ def estacionamiento_editar(request, _id):
 
     return render(
         request,
-        'editar-datos-estacionamiento.html',
+        'estacionamiento_editar_datos.html',
         { 'form': form
         , 'estacionamiento': estacionamiento
         }
@@ -794,7 +794,7 @@ def estacionamiento_ingreso(request):
 
             return render(
                 request,
-                'consultar-ingreso.html',
+                'estacionamiento_consultar_ingreso.html',
                 { "ingresoTotal"  : ingresoTotal
                 , "listaIngresos" : listaIngresos
                 , "form"          : form
@@ -803,7 +803,7 @@ def estacionamiento_ingreso(request):
 
     return render(
         request,
-        'consultar-ingreso.html',
+        'estacionamiento_consultar_ingreso.html',
         { "form" : form }
     )
     
@@ -823,14 +823,14 @@ def estacionamiento_consulta_reserva(request):
             )
             return render(
                 request,
-                'consultar-reservas.html',
+                'reserva_consulta.html',
                 { "listaFacturas" : listaFacturas
                 , "form"          : form
                 }
             )
     return render(
         request,
-        'consultar-reservas.html',
+        'reserva_consulta.html',
         { "form" : form }
     )
 
@@ -910,7 +910,7 @@ def tasa_de_reservacion(request, _id):
     datos_ocupacion = urlencode(ocupacion) # Se convierten los datos del diccionario en el formato key1=value1&key2=value2&...
     return render(
         request,
-        'tasa-reservacion.html',
+        'reserva_tasa.html',
         { "ocupacion" : ocupacion
         , "datos_ocupacion": datos_ocupacion
         }
@@ -1051,7 +1051,7 @@ def Mostrar_Dias_Feriados(request, _id):
     print(DiasFeriados)
     return render(
                 request,
-                'catalogo_dias_feriados.html',
+                'estacionamiento_dias_feriados.html',
                 {"estacionamientos": estacionamiento
                 ,"DiasFeriados" : DiasFeriados
                 , "Comprobacion" : Comprobacion

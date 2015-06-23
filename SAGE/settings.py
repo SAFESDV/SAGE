@@ -23,7 +23,11 @@ SECRET_KEY = 'd@q$97!ztmy)p&fi5h=-0c_r2rkm6v7qpk@72!taizz+mk2%sw'
 DEBUG = True
 
 TEMPLATE_DEBUG = True
-TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+TEMPLATE_DIRS = [
+                os.path.join(BASE_DIR, 'templates'),
+                os.path.join(BASE_DIR, 'billetera/templates'),
+                os.path.join(BASE_DIR, 'estacionamientos/templates'),
+                ]
 
 ALLOWED_HOSTS = []
 

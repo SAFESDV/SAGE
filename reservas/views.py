@@ -71,7 +71,7 @@ def estacionamiento_cancelar_reserva(request):
             except:
                 return render(
                     request,
-                    'cancelar-reservas.html',
+                    'reserva_cancelar.html',
                     {  "color"    : "red"
                      , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en la reserva.'
                      , "form"     : form
@@ -81,7 +81,7 @@ def estacionamiento_cancelar_reserva(request):
             request.session['reservaid'] = reserva.id
             return render(
                 request,
-                'cancelar_reserva_confirmar.html',
+                'reserva_confirmar_cancelar.html',
                 { 
                   'billetera': BilleteraLogin()
                 }
@@ -89,7 +89,7 @@ def estacionamiento_cancelar_reserva(request):
                             
     return render(
         request,
-        'cancelar-reservas.html',
+        'reserva_cancelar.html',
         { "form" : form }
     )
     
@@ -117,7 +117,7 @@ def confirmar_cancelar_reserva(request):
             except:
                 return render(
                     request,
-                    'cancelar_reserva_confirmar.html',
+                    'reserva_confirmar_cancelar.html',
                     { "color"   : "red"
                      , 'mensaje' : 'Error al reembolsar reservación (Límite de saldo excedido).'
                      , 'billetera' : form
@@ -128,7 +128,7 @@ def confirmar_cancelar_reserva(request):
             
             return render(
                     request,
-                    'cancelar_reserva_confirmar.html',
+                    'reserva_confirmar_cancelar.html',
                     {  "color"    : "green"
                      , 'mensaje'  : 'Reservación cancelada.'
                      , 'billetera' : form
@@ -137,7 +137,7 @@ def confirmar_cancelar_reserva(request):
           
     return render(
         request,
-        'cancelar_reserva_confirmar.html',
+        'reserva_confirmar_cancelar.html',
         {
         'billetera' : form,
         }

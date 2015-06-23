@@ -1,4 +1,4 @@
-{% extends "base-estacionamiento.html" %}
+{% extends "estacionamiento_base.html" %}
 
 {% block title %}
   SAGE - Estacionamiento {{estacionamiento.nombre}}
@@ -10,7 +10,7 @@
     </h3>
     <hr>
     <div class="col-md-6">
-      {% include "tabla-tasa-reservacion.html" %}
+      {% include "reserva_tabla_tasa.html" %}
     </div>
     <div class="col-md-6">
 		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacion}}">

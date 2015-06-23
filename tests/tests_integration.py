@@ -45,7 +45,7 @@ class IntegrationTest(TestCase):
         self.crear_estacionamiento(1)
         response = self.client.get('/estacionamientos/1/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'detalle-estacionamiento.html')
+        self.assertTemplateUsed(response, 'estacionamiento_detalle.html')
     
     # integracion malicia
     def test_llamada_a_los_detalles_sin_estacionamiento_creado(self):
@@ -122,13 +122,13 @@ class IntegrationTest(TestCase):
     def test_llamada_a_consultar_reserva(self):
         response = self.client.get('/estacionamientos/consulta_reserva')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'consultar-reservas.html')
+        self.assertTemplateUsed(response, 'reserva_consulta.html')
     
     # integracion TDD 
     def test_llamada_a_consultar_ingreso(self):
         response = self.client.get('/estacionamientos/ingreso')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'consultar-ingreso.html')
+        self.assertTemplateUsed(response, 'estacionamiento_consultar_ingreso.html')
     
     # integracion malicia  
     def test_llamada_a_url_inexistente(self):
