@@ -52,30 +52,37 @@ def reserva_Cambiable(inicioReserva,finReserva,horizonte):
     tiempo_diferencia = 0
     fecha_maxima      = datetime.now() + timedelta(days=horizonte)
     minuto            = timedelta(minutes=1)
-    #fecha_maxima      = datetime.combine((datetime.now().date() + timedelta(days=horizonte)), datetime.now().time())
     
+    if inicioReserva >= finReserva:
+        return (False)
+    if finReserva - inicioReserva < timedelta(hours=1):
+        return (False)
+    if inicioReserva.date() < datetime.now().date():
+        return (False)
     
-    # Calculamos la diferencia entre el inicio de la reserva y el final
-    
-    fecha_Temp        = inicioReserva
-    
-    while fecha_Temp < finReserva:
-        fecha_Temp += minuto
-        tiempo_reserva += 1
-        
-    # Calculamos la diferencia entre el final de la reserva y la fecha maxima permitida
-        
-    fecha_Temp        = fecha_maxima   
-        
-    while fecha_Temp < finReserva:
-        fecha_Temp += minuto
-        tiempo_diferencia += 1
-    
-    if (tiempo_diferencia <= tiempo_reserva/2):
-        return True
-        
     else:
-        return False
+    
+        # Calculamos la diferencia entre el inicio de la reserva y el final
+        
+        fecha_Temp        = inicioReserva
+        
+        while fecha_Temp < finReserva:
+            fecha_Temp += minuto
+            tiempo_reserva += 1
+            
+        # Calculamos la diferencia entre el final de la reserva y la fecha maxima permitida
+            
+        fecha_Temp        = fecha_maxima   
+            
+        while fecha_Temp < finReserva:
+            fecha_Temp += minuto
+            tiempo_diferencia += 1
+        
+        if (tiempo_diferencia <= tiempo_reserva/2):
+            return True
+            
+        else:
+            return False
 
 
 def marzullo(idEstacionamiento, hIn, hOut, tipo):
