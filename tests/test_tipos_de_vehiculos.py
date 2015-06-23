@@ -51,6 +51,7 @@ class TiposDeVehiculoTestCase(TestCase):
         form_data = { 'puestosLivianos': 0,
                       'puestosPesados': 0,
                       'puestosMotos' : 0,
+                      'puestosDiscapacitados' : 0,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'esquema':'TarifaHora',
@@ -65,9 +66,9 @@ class TiposDeVehiculoTestCase(TestCase):
         form_data = { 'puestosLivianos': 1,
                       'puestosPesados': 0,
                       'puestosMotos' : 0,
+                      'puestosDiscapacitados' : 0,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
                       'horizonte' : 15
@@ -79,9 +80,9 @@ class TiposDeVehiculoTestCase(TestCase):
         form_data = { 'puestosLivianos': 0,
                       'puestosPesados': 1,
                       'puestosMotos' : 0,
+                      'puestosDiscapacitados' : 0,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
                       'horizonte' : 15
@@ -94,12 +95,15 @@ class TiposDeVehiculoTestCase(TestCase):
         form_data = { 'puestosLivianos': 0,
                       'puestosPesados': 0,
                       'puestosMotos' : 1,
+                      'puestosDiscapacitados' : 1,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
                       'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
-                      'horizonte' : 15}
+                      'horizonte' : 15
+                    }
+        
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertFalse(form.is_valid())       
 
@@ -108,12 +112,13 @@ class TiposDeVehiculoTestCase(TestCase):
         form_data = { 'puestosLivianos': 1,
                       'puestosPesados': 0,
                       'puestosMotos' : 1,
+                      'puestosDiscapacitados' : 1,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
-                      'horizonte' : 15}
+                      'horizonte' : 15
+                    }
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
         
@@ -121,12 +126,14 @@ class TiposDeVehiculoTestCase(TestCase):
         form_data = { 'puestosLivianos': 1,
                       'puestosPesados': 1,
                       'puestosMotos' : 0,
+                      'puestosDiscapacitados' : 1,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
-                      'horizonte' : 15}
+                      'horizonte' : 15
+                    }
+        
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
         
@@ -134,12 +141,14 @@ class TiposDeVehiculoTestCase(TestCase):
         form_data = { 'puestosLivianos': 0,
                       'puestosPesados': 1,
                       'puestosMotos' : 1,
+                      'puestosDiscapacitados' : 1,
                       'horarioin': time(hour = 6,  minute = 0),
                       'horarioout': time(hour = 19,  minute = 0),
-                      'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
-                      'horizonte' : 15}
+                      'horizonte' : 15
+                    }
+        
         form = EstacionamientoExtendedForm(data = form_data)
         self.assertTrue(form.is_valid())
     '''print("Entre al caso y voy a considerar si reservar causa excepcion")

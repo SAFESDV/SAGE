@@ -72,7 +72,7 @@ class TestTasaEstacionamiento(TestCase):
         fecha_inicio=(ahora+timedelta(1)).replace(hour=23,minute=15,second=0)
         fecha_fin=fecha_inicio+timedelta(minutes=46)
         Reserva(estacionamiento= e,inicioReserva=fecha_inicio,finalReserva=fecha_fin).save()
-        x=tasa_reservaciones(e.id)
+        x=tasa_reservaciones(e.id, 'Liviano')
         self.assertEqual(x,salida)
         
     def test_reserva_inicio_antes_de_inicioVentana_fin_despues_inicioVentana(self): # Esquina
@@ -98,7 +98,7 @@ class TestTasaEstacionamiento(TestCase):
         fecha_inicio=ahora+timedelta(1)
         fecha_fin=ahora+timedelta(days=1,hours=23,minutes=59)
         Reserva(estacionamiento= e,inicioReserva=fecha_inicio,finalReserva=fecha_fin).save()
-        self.assertEqual(tasa_reservaciones(e.id),salida)
+        self.assertEqual(tasa_reservaciones(e.id, 'Liviano'),salida)
         
     def test_estacionamiento_reserva_un_dia_sola_casilla(self): # Borde
         e=self.crear_estacionamiento(1)
