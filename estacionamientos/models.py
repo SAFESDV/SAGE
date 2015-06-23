@@ -269,14 +269,12 @@ class PrecioTarifaMasCara(FronterasTarifarias):
     
     def calcularPrecioFrontera(self, inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo):
 
+        (porcentajeFeriado, porcentajeNormal) = self.porcentajeEsquema(inicioReserva,finReserva,estacionamiento_id)
         (precioFeriado, precioNoFeriado) = self.consultarEsquemaTarifario(inicioReserva, finReserva, estacionamiento_id, tipo_vehiculo)
-                    
-        if precioFeriado > precioNoFeriado:
-            return precioFeriado
-        else:
-            return precioNoFeriado
-    
-        return -1
+        if porcentajeFeriado != 0:
+            if precioFeriado > precioNoFeriado:
+                return precioFeriado
+        return precioNoFeriado
     
     def tipoFrontera(self):
     
