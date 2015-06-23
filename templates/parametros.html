@@ -4,17 +4,25 @@
   <tbody>
 
     {% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos or estacionamiento.capacidadDiscapacitados %}
+      <tr><td><b><i class="fa fa-clock-o"></i> Capacidad Livianos:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadLivianos}}</td></tr>
+      <tr><td><b><i class="fa fa-clock-o"></i> Capacidad Pesados:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadPesados}}</td></tr>
+      <tr><td><b><i class="fa fa-clock-o"></i> Capacidad Motos:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadMotos}}</td></tr>
+      <tr><td><b><i class="fa fa-clock-o"></i> Capacidad Discapacitados:</b></td></tr>
+      <tr><td>{{estacionamiento.capacidadDiscapacitados}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Horario apertura:</b></td></tr>
       <tr><td>{{estacionamiento.apertura}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Horario cierre:</b></td></tr>
       <tr><td>{{estacionamiento.cierre}}</td></tr>
     {% endif %}
     
-    {% if esquema_no_feriado.tarifa %}
+    {% if esquemaLivianos.tarifa %}
       <tr><td><b><i class="fa fa-circle"></i></i> Esquema:</b></td></tr>
-      <tr><td>{{esquema_no_feriado.tarifa.tipo}} </td></tr>
+      <tr><td>{{esquemaLivianos.tarifa.tipoDia}} </td></tr>
       <tr><td><b><i class="fa fa-money"></i></i> Tarifa Normal:</b></td></tr>
-      <tr><td>BsF. {{esquema_no_feriado.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      <tr><td>BsF. {{esquemaLivianos.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
       
       {% if esquema_no_feriado.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
       <tr><td><b><i class="fa fa-money"></i></i> Tarifa fin de semana:</b></td></tr>

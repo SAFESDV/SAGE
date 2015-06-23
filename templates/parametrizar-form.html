@@ -10,6 +10,13 @@
   <div class="panel-body">
     <form action="." method="post" class="form form-vertical">
       {% csrf_token %}
+      <div class="panel-heading">
+    	<div class="panel-title" style="color:DarkBlue ">
+      		<h7>
+        	Parametros Básicos
+      		</h7>
+    	</div>
+  	</div>
       {% for field in form %}
         <div class="control-group">
           <div class="controls">
@@ -21,6 +28,15 @@
           </div>
         </div>
       {% endfor %}
+      
+    <div class="panel-heading">
+    	<div class="panel-title" style="color:DarkBlue ">
+      		<h7>
+        	Tarifa Para Vehiculos Livianos
+      		</h7>
+    	</div>
+  	</div>
+
       
       {% for field in formLiviano %}
         <div class="control-group">
@@ -34,6 +50,14 @@
         </div>
       {% endfor %}
       
+      <div class="panel-heading">
+    	<div class="panel-title" style="color:DarkBlue ">
+      		<h7>
+      			Tarifa Para Vehiculos Pesados
+      		</h7>
+    	</div>
+  	</div>
+      
       {% for field in formPesado %}
         <div class="control-group">
           <div class="controls">
@@ -46,6 +70,16 @@
         </div>
       {% endfor %}
       
+      <div class="panel-heading">
+    	<div class="panel-title" style="color:DarkBlue ">
+      		<h7>
+      			Tarifa Para Motos
+      		</h7>
+    	</div>
+  	</div>
+      
+       
+      
       {% for field in formMoto %}
         <div class="control-group">
           <div class="controls">
@@ -57,6 +91,14 @@
           </div>
         </div>
       {% endfor %}
+      
+      <div class="panel-heading">
+    	<div class="panel-title" style="color:DarkBlue ">
+      		<h7>
+      			Tarifa Para Motos</a>
+      		</h7>
+    	</div>
+  	  </div>
       
       {% for field in formDiscapacitados %}
         <div class="control-group">
@@ -86,106 +128,170 @@
 
 
 <script type="text/javascript">
-  esquema = document.getElementById('id_esquema');
-  tarifa1 = document.getElementById('id_tarifa');
-  tarifa2 = document.getElementById('id_tarifa2');
-  inicio  = document.getElementById('id_inicioTarifa2');
-  fin     = document.getElementById('id_finTarifa2');
-  
-  tarifa2.style.display='none';
-  inicio.style.display='none';
-  fin.style.display='none';
+            
+  esquema 		  		  = document.getElementById('id_esquema');
+  tarifaLivianos  		  = document.getElementById('id_tarifaLivianos');
+  tarifaLivianos2 		  = document.getElementById('id_tarifaLivianos2');
+  tarifaPesados           = document.getElementById('id_tarifaPesados');
+  tarifaPesados2          = document.getElementById('id_tarifaPesados2');
+  tarifaMotos             = document.getElementById('id_tarifaMotos');
+  tarifaMotos2            = document.getElementById('id_tarifaMotos2');
+  tarifaDiscapacitados    = document.getElementById('id_tarifaDiscapacitados');
+  tarifaDiscapacitados2   = document.getElementById('id_tarifaDiscapacitados2');
+  inicioTarifa2           = document.getElementById('id_inicioTarifa2');
+  finTarifa2              = document.getElementById('id_finTarifa2');
+
+  tarifaLivianos2.style.display='none';
+  tarifaPesados2.style.display='none';
+  tarifaMotos2.style.display='none';
+  tarifaDiscapacitados2.style.display='none';
+  inicioTarifa2.style.display='none';
+  finTarifa2.style.display='none';
   
   if (esquema) {
     esquema.onchange=function() {
       if (this.value == "TarifaHoraPico") {
-        inicio.style.display='';
-        inicio.placeholder = "Inicio horario pico"
-        fin.style.display='';
-        fin.placeholder = "Fin horario pico"
-        tarifa2.style.display = '';
-        tarifa1.placeholder="Tarifa normal";
-        tarifa2.placeholder="Tarifa pico";
+        inicioTarifa2.style.display='';
+        inicioTarifa2.placeholder = "Inicio horario pico"
+        finTarifa2.style.display='';
+        finTarifa2.placeholder = "Fin horario pico"
+        tarifaLivianos.placeholder="Tarifa Normal Livianos";
+        tarifaPesados.placeholder="Tarifa Normal Pesados";
+        tarifaMotos.placeholder="Tarifa Normal Motos";
+        tarifaDiscapacitados.placeholder="Tarifa Normal Discapacitados";
+        
+        tarifaLivianos2.style.display = ''
+        tarifaLivianos2.placeholder="Tarifa Pico Livianos";
+        tarifaPesados2.style.display = ''
+        tarifaPesados2.placeholder="Tarifa Pico Pesados";
+        tarifaMotos2.style.display = ''
+        tarifaMotos2.placeholder="Tarifa Pico Motos";
+        tarifaDiscapacitados2.style.display = ''
+        tarifaDiscapacitados2.placeholder="Tarifa Pico Discapacitados";
+        
+        
       } else if (this.value == "TarifaFinDeSemana") {
-        inicio.style.display='none';
-        inicio.value = ""
-        fin.style.display='none';
-        fin.value = ""
-        tarifa1.placeholder="Tarifa normal";
-        tarifa2.style.display = '';
-        tarifa2.placeholder="Tarifa fin de semana";
+        inicioTarifa2.style.display='none';
+        inicioTarifa2.placeholder = ""
+        finTarifa2.style.display='none';
+        finTarifa2.placeholder = ""
+        tarifaLivianos.placeholder="Tarifa Normal Livianos";
+        tarifaPesados.placeholder="Tarifa Normal Pesados";
+        tarifaMotos.placeholder="Tarifa Normal Motos";
+        tarifaDiscapacitados.placeholder="Tarifa Normal Discapacitados";
+        
+        tarifaLivianos2.style.display = ''
+        tarifaLivianos2.placeholder="Tarifa Livianos Fin Semana";
+        tarifaPesados2.style.display = ''
+        tarifaPesados2.placeholder="Tarifa Pesados Fin Semana";
+        tarifaMotos2.style.display = ''
+        tarifaMotos2.placeholder="Tarifa Motos Fin Semana";
+        tarifaDiscapacitados2.style.display = ''
+        tarifaDiscapacitados2.placeholder="Tarifa Discapacitados Fin Semana";
       } else {
-        tarifa1.placeholder="Tarifa";
-        inicio.style.display='none';
-        inicio.value = ""
-        fin.style.display='none';
-        fin.value = ""
-        tarifa2.style.display='none';
-        tarifa2.value = ""
+        inicioTarifa2.style.display='none';
+        inicioTarifa2.placeholder = ""
+        finTarifa2.style.display='none';
+        finTarifa2.placeholder = ""
+        
+        tarifaLivianos.placeholder="Tarifa Normal Livianos";
+        tarifaPesados.placeholder="Tarifa Normal Pesados";
+        tarifaMotos.placeholder="Tarifa Normal Motos";
+        tarifaDiscapacitados.placeholder="Tarifa Normal Discapacitados";
+        
+        tarifaLivianos2.style.display = 'none'
+        tarifaLivianos2.placeholder="";
+        tarifaPesados2.style.display = 'none'
+        tarifaPesados2.placeholder="";
+        tarifaMotos2.style.display = 'none'
+        tarifaMotos2.placeholder="";
+        tarifaDiscapacitados2.style.display = 'none'
+        tarifaDiscapacitados2.placeholder="";
       }
     }
   }
   
-  esquemaFeriado   = document.getElementById('id_esquemaFeriado');
-  
-  tarifaFeriado    = document.getElementById('id_tarifaFeriado');
-  tarifaFeriado2   = document.getElementById('id_tarifaFeriado2');
-  inicioFeriado2   = document.getElementById('id_inicioTarifaFeriado2');
-  finFeriado2      = document.getElementById('id_finTarifaFeriado2');
-  
-  tarifaFeriado2.style.display='none';
-  inicioFeriado2.style.display='none';
-  finFeriado2.style.display='none';
+  esquemaFeriado                 = document.getElementById('id_esquemaFeriado');
+  tarifaLivianosF  		         = document.getElementById('id_tarifaLivianosF');
+  tarifaLivianos2F 		         = document.getElementById('id_tarifaLivianos2F');
+  tarifaPesadosF                 = document.getElementById('id_tarifaPesadosF');
+  tarifaPesados2F                = document.getElementById('id_tarifaPesados2F');
+  tarifaMotosF                   = document.getElementById('id_tarifaMotosF');
+  tarifaMotos2F                  = document.getElementById('id_tarifaMotos2F');
+  tarifaDiscapacitadosF          = document.getElementById('id_tarifaDiscapacitadosF');
+  tarifaDiscapacitados2F         = document.getElementById('id_tarifaDiscapacitados2F');
+  inicioTarifaFeriado2           = document.getElementById('id_inicioTarifaFeriado2');
+  finTarifaFeriado2              = document.getElementById('id_finTarifaFeriado2');
+
+  tarifaLivianos2F.style.display='none';
+  tarifaPesados2F.style.display='none';
+  tarifaMotos2F.style.display='none';
+  tarifaDiscapacitados2F.style.display='none';
+  inicioTarifaFeriado2.style.display='none';
+  finTarifaFeriado2.style.display='none';
   
   if (esquemaFeriado) {
     esquemaFeriado.onchange=function() {
 
-      if (this.value == "TarifaHora") {
-      	tarifaFeriado.style.display = ''
-     	tarifaFeriado.placeholder = "Tarifa Dia Feriado"
-     	tarifaFeriado2.style.display = 'none'
-     	tarifaFeriado2.placeholder = ""
-     	inicioFeriado2.style.display = 'none'
-     	inicioFeriado2.placeholder = ""
-     	finFeriado2.style.display = 'none'
-     	finFeriado2.placeholder = ""
-      } else if (this.value == "TarifaMinuto") {
-      	tarifaFeriado.style.display = ''
-     	tarifaFeriado.placeholder = "Tarifa Dia Feriado"
-     	tarifaFeriado2.style.display = 'none'
-     	tarifaFeriado2.placeholder = ""
-     	inicioFeriado2.style.display = 'none'
-     	inicioFeriado2.placeholder = ""
-     	finFeriado2.style.display = 'none'
-     	finFeriado2.placeholder = ""
-      } else if (this.value == "TarifaHorayFraccion") {
-        tarifaFeriado.style.display = ''
-     	tarifaFeriado.placeholder = "Tarifa Dia Feriado"
-     	tarifaFeriado2.style.display = 'none'
-     	tarifaFeriado2.placeholder = ""
-     	inicioFeriado2.style.display = 'none'
-     	inicioFeriado2.placeholder = ""
-     	finFeriado2.style.display = 'none'
-     	finFeriado2.placeholder = ""
-        tarifaFeriado2.placeholder="";
-      } else if (this.value == "TarifaHoraPico") {
-        tarifaFeriado.style.display = ''
-     	tarifaFeriado.placeholder = "Tarifa Dia Feriado"
-     	tarifaFeriado2.style.display = ''
-     	tarifaFeriado2.placeholder = "Tarifa Pico Dia Feriado"
-     	inicioFeriado2.style.display = ''
-     	inicioFeriado2.placeholder = "Inicio horario pico"
-     	finFeriado2.style.display = ''
-     	finFeriado2.placeholder = "Final horario pico"
+      if (this.value == "TarifaHoraPico") {
+        inicioTarifaFeriado2.style.display='';
+        inicioTarifaFeriado2.placeholder = "Inicio horario pico"
+        finTarifaFeriado2.style.display='';
+        finTarifaFeriado2.placeholder = "Fin horario pico"
+        tarifaLivianosF.placeholder="Tarifa Normal Feriado Livianos";
+        tarifaPesadosF.placeholder="Tarifa Normal Feriado Pesados";
+        tarifaMotosF.placeholder="Tarifa Normal Feriado Motos";
+        tarifaDiscapacitadosF.placeholder="Tarifa Normal Feriado Discapacitados";
+        
+        tarifaLivianos2F.style.display = ''
+        tarifaLivianos2F.placeholder="Tarifa Pico Feriado Livianos";
+        tarifaPesados2F.style.display = ''
+        tarifaPesados2F.placeholder="Tarifa Pico Feriado Pesados";
+        tarifaMotos2F.style.display = ''
+        tarifaMotos2F.placeholder="Tarifa Pico Feriado Motos";
+        tarifaDiscapacitados2F.style.display = ''
+        tarifaDiscapacitados2F.placeholder="Tarifa Pico Feriado Discapacitados";
+        
+        
+      } else if (this.value == "TarifaFinDeSemana") {
+        inicioTarifaFeriado2.style.display='none';
+        inicioTarifaFeriado2.placeholder = ""
+        finTarifaFeriado2.style.display='none';
+        finTarifaFeriado2.placeholder = ""
+        
+        tarifaLivianosF.placeholder="Tarifa Normal Feriado Livianos";
+        tarifaPesadosF.placeholder="Tarifa Normal Feriado Pesados";
+        tarifaMotosF.placeholder="Tarifa Normal Feriado  Motos";
+        tarifaDiscapacitadosF.placeholder="Tarifa Normal Feriado  Discapacitados";
+        
+        tarifaLivianos2F.style.display = ''
+        tarifaLivianos2F.placeholder="Tarifa Normal Fin Feriado Livianos";
+        tarifaPesados2F.style.display = ''
+        tarifaPesados2F.placeholder="Tarifa Normal Fin Feriado Pesados";
+        tarifaMotos2F.style.display = ''
+        tarifaMotos2F.placeholder="Tarifa Normal Fin Feriado Motos";
+        tarifaDiscapacitados2F.style.display = ''
+        tarifaDiscapacitados2F.placeholder="Tarifa Normal Fin Feriado Discapacitados";
+        
       } else {
-      	tarifaFeriado.style.display = ''
-     	tarifaFeriado.placeholder = "Tarifa Dia De Feriado"
-     	tarifaFeriado2.style.display = ''
-     	tarifaFeriado2.placeholder = "Tarifa fin de semana feriados"
-     	inicioFeriado2.style.display = 'none'
-     	inicioFeriado2.placeholder = ""
-     	finFeriado2.style.display = 'none'
-     	finFeriado2.placeholder = ""
+        inicioTarifaFeriado2.style.display='none';
+        inicioTarifaFeriado2.placeholder = ""
+        finTarifaFeriado2.style.display='none';
+        finTarifaFeriado2.placeholder = ""
+        
+        tarifaLivianosF.placeholder="Tarifa Feriado Livianos";
+        tarifaPesadosF.placeholder="Tarifa Feriado Pesados";
+        tarifaMotosF.placeholder="Tarifa Feriado Motos";
+        tarifaDiscapacitadosF.placeholder="Tarifa Feriado Discapacitados";
+        
+        tarifaLivianos2F.style.display = 'none'
+        tarifaLivianos2F.placeholder="";
+        tarifaPesados2F.style.display = 'none'
+        tarifaPesados2F.placeholder="";
+        tarifaMotos2F.style.display = 'none'
+        tarifaMotos2F.placeholder="";
+        tarifaDiscapacitados2F.style.display = 'none'
+        tarifaDiscapacitados2F.placeholder="";
 
       }
     } 

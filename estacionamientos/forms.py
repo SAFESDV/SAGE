@@ -383,7 +383,7 @@ class EsquemaTarifarioLiviano(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa vehículos livianos para días no feriados'
+            , 'placeholder' : 'Tarifa Normal Liviano'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -395,7 +395,7 @@ class EsquemaTarifarioLiviano(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa especial vehículos livianos para días no feriados',
+                'placeholder' : 'Tarifa Especial Liviano',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -408,7 +408,7 @@ class EsquemaTarifarioLiviano(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa vehículos livianos para días no feriados'
+            , 'placeholder' : 'Tarifa Feriado Liviano'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -420,7 +420,7 @@ class EsquemaTarifarioLiviano(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa especial vehículos livianos para días no feriados',
+                'placeholder' : 'Tarifa Especial Feriado Liviano',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -439,7 +439,7 @@ class EsquemaTarifarioPesado(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa vehículos pesados para días no feriados'
+            , 'placeholder' : 'Tarifa Normal Pesado'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -451,7 +451,7 @@ class EsquemaTarifarioPesado(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa especial vehículos pesados para días no feriados',
+                'placeholder' : 'Tarifa Normal Feriado Pesado',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -464,7 +464,7 @@ class EsquemaTarifarioPesado(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa vehículos pesados para días no feriados'
+            , 'placeholder' : 'Tarifa Especial Pesado'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -476,7 +476,7 @@ class EsquemaTarifarioPesado(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa especial vehículos pesados para días no feriados',
+                'placeholder' : 'Tarifa Especial Feriado Pesado',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -495,7 +495,7 @@ class EsquemaTarifarioMoto(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa motos para días no feriados'
+            , 'placeholder' : 'Tarifa Normal Motos'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -507,7 +507,7 @@ class EsquemaTarifarioMoto(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa especial motos para días no feriados',
+                'placeholder' : 'Tarifa Especial Motos',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -519,7 +519,7 @@ class EsquemaTarifarioMoto(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa motos para días no feriados'
+            , 'placeholder' : 'Tarifa Normal Feriado Motos'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -531,7 +531,7 @@ class EsquemaTarifarioMoto(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa especial motos para días no feriados',
+                'placeholder' : 'Tarifa Especial Feriado Motos',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -551,7 +551,7 @@ class EsquemaTarifarioDiscapacitados(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa vehículos discapacitados para días no feriados'
+            , 'placeholder' : 'Tarifa Normal Discapasitados'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -563,7 +563,7 @@ class EsquemaTarifarioDiscapacitados(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa especial vehículos discapacitados para días no feriados',
+                'placeholder' : 'Tarifa Especial Discapasitados',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -576,7 +576,7 @@ class EsquemaTarifarioDiscapacitados(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa vehículos discapacitados para días no feriados'
+            , 'placeholder' : 'Tarifa Normal Feriado Discapasitados'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -588,7 +588,7 @@ class EsquemaTarifarioDiscapacitados(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa especial vehículos livianos para días no feriados',
+                'placeholder' : 'Tarifa Especial Feriado Discapasitados',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
