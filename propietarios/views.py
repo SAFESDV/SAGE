@@ -46,7 +46,7 @@ def PropietarioAll(request):
 
     return render(
         request,
-        'catalogo-propietario.html',
+        'propietario_catalogo.html',
         { 'form': form
         , 'Propietarios': Propietarios
         }
@@ -93,7 +93,7 @@ def propietario_editar(request, _id):
 
     return render(
         request,
-        'editar-datos-propietario.html',
+        'propietario_editar.html',
         { 'form': form
         , 'propietario': propietario
         }
