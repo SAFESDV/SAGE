@@ -47,6 +47,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_todos_los_campos_necesarios(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-123456789'
@@ -58,6 +59,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_CI_propietario_invalido_caracteres_en_campo(self):
         form_data = {
             'CI_prop': 'vs12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-123456789'
@@ -69,6 +71,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_CI_propietario_invalido_simbolos_especiales(self):
         form_data = {
             'CI_prop': '12345678!!',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-123456789'
@@ -80,6 +83,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_RIF_tamano_invalido(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-1234567'
@@ -91,6 +95,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_RIF_formato_invalido(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'Kaa123456789'
@@ -102,6 +107,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_agregar_telefonos(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-123456789',
@@ -115,6 +121,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_formato_invalido_telefono(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-123456789',
@@ -127,6 +134,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_tamano_invalido_telefono(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-123456789',
@@ -139,6 +147,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_agregar_correos_electronicos(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-123456789',
@@ -153,6 +162,7 @@ class EstacionamientoAllFormTestCase(TestCase):
     def test_correo_electronico_invalido(self):
         form_data = {
             'CI_prop': '12345678',
+            'cedulaTipo' : 'V',
             'nombre': 'Orinoco',
             'direccion': 'Caracas',
             'rif': 'V-123456789',
