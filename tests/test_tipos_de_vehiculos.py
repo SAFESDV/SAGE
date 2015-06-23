@@ -56,6 +56,7 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
+                      'fronteraTarifa' : 'PrecioTarifaMasTiempo',
                       'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
@@ -71,10 +72,11 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
+                      'fronteraTarifa' : 'PrecioTarifaMasTiempo',
                       'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertFalse(form.is_valid())     
+        self.assertTrue(form.is_valid())     
         
     def testEstacionamientoSoloDePesados(self):
         form_data = { 'puestosLivianos': 0,
@@ -85,10 +87,11 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
+                      'fronteraTarifa' : 'PrecioTarifaMasTiempo',
                       'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertFalse(form.is_valid())       
+        self.assertTrue(form.is_valid())       
 
         
     def testEstacionamientoSoloDeMotos(self):
@@ -101,11 +104,12 @@ class TiposDeVehiculoTestCase(TestCase):
                       'tarifa': '12',
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
+                      'fronteraTarifa' : 'PrecioTarifaMasTiempo',
                       'horizonte' : 15
                     }
         
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertFalse(form.is_valid())       
+        self.assertTrue(form.is_valid())       
 
         
     def testEstacionamientoMotosyLivianos(self):
@@ -117,6 +121,7 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
+                      'fronteraTarifa' : 'PrecioTarifaMasTiempo',
                       'horizonte' : 15
                     }
         form = EstacionamientoExtendedForm(data = form_data)
@@ -131,6 +136,7 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
+                      'fronteraTarifa' : 'PrecioTarifaMasTiempo',
                       'horizonte' : 15
                     }
         
@@ -146,6 +152,7 @@ class TiposDeVehiculoTestCase(TestCase):
                       'horarioout': time(hour = 19,  minute = 0),
                       'esquema':'TarifaHora',
                       'esquemaFeriado' : 'TarifaHora',
+                      'fronteraTarifa' : 'PrecioTarifaMasTiempo',
                       'horizonte' : 15
                     }
         

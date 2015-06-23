@@ -79,8 +79,7 @@ class IntegrationTest(TestCase):
     def test_llamada_a_tasa_sin_parametros_especificados_aun(self):
         self.crear_estacionamiento(1)
         response = self.client.get('/estacionamientos/1/tasa')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'tabla-tasa-reservacion.html')
+        self.assertEqual(response.status_code, 404)
         
     # integracion esquina
     def test_llamada_a_la_generacion_de_grafica_empty_request(self):

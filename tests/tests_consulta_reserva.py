@@ -15,7 +15,7 @@ class consultaReservaTestCase(TestCase):
     
     #TDD
     def test_sin_estacionamiento(self):
-        lista, total = consultar_ingresos("J-123456789")
+        lista, total,listaTransacciones = consultar_ingresos("J-123456789")
         self.assertTrue(len(lista) == total )
 
     # TDD
@@ -31,8 +31,8 @@ class consultaReservaTestCase(TestCase):
             cierre      = time(23,59),
         )
         e.save()
-        lista, total = consultar_ingresos("J-123456789")
-        self.assertTrue(len(lista) == 1 and total == 0)
+        lista, total,listaTransacciones = consultar_ingresos("J-123456789")
+        self.assertTrue(len(lista) == 0 and total == 0)
 
     # TDD
 #     def test_un_estacionamiento_un_pago(self):

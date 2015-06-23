@@ -166,7 +166,7 @@ class ExtendedFormTestCase(TestCase):
                       'fronteraTarifa': 'PrecioTarifaMasCara'
                     }
         form = EstacionamientoExtendedForm(data = form_data)
-        self.assertFalse(form.is_valid())
+        self.assertTrue(form.is_valid())
         
         
 #---------------------------------------------------------------------------------------------------

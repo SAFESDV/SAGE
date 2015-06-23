@@ -83,26 +83,34 @@ def calcular_porcentaje_de_tasa(hora_apertura,hora_cierre, capacidad, ocupacion)
 
 
 def consultar_ingresos(rif):
-	
-    estacionamiento = Estacionamiento.objects.get(rif = rif)
+
     ingresoTotal = 0
     listaIngresos = []
     listaTransacciones = []
 
-    transreser = TransReser.objects.filter(
-        reserva__estacionamiento__nombre = estacionamiento.nombre,
-        reserva__estado = 'Válido',
-    )
+    try:
+        estacionamiento = Estacionamiento.objects.get(rif = rif)
+        ingresoTotal = 0
+        listaIngresos = []
+        listaTransacciones = []
     
-    for	tr in transreser:
+        transreser = TransReser.objects.filter(
+            reserva__estacionamiento__nombre = estacionamiento.nombre,
+            reserva__estado = 'Válido',
+        )
         
-        ingreso = transaccion_monto(tr.transaccion.id)
-        tr.transaccion.monto = ingreso
-        listaTransacciones += [tr]
-        ingresoTotal  += ingreso
-
-    return listaIngresos, ingresoTotal, listaTransacciones
-   
+        for	tr in transreser:
+            
+            ingreso = transaccion_monto(tr.transaccion.id)
+            tr.transaccion.monto = ingreso
+            listaTransacciones += [tr]
+            ingresoTotal  += ingreso
+    
+        return listaIngresos, ingresoTotal, listaTransacciones
+    
+    except:
+        
+        return listaIngresos, ingresoTotal, listaTransacciones
 
 
 def seleccionar_feriados(diaFeriado, estacionamiento): #una lista de objeto que contiene la fecha y la descripción del día feriado
