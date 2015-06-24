@@ -250,7 +250,7 @@ def estacionamiento_detail(request, _id):
 
                         esquemaMotosF    = esquema
             
-                if esquema.tarifa.tipoVehiculo == 'Discapacitados':
+                elif esquema.tarifa.tipoVehiculo == 'Discapacitados':
                     
                     if esquema.tarifa.tipoDia == 'Dia Normal':
                         form_dataD.update({'tarifaLivianos': esquema.tarifa.tarifa,
