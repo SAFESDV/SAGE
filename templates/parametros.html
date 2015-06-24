@@ -8,8 +8,7 @@
       <tr><td>{{estacionamiento.apertura}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Horario cierre:</b></td></tr>
       <tr><td>{{estacionamiento.cierre}}</td></tr>
-    {% endif %}
-
+    
       <tr><td><b><i class="fa fa-circle"></i></i> Esquema:</b></td></tr>
       <tr><td>{{esquemaLivianos.tarifa.tipoDia}} - {{esquemaLivianos.tarifa.tipo}}</td></tr>
       
@@ -127,6 +126,8 @@
      <tr><td><b><i class="fa fa-wheelchair"></i></i> Tarifa Especial Feriado Discapacitados:</b></td></tr>
       <tr><td>BsF. {{esquemaDiscapacitadosF.tarifa.tarifaEspecial}}</td></tr>
       {% endif %}
+      {% endif %}
+      
       
       
     
