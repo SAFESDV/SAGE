@@ -94,7 +94,7 @@ def recargar_saldo_TDC(_id, form):
     elif form.cleaned_data['monto'] == Decimal(0.00).quantize(Decimal("1.00")):
         raise MontoCero
             
-    if monto + consultar_saldo(BE.id) <= Decimal(10000.00):
+    if form.cleaned_data['monto'] + consultar_saldo(BE.id) <= Decimal(10000.00):
     
         trans = Transaccion(
             fecha  = datetime.now(),

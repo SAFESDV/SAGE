@@ -126,8 +126,6 @@ class EstacionamientoForm(forms.Form):
         )
     )
 
-        
-
     
 class EditarEstacionamientoForm(forms.Form):
     

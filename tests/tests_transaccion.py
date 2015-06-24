@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
+from transaccion.models import *
 
 ###################################################################
 # Pago Tarjeta de Credito Form
 ###################################################################
-class PagoTarjetaDeCreditoFormTestCase(TestCase):
+class PagoTransaccionTDCFormTestCase(TestCase):
 
     # borde
-    def test_PagoTarjetaForm_Vacio(self):
-        form_data = {}
-        form = PagoForm(data = form_data)
-        self.assertFalse(form.is_valid())
+    #
+    #
+    #
+    ##
+    
+    def test_TransaccionTDC_Vacio(self):
+        trans = Transaccion()
+        trans.save()
 
     # borde
     def test_PagoTarjetaForm_UnCampo(self):
-        form_data = {
-            'nombre': 'Pedro',
-        }
-        form = PagoForm(data = form_data)
-        self.assertFalse(form.is_valid())
+        trans = Transaccion(nombre = 'Pedro')
+        trans(save)
 
     #borde
     def test_PagoTarjetaForm_DosCampos(self):

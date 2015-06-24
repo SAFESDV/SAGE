@@ -229,7 +229,7 @@ class DiasFeriadosTestCase(TestCase):
         finalReserva = datetime(year = 2015, month = 6, day = 24, hour = 23, minute = 59)
         valor = esquemaParaFeriado.tarifa.calcularPrecio(inicioReserva,finalReserva )   
               
-        self.assertEqual(valor,Decimal(9.83).quantize(Decimal("1.00")) 
+        self.assertEqual(valor,Decimal(9.83).quantize(Decimal("1.00")))
     
     def testReservarEnFinDeSemanaUnDiaFeriado(self):
         

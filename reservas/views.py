@@ -105,7 +105,7 @@ def confirmar_cancelar_reserva(request):
             except:
                 return render(
                         request,
-                        'cancelar_reserva_confirmar.html',
+                        'reserva_confirmar_cancelar.html',
                         { "billetera"       : form
                         , "color"           : "red"
                         ,'mensaje'          : "Autenticación denegada."
@@ -147,7 +147,7 @@ def Mover_reserva_buscar_original(request):
             except:
                 return render(
                     request,
-                    'mover-reserva-buscar-original.html',
+                    'reserva_mover_buscar_original.html',
                     {  "color"    : "red"
                      , 'mensaje'  : 'No hay coincidencia entre el ID y la cedula'
                      , "form"     : form
@@ -158,7 +158,7 @@ def Mover_reserva_buscar_original(request):
                                      reserva_selec.estacionamiento.horizonte)):
                 return render(
                     request,
-                    'mover-reserva-buscar-original.html',
+                    'reserva_mover_buscar_original.html',
                     {  "color"    : "red"
                      , 'mensaje'  : 'Esta reserva esta muy alejada del horizonte del estacionamiento'
                      , "form"     : form
@@ -172,7 +172,7 @@ def Mover_reserva_buscar_original(request):
             
             return render(
                 request,
-                'mover-reserva-buscar-original.html',
+                'reserva_mover_buscar_original.html',
                 { 'reserva'     : reserva_selec,
                   'transreser'  : transreser,
                   'billetera'   : BilleteraLogin(),
@@ -182,7 +182,7 @@ def Mover_reserva_buscar_original(request):
                             
     return render(
         request,
-        'mover-reserva-buscar-original.html',
+        'reserva_mover_buscar_original.html',
         { "form" : form }
     )
 
@@ -203,7 +203,7 @@ def Mover_Reserva_buscar_nueva(request):
             except:
                 return render(
                     request,
-                    'mover-reservacion-buscar-nueva.html',
+                    'reserva_mover_buscar_nueva.html',
                     {  "color"    : "red"
                      , 'mensaje'  : 'ID no existe o CI no corresponde al registrado en la reserva.'
                      , "form"     : form
@@ -219,7 +219,7 @@ def Mover_Reserva_buscar_nueva(request):
             if not m_validado[0]:
                 return render(
                     request,
-                    'mover-reservacion-buscar-nueva.html',
+                    'reserva_mover_buscar_nueva.html',
                     { 'color'  :'red'
                     , 'mensaje': m_validado[1]
                     , "form"            : form
@@ -267,7 +267,7 @@ def Mover_Reserva_buscar_nueva(request):
             
             return render(
                 request,
-                'mover-reservacion-buscar-nueva.html',
+                'reserva_mover_buscar_nueva.html',
                 { "form"            : form
                   ,'reserva'         : reserva_selec
                   ,'transreser'      : transreser
@@ -281,7 +281,7 @@ def Mover_Reserva_buscar_nueva(request):
             
     return render(
         request,
-        'mover-reservacion-buscar-nueva.html',
+        'reserva_mover_buscar_nueva.html',
         { "form"        : form,
          'reserva'      : reserva_selec,
          'transreser'   : transreser,
@@ -304,7 +304,7 @@ def Mover_Reserva_comfirmar(request):
                 
                 return render(
                             request,
-                            'mover-reserva-comfirmar.html',
+                            'reserva_mover_confirmar.html',
                             { "form"    : form
                             , "valido"  : 0
                             , "color"   : "red"
@@ -316,7 +316,7 @@ def Mover_Reserva_comfirmar(request):
             
             return render(
                 request,
-                'mover-reserva-comfirmar.html',
+                'reserva_mover_confirmar.html',
                 { "form"             : form
                   ,'reserva'         : reserva_selec
                   ,'transreser'      : transreser
@@ -327,7 +327,7 @@ def Mover_Reserva_comfirmar(request):
             
     return render(
         request,
-        'mover-reserva-comfirmar.html',
+        'reserva_mover_confirmar.html',
         { "form"        : form,
           "valido"  : 0,
          'reserva'      : reserva_selec,
@@ -349,7 +349,7 @@ def Consulta_reserva(request):
             if ((len(facturas)) == 0):
                 return render(
                     request,
-                    'consultar-reservas.html',
+                    'reserva_consulta.html',
                     {  "color"    : "red"
                      , 'mensaje'  : 'No hay reservas registradas a esta cedula'
                      , "form"     : form
@@ -364,13 +364,13 @@ def Consulta_reserva(request):
             )
             return render(
                 request,
-                'consultar-reservas.html',
+                'reserva_consulta.html',
                 { "listaFacturas" : listaFacturas
                 , "form"          : form
                 }
             )
     return render(
         request,
-        'consultar-reservas.html',
+        'reserva_consulta.html',
         { "form" : form }
     )
