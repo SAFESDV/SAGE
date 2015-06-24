@@ -85,11 +85,11 @@ class MoverEliminarReserva(TestCase):
                     capacidadMotos = 100)
         e.save()
         reserva = Reserva(cedulaTipo = "V",cedula = "19564959", nombre = "Francisco",apellido = "Sucre",
-                          estacionamiento = e,inicioReserva = datetime.now() + timedelta(days= horizonte),
-                          finalReserva = datetime.now() + timedelta(days= horizonte + 1),
+                          estacionamiento = e,inicioReserva = datetime.now() + timedelta(days= e.horizonte),
+                          finalReserva = datetime.now() + timedelta(days= e.horizonte + 1),
                           estado = "Válido", tipo_vehiculo = "liviano")
         reserva.save()
-        self.assertFalse(reserva_Cambiable(reserva.iniReserva,reserva.finalReserva,e.horizonte)) 
+        self.assertFalse(reserva_Cambiable(reserva.inicioReserva,reserva.finalReserva,e.horizonte)) 
     
     # Borde
         
@@ -105,8 +105,8 @@ class MoverEliminarReserva(TestCase):
                     capacidadMotos = 100)
         e.save()
         reserva = Reserva(cedulaTipo = "V",cedula = "19564959", nombre = "Francisco",apellido = "Sucre",
-                          estacionamiento = e,inicioReserva = datetime.now() + timedelta(days= horizonte - 2),
-                          finalReserva = datetime.now() + timedelta(days = horizonte + 2),
+                          estacionamiento = e,inicioReserva = datetime.now() + timedelta(days= e.horizonte - 2),
+                          finalReserva = datetime.now() + timedelta(days = e.horizonte + 2),
                           estado = "Válido", tipo_vehiculo = "liviano")
         reserva.save()
         self.assertTrue(reserva_Cambiable(reserva.inicioReserva,reserva.finalReserva,e.horizonte)) 
@@ -125,8 +125,8 @@ class MoverEliminarReserva(TestCase):
                     capacidadMotos = 100)
         e.save()
         reserva = Reserva(cedulaTipo = "V",cedula = "19564959", nombre = "Francisco",apellido = "Sucre",
-                          estacionamiento = e,inicioReserva = datetime.now() + timedelta(days= horizonte - 2),
-                          finalReserva = datetime.now() + timedelta(days = horizonte + 2, minutes = 1),
+                          estacionamiento = e,inicioReserva = datetime.now() + timedelta(days= e.horizonte - 2),
+                          finalReserva = datetime.now() + timedelta(days = e.horizonte + 2, minutes = 1),
                           estado = "Válido", tipo_vehiculo = "liviano")
         reserva.save()
         self.assertFalse(reserva_Cambiable(reserva.inicioReserva,reserva.finalReserva,e.horizonte))        
