@@ -5,14 +5,21 @@ from django.core.exceptions import ObjectDoesNotExist
 from billetera.controller import consultar_saldo
 from billetera.controller import recargar_saldo
 from billetera.controller import consumir_saldo
+from billetera.controller import verificarPin
+from billetera.controller import modificarPin
 from billetera.models import BilleteraElectronica
 from billetera.exceptions import *
 
 from decimal import Decimal
 
+import hashlib
+import uuid
+from builtins import str
+
 class consultar_saldoTestCase(TestCase):
     
     def crearBilletera(self, pin, Saldo):
+        salt = uuid.uuid4().hex
         bill = BilleteraElectronica(
                 nombreUsuario    =  "Nombre",
                 apellidoUsuario =  "Apellido",
@@ -200,5 +207,5 @@ class consultar_saldoTestCase(TestCase):
         recargar_saldo(bill.id, 10000)
         consumir_saldo(bill.id, 10000)
         self.assertEqual(consultar_saldo(bill.id), Decimal(0).quantize(Decimal("1.00")))
-
     
+        
