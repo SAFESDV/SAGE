@@ -140,7 +140,7 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
 def cancelar_reserva(idReserva,idbilletera):
     
     try:
-        reser = Reserva.objects.get(id = idReserva)
+        reser = Reserva.objects.get(id = idReserva,estado = "Válido")
         print("se puede cancelar!")
     except:
         print("Cai en except")
