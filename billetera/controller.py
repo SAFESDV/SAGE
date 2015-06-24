@@ -32,8 +32,10 @@ def verificarPin(pin1,pin2):
     
 def modificarPin(Id,pin1):
     BE = BilleteraElectronica.objects.get(id = Id)
+    print(BE.PIN)
     salt = uuid.uuid4().hex 
     BE.PIN = hashlib.sha256(salt.encode() + pin1.encode()).hexdigest() + ':' + salt
+    print(BE.PIN)
     BE.save()
     return True
 
