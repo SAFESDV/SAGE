@@ -331,4 +331,4 @@
 #         valor = esquemaParaFeriado.tarifa.calcularPrecio(datetime(year = 2016, month = 12, day = 31, hour = 23, minute= 30),
 #                                                           datetime(year = 2017, month = 1, day = 1, hour = 0, minute= 30))
 #         
-#         self.assertEqual(valor,10) #Deberia cobrarse 10
+#         self.assertEqual(valor,10) #Deberia cobrarse 1

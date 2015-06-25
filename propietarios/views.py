@@ -30,15 +30,35 @@ def PropietarioAll(request):
         # Si el formulario es valido, entonces creamos un objeto con
         # el constructor del modelo
         if form.is_valid():
+            
+            try :
+                propietario = Propietario.objects.get(
+                    Cedula = form.cleaned_data['Cedula'],
+                    cedulaTipo = form.cleaned_data['cedulaTipo']
+                )
+                
+                return render(
+                    request,
+                    'propietario_catalogo.html',
+                    { 'form': form
+                    , 'Propietarios': Propietarios
+                    , 'mensaje'     : "Ya existe un usuario con esta cedula"
+                    , "color"   : "red"
+                    }
+                )  
+                   
+            except ObjectDoesNotExist:
                   
-            obj = Propietario(
-                nomb_prop   = form.cleaned_data['nomb_prop'],
-                cedulaTipo  = form.cleaned_data['cedulaTipo'],
-                Cedula      = form.cleaned_data['Cedula'],
-                telefono3   = form.cleaned_data['telefono_prop'],
-                email2      = form.cleaned_data['email_prop'],
-            )
-            obj.save()
+                obj = Propietario(
+                    nomb_prop   = form.cleaned_data['nomb_prop'],
+                    cedulaTipo  = form.cleaned_data['cedulaTipo'],
+                    Cedula      = form.cleaned_data['Cedula'],
+                    telefono3   = form.cleaned_data['telefono_prop'],
+                    email2      = form.cleaned_data['email_prop'],
+                )
+                obj.save()
+                            
+                            
                                  
             # Recargamos los propietarios ya que acabamos de agregar
             Propietarios = Propietario.objects.all()
@@ -46,7 +66,7 @@ def PropietarioAll(request):
 
     return render(
         request,
-        'catalogo-propietario.html',
+        'propietario_catalogo.html',
         { 'form': form
         , 'Propietarios': Propietarios
         }
@@ -93,7 +113,7 @@ def propietario_editar(request, _id):
 
     return render(
         request,
-        'editar-datos-propietario.html',
+        'propietario_editar.html',
         { 'form': form
         , 'propietario': propietario
         }

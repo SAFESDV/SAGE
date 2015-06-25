@@ -126,8 +126,6 @@ class EstacionamientoForm(forms.Form):
         )
     )
 
-        
-
     
 class EditarEstacionamientoForm(forms.Form):
     
@@ -280,7 +278,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Inicio Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Inicio Reserva'
+            , 'placeholder' : 'Horario Pico Inicio'
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
@@ -293,7 +291,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Fin Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Fin Reserva'
+            , 'placeholder' : 'Horario Pico Fin '
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
@@ -322,7 +320,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Inicio Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Inicio Reserva para los Dias Feriados'
+            , 'placeholder' : 'Horario Pico Inicio para los Dias Feriados'
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
@@ -335,7 +333,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Fin Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Fin Reserva para los Dias Feriados'
+            , 'placeholder' : 'Horario Pico Fin para los Dias Feriados'
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
@@ -551,7 +549,7 @@ class EsquemaTarifarioDiscapacitados(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa Normal Discapasitados'
+            , 'placeholder' : 'Tarifa Normal Discapacitados'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -563,7 +561,7 @@ class EsquemaTarifarioDiscapacitados(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa Especial Discapasitados',
+                'placeholder' : 'Tarifa Especial Discapacitados',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -576,7 +574,7 @@ class EsquemaTarifarioDiscapacitados(forms.Form):
         validators = [tarifa_validator],
         widget     = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Tarifa Normal Feriado Discapasitados'
+            , 'placeholder' : 'Tarifa Normal Feriado Discapacitados'
             , 'pattern'     : '^([0-9]+(\.[0-9]+)?)$'
             , 'message'     : 'La entrada debe ser un número decimal.'
             }
@@ -588,7 +586,7 @@ class EsquemaTarifarioDiscapacitados(forms.Form):
             validators = [tarifa_validator],
             widget     = forms.TextInput(attrs = {
                 'class'       : 'form-control',
-                'placeholder' : 'Tarifa Especial Feriado Discapasitados',
+                'placeholder' : 'Tarifa Especial Feriado Discapacitados',
                 'pattern'     : '^([0-9]+(\.[0-9]+)?)$',
                 'message'     : 'La entrada debe ser un número decimal.'
             }

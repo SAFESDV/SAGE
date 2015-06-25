@@ -164,6 +164,22 @@ def transaccion_monto(_id):
 		monto += det.monto
 	
 	return monto
+    
+def transaccion_tipo(_id):
+    try:
+        trans = Transaccion.objects.get(id = _id)
+    except:
+        raise
+    
+    return transaccion.tipo
+
+def transaccion_fecha(_id):
+    try:
+        trans = Transaccion.objects.get(id = _id)
+    except:
+        raise
+    
+    return transaccion.fecha
 
 # def transaccion_crear(_fecha, _tipo):
 #     
