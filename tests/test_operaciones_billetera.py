@@ -18,6 +18,19 @@ from builtins import str
 
 class consultar_saldoTestCase(TestCase):
     
+    def crearBilleteraEncriptada(self,pin):
+        salt = uuid.uuid4().hex
+        billetera = BilleteraElectronica(
+                nombreUsuario    = "Nombre",
+                apellidoUsuario  = "Apellido",
+                cedulaTipo       = "V",
+                cedula           = "1234567",
+                PIN              = hashlib.sha256(salt.encode() + pin.encode()).hexdigest() + ':' + salt
+            )
+            
+        billetera.save();
+        return billetera
+    
     def crearBilletera(self, pin, Saldo):
         salt = uuid.uuid4().hex
         bill = BilleteraElectronica(
@@ -208,4 +221,79 @@ class consultar_saldoTestCase(TestCase):
         consumir_saldo(bill.id, 10000)
         self.assertEqual(consultar_saldo(bill.id), Decimal(0).quantize(Decimal("1.00")))
     
+    #    TESTS PARA CAMBIAR PIN -FUNCIONALIDAD
+    
+    def testCambiarPinOtroPin(self):
         
+        bill = self.crearBilleteraEncriptada('1111')
+        pinViejo = '1111'
+        pinNuevo = '2222'
+        pinNuevo2 = '2222'
+        if verificarPin(pinNuevo,pinNuevo2):
+            salt = uuid.uuid4().hex 
+            bill.PIN = hashlib.sha256(salt.encode() + pinNuevo.encode()).hexdigest() + ':' + salt
+            bill.save()
+        PIN_prueba, salt = bill.PIN.split(':')
+    #    if (PIN_prueba == hashlib.sha256(salt.encode() + pinViejo.encode()).hexdigest()):
+        self.assertEqual(PIN_prueba,hashlib.sha256(salt.encode() + pinNuevo.encode()).hexdigest())
+        
+        
+    def testCambiarPinMismoPin(self):
+        bill = self.crearBilleteraEncriptada('1111')
+        pinNuevo = '1111'
+        pinNuevo2 = '1111'
+        if verificarPin(pinNuevo,pinNuevo2):
+            salt = uuid.uuid4().hex 
+            bill.PIN = hashlib.sha256(salt.encode() + pinNuevo.encode()).hexdigest() + ':' + salt
+            bill.save()
+        PIN_prueba, salt = bill.PIN.split(':')
+    #    if (PIN_prueba == hashlib.sha256(salt.encode() + pinViejo.encode()).hexdigest()):
+        self.assertEqual(PIN_prueba,hashlib.sha256(salt.encode() + pinNuevo.encode()).hexdigest())
+        
+    def testCambiarPinDosvecesRegresarAlMismoPin(self):
+        bill = self.crearBilleteraEncriptada('1111')
+        pinViejo = '1111'
+        pinNuevo = '2222'
+        pinNuevo2 = '2222'
+        pinViejo2 = '1111'
+        if verificarPin(pinNuevo,pinNuevo2):
+            salt = uuid.uuid4().hex 
+            bill.PIN = hashlib.sha256(salt.encode() + pinNuevo.encode()).hexdigest() + ':' + salt
+            bill.save()
+            if verificarPin(pinViejo,pinViejo2):
+                bill.PIN = hashlib.sha256(salt.encode() + pinViejo.encode()).hexdigest() + ':' + salt
+                bill.save()
+        PIN_prueba, salt = bill.PIN.split(':')
+    #    if (PIN_prueba == hashlib.sha256(salt.encode() + pinViejo.encode()).hexdigest()):
+        self.assertEqual(PIN_prueba,hashlib.sha256(salt.encode() + pinViejo.encode()).hexdigest())
+        
+    def testCambiarPinDosveces(self):
+        bill = self.crearBilleteraEncriptada('1111')
+        pinNuevoOtro = '3333'
+        pinNuevoOtro2 = '3333'
+        pinNuevo = '2222'
+        pinNuevo2 = '2222'
+        salt = uuid.uuid4().hex 
+        if verificarPin(pinNuevo,pinNuevo2):
+            bill.PIN = hashlib.sha256(salt.encode() + pinNuevo.encode()).hexdigest() + ':' + salt
+            bill.save()
+            if verificarPin(pinNuevoOtro,pinNuevoOtro2):
+                bill.PIN = hashlib.sha256(salt.encode() + pinNuevo2.encode()).hexdigest() + ':' + salt
+                bill.save()
+        PIN_prueba, salt = bill.PIN.split(':')
+    #    if (PIN_prueba == hashlib.sha256(salt.encode() + pinViejo.encode()).hexdigest()):
+        self.assertEqual(PIN_prueba,hashlib.sha256(salt.encode() + pinNuevo2.encode()).hexdigest())
+    
+    def testCambiarPinOtroPinMalaVerificacion(self):
+        
+        bill = self.crearBilleteraEncriptada('1111')
+        pinViejo = '1111'
+        pinNuevo = '2222'
+        pinNuevo2 = '9999'
+        if verificarPin(pinNuevo,pinNuevo2):
+            salt = uuid.uuid4().hex 
+            bill.PIN = hashlib.sha256(salt.encode() + pinNuevo.encode()).hexdigest() + ':' + salt
+            bill.save()
+        PIN_prueba, salt = bill.PIN.split(':')
+    #    if (PIN_prueba == hashlib.sha256(salt.encode() + pinViejo.encode()).hexdigest()):
+        self.assertNotEqual(PIN_prueba,hashlib.sha256(salt.encode() + pinNuevo.encode()).hexdigest())
