@@ -1012,7 +1012,7 @@ def tasa_de_reservacionLivianos(request, _id):
         raise Http404
     if (estacionamiento.apertura is None):
         return render(
-            request, 'template-mensaje.html',
+            request, 'mensaje_template.html',
             { 'color'   : 'red'
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
@@ -1040,7 +1040,7 @@ def tasa_de_reservacionPesados(request, _id):
         raise Http404
     if (estacionamiento.apertura is None):
         return render(
-            request, 'template-mensaje.html',
+            request, 'mensaje_template.html',
             { 'color'   : 'red'
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
@@ -1067,7 +1067,7 @@ def tasa_de_reservacionMotos(request, _id):
         raise Http404
     if (estacionamiento.apertura is None):
         return render(
-            request, 'template-mensaje.html',
+            request, 'mensaje_template.html',
             { 'color'   : 'red'
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
@@ -1135,17 +1135,20 @@ def Estacionamiento_Dias_Feriados(request, _id):
         
         if form.is_valid():
             diaFeriado =  form.cleaned_data['esquema_diasFeriados']
-            seleccionar_feriados(diaFeriado, estacionamiento)
+            
+            if len(diaFeriado) > 0:
+            
+                seleccionar_feriados(diaFeriado, estacionamiento)
         
-        # Arle
-        return render(
-                  request,
-                  'dias_feriados.html',
-                  { "form" : form 
-                   , "color"   : "green"
-                   ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
-                   }
-                )
+                # Arle
+                return render(
+                          request,
+                          'dias_feriados.html',
+                          { "form" : form 
+                           , "color"   : "green"
+                           ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
+                           }
+                        )
                     
     return render(
         request,
@@ -1181,15 +1184,23 @@ def Estacionamiento_Dia_Feriado_Extra(request, _id):
             diaDescripcion =  form.cleaned_data['descripcion']
             seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
         
-    # Arle  
-        return render(
-            request,
-            'dia_feriado_extra.html',
-            { "form" : form 
-            , "color"   : "green"
-            ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
-            }
-          )
+            return render(
+                request,
+                'dia_feriado_extra.html',
+                { "form" : form 
+                , "color"   : "green"
+                ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
+                }
+              )
+        else:
+            return render(
+                request,
+                'dia_feriado_extra.html',
+                { "form" : form 
+                , "color"   : "red"
+                ,'mensaje'  : "Datos ingresados inválidos"
+                }
+              )
         
     return render(
 
