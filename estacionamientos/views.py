@@ -107,9 +107,11 @@ def estacionamientos_all(request):
         # el constructor del modelo
         if form.is_valid():
             
+            
+            
             try:
                 propietario = Propietario.objects.get(
-                    Cedula = form.cleaned_data['Cedula'],
+                    Cedula = form.cleaned_data['CI_prop'],
                     cedulaTipo = form.cleaned_data['cedulaTipo']
                 )
             except ObjectDoesNotExist:
@@ -122,19 +124,35 @@ def estacionamientos_all(request):
                         ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
                         }
                     )
+                
+            try:
+                rif_repetido = Estacionamiento.objects.get(
+                    rif = form.cleaned_data['rif']
+                    )
+                
+                return render(
+                    request,
+                    'estacionamiento_catalogo.html',
+                    { 'form': form
+                    , 'estacionamientos': estacionamientos
+                    , 'mensaje'     : "Ya existe un estacionamiento con este rif"
+                    , "color"   : "red"
+                    }
+                )
             
-              
-            obj = Estacionamiento(
-                nombre      = form.cleaned_data['nombre'],
-                CI_prop     = form.cleaned_data['CI_prop'],
-                cedulaTipo  = form.cleaned_data['cedulaTipo'],
-                direccion   = form.cleaned_data['direccion'],
-                rif         = form.cleaned_data['rif'],
-                telefono1   = form.cleaned_data['telefono_1'],
-                telefono2   = form.cleaned_data['telefono_2'],
-                email1      = form.cleaned_data['email_1']
-            )
-            obj.save()
+            except ObjectDoesNotExist:
+                
+                obj = Estacionamiento(
+                    nombre      = form.cleaned_data['nombre'],
+                    CI_prop     = form.cleaned_data['CI_prop'],
+                    cedulaTipo  = form.cleaned_data['cedulaTipo'],
+                    direccion   = form.cleaned_data['direccion'],
+                    rif         = form.cleaned_data['rif'],
+                    telefono1   = form.cleaned_data['telefono_1'],
+                    telefono2   = form.cleaned_data['telefono_2'],
+                    email1      = form.cleaned_data['email_1']
+                )
+                obj.save()
                      
             # Recargamos los estacionamientos ya que acabamos de agregar
             estacionamientos = Estacionamiento.objects.all()
@@ -420,7 +438,7 @@ def estacionamiento_detail(request, _id):
             
     return render(
         request,
-        'detalle-estacionamiento.html',
+        'estacionamiento_detalle.html',
         { 'form'                   : form
         , 'formLiviano'            : formLiviano
         , 'formPesado'             : formPesado
