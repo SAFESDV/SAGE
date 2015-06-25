@@ -289,7 +289,7 @@ def Mover_Reserva_buscar_nueva(request):
           }
     )
 
-def Mover_Reserva_comfirmar(request):
+def Mover_Reserva_Confirmar(request):
     
     form = BilleteraLogin()
     reserva_selec = Reserva.objects.get(id = request.session['reservaid'])
