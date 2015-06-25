@@ -109,7 +109,7 @@ def estacionamientos_all(request):
             
             try:
                 propietario = Propietario.objects.get(
-                    Cedula = form.cleaned_data['CI_prop'],
+                    Cedula = form.cleaned_data['Cedula'],
                     cedulaTipo = form.cleaned_data['cedulaTipo']
                 )
             except ObjectDoesNotExist:
