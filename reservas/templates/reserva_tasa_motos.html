@@ -1,4 +1,4 @@
-{% extends "base-estacionamiento.html" %}
+{% extends "estacionamiento_base.html" %}
 
 
 {% block title %}
@@ -12,14 +12,14 @@
     <hr>
     
     <div class="col-md-6">
-      {% include "tabla-tasa-reservacion-discapacitados.html" %}
+      {% include "reserva_tabla_tasa_motos.html" %}
     </div>
     
     <div class="col-md-6">
     	 <br>
          </br>
    
-		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionDiscapacitados}}">
+		<img class="img-responsive" src="/estacionamientos/grafica/?{{ datos_ocupacionMotos}}">
     </div>
     
     
@@ -35,9 +35,9 @@
           </button>
         </a>
         
-<a href="./{{estacionamiento.id}}tasaMotos">
+<a href="./{{estacionamiento.id}}tasaDiscapacitados">
           <button class="btn btn-primary">
-            Tasa de Motos
+            Tasa de puestos para Discapacitados
           </button>
         </a>
     

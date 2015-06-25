@@ -245,7 +245,7 @@ def Mover_Reserva_buscar_nueva(request):
                     apellido        = reserva_selec.apellido,
                 )
     
-                montoTotal = calcular_Precio_Reserva(reservaNueva,diasFeriados)
+                montoTotal = calcular_Precio_Reserva(reservaNueva,reserva_selec.estacionamiento)
                 diferencia = transreser.transaccion.monto - montoTotal
        
                 request.session['finalReservaHora']    = NuevoFinal.hour

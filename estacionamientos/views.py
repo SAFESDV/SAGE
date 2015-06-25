@@ -997,7 +997,7 @@ def tasa_de_reservacionDiscapacitados(request, _id):
     
     return render(
         request,
-        'tasa-reservacion-discapacitados.html',
+        'reserva_tasa_discapacitados.html',
         { "ocupacionDiscapacitados" : ocupacionDiscapacitados
         , "datos_ocupacionDiscapacitados": datos_ocupacionDiscapacitados
         }
@@ -1025,7 +1025,7 @@ def tasa_de_reservacionLivianos(request, _id):
         
     return render(
         request,
-        'tasa-reservacion.html',
+        'reserva_tasa.html',
         { "ocupacionLivianos" : ocupacionLivianos
         , "datos_ocupacionLivianos": datos_ocupacionLivianos
         }
@@ -1052,7 +1052,7 @@ def tasa_de_reservacionPesados(request, _id):
     datos_ocupacionPesados = urlencode(ocupacionPesados)
     return render(
         request,
-        'tasa-reservacion-pesados.html',
+        'reserva_tasa_pesados.html',
         { "ocupacionPesados" : ocupacionPesados
         , "datos_ocupacionPesados": datos_ocupacionPesados
         }
@@ -1081,7 +1081,7 @@ def tasa_de_reservacionMotos(request, _id):
        
     return render(
         request,
-        'tasa-reservacion-motos.html',
+        'reserva_tasa_motos.html',
         { "ocupacionMotos" : ocupacionMotos
         , "datos_ocupacionMotos": datos_ocupacionMotos
         }

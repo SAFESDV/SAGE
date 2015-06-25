@@ -428,10 +428,10 @@ def Consultar_Historia_Billetera(request):
         form = BilleteraLogin(request.POST)
         if form.is_valid():
             _id = form.cleaned_data['id']
-            try:
+            _pin = form.cleaned_data['pin']
+            if autenticar(_id, _pin):
                 billetera_selec = BilleteraElectronica.objects.get(id = _id)
                 transacciones, saldoTotal  = consultar_historial(_id)
-    
                 return render(
                     request,
                     'consultar_historial.html',
@@ -442,17 +442,16 @@ def Consultar_Historia_Billetera(request):
                     , "form"            : form
                     }
                 )
-                
-            except ObjectDoesNotExist:
+            else:
                 return render(
-                        request,
-                        'consultar_historial.html',
-                        { "form"    : form
-                        , "valido"          : 0
-                        , "color"   : "red"
-                        ,'mensaje'  : "Autenticación denegada."
-                        }
-                    )
+                    request,
+                    'consultar_historial.html',
+                    { "form"    : form
+                    , "valido"          : 0
+                    , "color"   : "red"
+                    ,'mensaje'  : "Autenticación denegada."
+                    }
+                )
     return render(
         request,
         'consultar_historial.html',
