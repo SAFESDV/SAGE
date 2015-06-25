@@ -3,56 +3,137 @@
   <thead></thead>
   <tbody>
 
-    {% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos  %}
+    {% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos or estacionamiento.capacidadDiscapacitados %}
       <tr><td><b><i class="fa fa-clock-o"></i> Horario apertura:</b></td></tr>
       <tr><td>{{estacionamiento.apertura}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Horario cierre:</b></td></tr>
       <tr><td>{{estacionamiento.cierre}}</td></tr>
-    {% endif %}
     
-    {% if esquema_no_feriado.tarifa %}
       <tr><td><b><i class="fa fa-circle"></i></i> Esquema:</b></td></tr>
-      <tr><td>{{esquema_no_feriado.tarifa.tipo}} </td></tr>
-      <tr><td><b><i class="fa fa-money"></i></i> Tarifa Normal:</b></td></tr>
-      <tr><td>BsF. {{esquema_no_feriado.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      <tr><td>{{esquemaLivianos.tarifa.tipoDia}} - {{esquemaLivianos.tarifa.tipo}}</td></tr>
       
-      {% if esquema_no_feriado.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
-      <tr><td><b><i class="fa fa-money"></i></i> Tarifa fin de semana:</b></td></tr>
-      <tr><td>BsF. {{esquema_no_feriado.tarifa.tarifa2}}</td></tr>
-      
-       {% elif esquema_no_feriado.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
-      <tr><td><b><i class="fa fa-money"></i></i> Tarifa especial:</b></td></tr>
-      <tr><td>BsF. {{esquema_no_feriado.tarifa.tarifa2}}</td></tr>
+      {% if esquemaLivianos.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
       <tr><td><b><i class="fa fa-clock-o"></i> Inicio tarifa especial:</b></td></tr>
-      <tr><td>{{esquema_no_feriado.tarifa.inicioEspecial}}</td></tr>
+      <tr><td>{{esquemaLivianos.tarifa.inicioEspecial}}</td></tr>
       <tr><td><b><i class="fa fa-clock-o"></i> Fin tarifa especial:</b></td></tr>
-      <tr><td>{{esquema_no_feriado.tarifa.finEspecial}}</td></tr>
+      <tr><td>{{esquemaLivianos.tarifa.finEspecial}}</td></tr>
       {% endif %}
       
-      <tr><td><b><i class="fa fa-circle"></i></i> Esquema Dia Feriado:</b></td></tr>
-      <tr><td>{{esquema_feriado.tarifa.tipo}} </td></tr>
-      <tr><td><b><i class="fa fa-money"></i></i> Tarifa Feriado:</b></td></tr>
-      <tr><td>BsF. {{esquema_feriado.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      <tr><td><b><i class="fa fa-car"></i></i> Tarifa Normal Livianos:</b></td></tr>
+      <tr><td>BsF. {{esquemaLivianos.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
       
-      {% if esquema_Feriado.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
-      <tr><td><b><i class="fa fa-money"></i> Tarifa fin de semana Feriado:</b></td></tr>
-      <tr><td>BsF. {{esquema_feriado.tarifa.tarifa2}}</td></tr>
-          
-      {% elif esquema_feriado.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
-	
-	  <tr><td><b><i class="fa fa-money"></i> Tarifa especial para feriados:</b></td></tr>
-      <tr><td>BsF. {{esquema_feriado.tarifa.tarifa2}}</td></tr>
-      <tr><td><b><i class="fa fa-clock-o"></i> Inicio tarifa especial Feriado:</b></td></tr>
-      <tr><td>{{esquema_feriado.tarifa.inicioEspecial}}</td></tr>
-      <tr><td><b><i class="fa fa-clock-o"></i> Fin tarifa especial Feriado:</b></td></tr>
-      <tr><td>{{esquema_feriado.tarifa.finEspecial}}</td></tr>
+      
+      {% if esquemaLivianos.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
+      <tr><td><b><i class="fa fa-car"></i></i> Tarifa fin de semana Livianos:</b></td></tr>
+      <tr><td>BsF. {{esquemaLivianos.tarifa.tarifaEspecial}}</td></tr>
+      
+       {% elif esquemaLivianos.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+     <tr><td><b><i class="fa fa-car"></i></i> Tarifa especial Livianos:</b></td></tr>
+      <tr><td>BsF. {{esquemaLivianos.tarifa.tarifaEspecial}}</td></tr>
       {% endif %}
       
-    {% endif %}      
+      
+       <tr><td><b><i class="fa fa-truck"></i></i> Tarifa Normal Pesados:</b></td></tr>
+      <tr><td>BsF. {{esquemaPesados.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      
+      {% if esquemaPesados.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
+      <tr><td><b><i class="fa fa-truck"></i></i> Tarifa fin de semana Pesados:</b></td></tr>
+      <tr><td>BsF. {{esquemaPesados.tarifa.tarifaEspecial}}</td></tr>
+      
+       {% elif esquemaPesados.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+      <tr><td><b><i class="fa fa-truck"></i></i> Tarifa especial Pesados:</b></td></tr>
+      <tr><td>BsF. {{esquemaPesados.tarifa.tarifaEspecial}}</td></tr>
+      {% endif %}
+      
+      <tr><td><b><i class="fa fa-bicycle"></i></i> Tarifa Normal Motos:</b></td></tr>
+      <tr><td>BsF. {{esquemaMotos.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      
+      {% if esquemaMotos.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
+      <tr><td><b><i class="fa fa-bicycle"></i></i> Tarifa Fin de semana Motos:</b></td></tr>
+      <tr><td>BsF. {{esquemaMotos.tarifa.tarifaEspecial}}</td></tr>
+      
+       {% elif esquemaMotos.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+     <tr><td><b><i class="fa fa-bicycle"></i></i> Tarifa Especial Motos:</b></td></tr>
+      <tr><td>BsF. {{esquemaMotos.tarifa.tarifaEspecial}}</td></tr>
+      {% endif %}
+      
+       <tr><td><b><i class="fa fa-wheelchair"></i></i> Tarifa Normal Discapacitados:</b></td></tr>
+      <tr><td>BsF. {{esquemaDiscapacitados.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      
+      {% if esquemaDiscapacitados.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
+      <tr><td><b><i class="fa fa-wheelchair"></i></i> Tarifa Fin Discapacitados:</b></td></tr>
+      <tr><td>BsF. {{esquemaDiscapacitados.tarifa.tarifaEspecial}}</td></tr>
+      
+       {% elif esquemaDiscapacitados.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+     <tr><td><b><i class="fa fa-wheelchair"></i></i> Tarifa especial Discapacitados:</b></td></tr>
+      <tr><td>BsF. {{esquemaDiscapacitados.tarifa.tarifaEspecial}}</td></tr>
+      {% endif %}
+      
+      <tr><td><b><i class="fa fa-circle"></i></i> Esquema:</b></td></tr>
+      <tr><td>{{esquemaLivianosF.tarifa.tipoDia}} - {{esquemaLivianos.tarifa.tipo}}</td></tr>
+      
+      {% if esquemaLivianosF.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+      <tr><td><b><i class="fa fa-clock-o"></i> Inicio tarifa especial:</b></td></tr>
+      <tr><td>{{esquemaLivianosF.tarifa.inicioEspecial}}</td></tr>
+      <tr><td><b><i class="fa fa-clock-o"></i> Fin tarifa especial:</b></td></tr>
+      <tr><td>{{esquemaLivianosF.tarifa.finEspecial}}</td></tr>
+      {% endif %}
+      
+      <tr><td><b><i class="fa fa-car"></i></i> Tarifa Feriado Livianos:</b></td></tr>
+      <tr><td>BsF. {{esquemaLivianosF.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      
+      {% if esquemaLivianosF.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
+      <tr><td><b><i class="fa fa-car"></i></i> Tarifa Feriado Fin Livianos:</b></td></tr>
+      <tr><td>BsF. {{esquemaLivianosF.tarifa.tarifaEspecial}}</td></tr>
+      
+       {% elif esquemaLivianosF.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+      <tr><td><b><i class="fa fa-car"></i></i> Tarifa Especial Feriado Livianos:</b></td></tr>
+      <tr><td>BsF. {{esquemaLivianosF.tarifa.tarifaEspecial}}</td></tr>
+      {% endif %}
+
+      <tr><td><b><i class="fa fa-truck"></i></i> Tarifa Feriado Pesados:</b></td></tr>
+      <tr><td>BsF. {{esquemaPesadosF.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      
+      {% if esquemaPesadosF.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
+      <tr><td><b><i class="fa fa-truck"></i></i> Tarifa Feriado Fin Pesados:</b></td></tr>
+      <tr><td>BsF. {{esquemaPesadosF.tarifa.tarifaEspecial}}</td></tr>
+      
+       {% elif esquemaPesadosF.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+     <tr><td><b><i class="fa fa-truck"></i></i> Tarifa Especial Feriado Pesados:</b></td></tr>
+      <tr><td>BsF. {{esquemaPesadosF.tarifa.tarifaEspecial}}</td></tr>
+      {% endif %}
+      
+      <tr><td><b><i class="fa fa-bicycle"></i></i> Tarifa Feriado Motos:</b></td></tr>
+      <tr><td>BsF. {{esquemaMotosF.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      
+      {% if esquemaMotosF.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
+      <tr><td><b><i class="fa fa-bicycle"></i></i> Tarifa Feriado Fin Motos:</b></td></tr>
+      <tr><td>BsF. {{esquemaMotosF.tarifa.tarifaEspecial}}</td></tr>
+      
+       {% elif esquemaMotosF.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+     <tr><td><b><i class="fa fa-bicycle"></i></i> Tarifa Especial Feriado Motos:</b></td></tr>
+      <tr><td>BsF. {{esquemaMotosF.tarifa.tarifaEspecial}}</td></tr>
+      {% endif %}
+      
+      <tr><td><b><i class="fa fa-wheelchair"></i></i> Tarifa Feriado Discapacitados:</b></td></tr>
+      <tr><td>BsF. {{esquemaDiscapacitadosF.tarifa.tarifa|floatformat:2|intcomma}}</td></tr>
+      
+      {% if esquemaDiscapacitadosF.tarifa.tipo == "Tarifa diferenciada para fines de semana" %}
+      <tr><td><b><i class="fa fa-wheelchair"></i></i> Tarifa Feriado Fin Discapacitados:</b></td></tr>
+      <tr><td>BsF. {{esquemaDiscapacitadosF.tarifa.tarifaEspecial}}</td></tr>
+      
+       {% elif esquemaDiscapacitadosF.tarifa.tipo == "Tarifa diferenciada por hora pico" %}
+     <tr><td><b><i class="fa fa-wheelchair"></i></i> Tarifa Especial Feriado Discapacitados:</b></td></tr>
+      <tr><td>BsF. {{esquemaDiscapacitadosF.tarifa.tarifaEspecial}}</td></tr>
+      {% endif %}
+      {% endif %}
+      
+      
+      
     
   </tbody>
 </table>
-{% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos %}
+{% if estacionamiento.capacidadLivianos or estacionamiento.capacidadPesados or estacionamiento.capacidadMotos or estacionamiento.capacidadDiscapacitados %}
 	<a href="./diasFeriados">
 	    <div class="control-group">
 	        <div class="controls">
