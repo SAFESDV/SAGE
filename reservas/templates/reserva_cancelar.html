@@ -1,4 +1,4 @@
-{% extends "base-reserva.html" %}
+{% extends "reserva_base.html" %}
 {% load humanize %}
 {% load firstof from future %}
 
@@ -11,34 +11,34 @@
 {% block innerContents%}
   <div class="col-sm-10">
     <h3><i class="fa fa-times"></i>
-      Cancelar Reserva - Billetera a Reembolsar
+      Cancelar Reservas
     </h3>
-  	<hr>
-  	<div class="col-md-8" style="color:{{color}}">
-  	  {% if mensaje %} 
-        {{ mensaje }}
-      {% endif %}
-	</div>
-  {% if billetera %}
+  <hr>
+  	<div class="col-md-8">
+      <table class="table table-striped">
+          <h3> Ingrese el ID de Reserva y su Cedula</h3>
+      </table>
+    </div>
+  {% if form %}
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
           <div class="panel-title">
             <i class="glyphicon glyphicon-wrench pull-right"></i>
             <h4>
-              Billetera Electronica
+              Cancelar Reservas
             </h4>
           </div>
         </div>
         <div class="panel-body">
         
           <form
-            action="/estacionamientos/cancelar_reserva/confirmar"
+            action="/estacionamientos/cancelar_reserva"
             method="post"
             class="form form-vertical"
           >
             {% csrf_token %}
-              {% for field in billetera %}
+              {% for field in form %}
                 <div class="control-group">
                   <div class="controls">
                     {{ field }}
@@ -47,11 +47,18 @@
                   </div>
                 </div>
               {% endfor %}
+              <div class="col-md-12" style="color:{{color}}">
+  				{% if mensaje %} 
+      				{{ mensaje }}
+      				<br>
+      				</br>
+    			{% endif %}
+    		  </div>
               <div class="control-group">
                 <label></label>
                 <div class="controls">
-                  <button  class="btn btn-primary" onclick="confirmar()">
-                    Verificar
+                  <button type="submit" class="btn btn-primary">
+                    Cancelar
                   </button>
                 </div>
               </div>
@@ -63,9 +70,3 @@
     {% endif %}
   </div>
 {% endblock %}
-
-<script>
-function confirmar() {
-    confirm("&iquestEsta seguro(a) de cancelar su reservaci&oacuten?");
-}
-</script>

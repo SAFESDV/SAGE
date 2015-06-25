@@ -77,6 +77,7 @@ from django.template.context_processors import request
 from django.forms.forms import Form
 from unittest.case import _id
 from transacciones.models import *
+from transacciones.controller import *
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -96,7 +97,7 @@ def estacionamientos_all(request):
         if len(estacionamientos) >= 5:
             return render(
                 request, 
-                'catalogo-estacionamientos.html',
+                'estacionamiento_catalogo.html',
                 {'color'   : 'red'
                 , 'mensaje' : 'No se pueden agregar más estacionamientos'
                 }
@@ -114,7 +115,7 @@ def estacionamientos_all(request):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'catalogo-estacionamientos.html',
+                        'estacionamiento_catalogo.html',
                         { "form"    : form
                         , 'estacionamientos': estacionamientos
                         , "color"   : "red"
@@ -141,7 +142,7 @@ def estacionamientos_all(request):
 
     return render(
         request,
-        'catalogo-estacionamientos.html',
+        'estacionamiento_catalogo.html',
         { 'form': form
         , 'estacionamientos': estacionamientos
         }
@@ -272,6 +273,7 @@ def estacionamiento_detail(request, _id):
             formMoto           = EsquemaTarifarioMoto(form_dataM)
             formDiscapacitados = EsquemaTarifarioDiscapacitados(form_dataD)
 
+
     elif request.method == 'POST':
         
         limpiarEsquemasTarifarios(_id)
@@ -318,7 +320,7 @@ def estacionamiento_detail(request, _id):
             if not HorarioEstacionamiento(horaIn, horaOut):
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     { 'color':'red'
                     , 'mensaje': 'El horario de apertura debe ser menor al horario de cierre'
                     }
@@ -397,7 +399,7 @@ def estacionamiento_detail(request, _id):
             if (estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos + estacionamiento.capacidadDiscapacitados <= 0):
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     { 'color':'red'
                     , 'mensaje': 'El estacionamiento debe tener al menos un puesto'
                     }
@@ -471,7 +473,7 @@ def estacionamiento_editar(request, _id):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'editar-datos-estacionamiento.html',
+                        'estacionamiento_editar_datos.html',
                         { "form"    : form
                         , 'estacionamiento': estacionamiento
                         , "color"   : "red"
@@ -489,7 +491,7 @@ def estacionamiento_editar(request, _id):
 
     return render(
         request,
-        'editar-datos-estacionamiento.html',
+        'estacionamiento_editar_datos.html',
         { 'form': form
         , 'estacionamiento': estacionamiento
         }
@@ -530,7 +532,7 @@ def estacionamiento_editar(request, _id):
             if not m_validado[0]:
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     { 'color'  :'red'
                     , 'mensaje': m_validado[1]
                     }
@@ -584,7 +586,7 @@ def estacionamiento_editar(request, _id):
                 # Cambiar mensaje
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     {'color'   : 'red'
                     , 'mensaje' : 'No hay un puesto disponible para ese horario'
                     }
@@ -712,7 +714,7 @@ def estacionamiento_modo_pago(request, _id):
     
     return render(
         request,
-        'ModoPago.html'
+        'billetera_modo_pago.html'
     )
 
 def estacionamiento_reserva(request, _id):
@@ -767,7 +769,7 @@ def estacionamiento_reserva(request, _id):
             if not m_validado[0]:
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     { 'color'  :'red'
                     , 'mensaje': m_validado[1]
                     }
@@ -816,7 +818,7 @@ def estacionamiento_reserva(request, _id):
                 # Cambiar mensaje
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     {'color'   : 'red'
                     , 'mensaje' : 'No hay un puesto disponible para ese horario'
                     }
@@ -847,7 +849,7 @@ def estacionamiento_ingreso(request):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'consultar-ingreso.html',
+                        'estacionamiento_consultar_ingreso.html',
                         { "form"    : form
                         , "color"   : "red"
                         ,'mensaje'  : "No hay estacionamiento registrado bajo el rif escogido"
@@ -858,7 +860,7 @@ def estacionamiento_ingreso(request):
 
             return render(
                 request,
-                'consultar-ingreso.html',
+                'estacionamiento_consultar_ingreso.html',
                 { "estacionamiento" : estacionamiento_selec
                 ,  "ingresoTotal"    : ingresoTotal
                 , "listaIngresos"   : listaIngresos
@@ -869,7 +871,7 @@ def estacionamiento_ingreso(request):
 
     return render(
         request,
-        'consultar-ingreso.html',
+        'estacionamiento_consultar_ingreso.html',
         { "form" : form }
     )
     
@@ -889,14 +891,14 @@ def estacionamiento_consulta_reserva(request):
             )
             return render(
                 request,
-                'consultar-reservas.html',
+                'reserva_consulta.html',
                 { "listaFacturas" : listaFacturas
                 , "form"          : form
                 }
             )
     return render(
         request,
-        'consultar-reservas.html',
+        'reserva_consulta.html',
         { "form" : form }
     )
 
@@ -964,7 +966,7 @@ def tasa_de_reservacionDiscapacitados(request, _id):
         raise Http404
     if (estacionamiento.apertura is None):
         return render(
-            request, 'template-mensaje.html',
+            request, 'mensaje_template.html',
             { 'color'   : 'red'
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
@@ -1202,7 +1204,7 @@ def Mostrar_Dias_Feriados(request, _id):
     print(DiasFeriados)
     return render(
                 request,
-                'catalogo_dias_feriados.html',
+                'estacionamiento_dias_feriados.html',
                 {"estacionamientos": estacionamiento
                 ,"DiasFeriados" : DiasFeriados
                 , "Comprobacion" : Comprobacion

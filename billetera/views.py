@@ -66,7 +66,7 @@ def billetera_crear(request):
             billetera.save();
             return render(
                 request,
-                'crearbilletera.html',
+                'billetera_crear.html',
                 { "billetera"    : billetera
                 , "pin"     : form.cleaned_data['pin']
                 , "saldo"   : consultar_saldo(billetera.id)
@@ -77,7 +77,7 @@ def billetera_crear(request):
     
     return render(
         request,
-        'crearbilletera.html',
+        'billetera_crear.html',
         {
          'form' : form
         }
@@ -91,10 +91,12 @@ def Consultar_Saldo(request):
         form = BilleteraLogin(request.POST)
         if form.is_valid():
             
-            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
+            try:
+                autenticar(form.cleaned_data['id'], form.cleaned_data['pin'])
+            except:
                 return render(
                         request,
-                        'consultar_saldo.html',
+                        'billetera_consultar_saldo.html',
                         { "form"    : form
                         , "color"   : "red"
                         ,'mensaje'  : "Autenticación denegada."
@@ -109,7 +111,7 @@ def Consultar_Saldo(request):
             
             return render(
                         request,
-                        'consultar_saldo.html',
+                        'billetera_consultar_saldo.html',
                         {"Saldo" : saldo,
                          "nosaldo" : noSaldo,
                          "color" : "red",
@@ -119,7 +121,7 @@ def Consultar_Saldo(request):
                                    
     return render(
                 request,
-                'consultar_saldo.html',
+                'billetera_consultar_saldo.html',
                 {"form" : form}
                 )
     
@@ -230,7 +232,9 @@ def billetera_recargar(request):
         form = BilleteraLogin(request.POST)
         if form.is_valid():
             
-            if not autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
+            try:
+                autenticar(form.cleaned_data['id'], form.cleaned_data['pin'])
+            except:
                 return render(
                         request,
                         'billetera_recargar.html',
@@ -272,7 +276,7 @@ def recarga_pago(request):
                 
                 return render(
                     request,
-                    'pago_recarga.html',
+                    'billetera_pago_recarga.html',
                     {
                      "pago"   : form,
                      "pago2"  : transaccion,
@@ -282,7 +286,7 @@ def recarga_pago(request):
                 )        
             except:
                 return render(request,
-                        'pago_recarga.html',
+                        'billetera_pago_recarga.html',
                         {
                         'error'   : 1,
                         "color"   : "red",
@@ -291,7 +295,7 @@ def recarga_pago(request):
                     )
     return render(
         request,
-        'pago_recarga.html',
+        'billetera_pago_recarga.html',
         { 'form' : form }
     )
 
