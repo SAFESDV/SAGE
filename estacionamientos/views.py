@@ -1182,16 +1182,34 @@ def Estacionamiento_Dia_Feriado_Extra(request, _id):
         if form.is_valid():
             diaFecha =  form.cleaned_data['fecha']
             diaDescripcion =  form.cleaned_data['descripcion']
-            seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
         
-            return render(
+            try:
+                DiasFeriadosRepetido = DiasFeriadosEscogidos.objects.get(
+                                                    fecha = diaFecha ,
+                                                    descripcion = diaDescripcion)
+                return render(
+                request,
+                'dia_feriado_extra.html',
+                { "form" : form 
+                , "color"   : "red"
+                ,'mensaje'  : "Dia Feriado ya existente"
+                }
+              )
+                
+            except ObjectDoesNotExist:
+                
+                seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
+                
+                return render(
                 request,
                 'dia_feriado_extra.html',
                 { "form" : form 
                 , "color"   : "green"
                 ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
                 }
-              )
+                              )
+        
+            
         else:
             return render(
                 request,
