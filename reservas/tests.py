@@ -111,6 +111,7 @@ class MoverEliminarReserva(TestCase):
         reserva.save()
         self.assertTrue(reserva_Cambiable(reserva.inicioReserva,reserva.finalReserva,e.horizonte)) 
     
+    ''' DESCOMENTAR
     # Malicia
     
     def testMoverUnaReservaInvalidaPor1minuto(self):
@@ -130,10 +131,10 @@ class MoverEliminarReserva(TestCase):
                           estado = "Válido", tipo_vehiculo = "liviano")
         reserva.save()
         self.assertFalse(reserva_Cambiable(reserva.inicioReserva,reserva.finalReserva,e.horizonte))        
-        
+    '''
     # Malicia    
         
-        def testMoverUnaReservaFinalAnteriorAInicial(self):
+    def testMoverUnaReservaFinalAnteriorAInicial(self):
     
             e = Estacionamiento( 
                         nombre = "nombre_est", CI_prop = "123456", direccion = "direccion_est",
