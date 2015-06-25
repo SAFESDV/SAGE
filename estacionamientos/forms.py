@@ -278,7 +278,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Inicio Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Inicio Reserva'
+            , 'placeholder' : 'Horario Pico Inicio'
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
@@ -291,7 +291,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Fin Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Fin Reserva'
+            , 'placeholder' : 'Horario Pico Fin '
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
@@ -320,7 +320,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Inicio Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Inicio Reserva para los Dias Feriados'
+            , 'placeholder' : 'Horario Pico Inicio para los Dias Feriados'
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
@@ -333,7 +333,7 @@ class EstacionamientoExtendedForm(forms.Form):
         label    = 'Fin Horario Especial',
         widget   = forms.TextInput(attrs =
             { 'class'       : 'form-control'
-            , 'placeholder' : 'Horario Fin Reserva para los Dias Feriados'
+            , 'placeholder' : 'Horario Pico Fin para los Dias Feriados'
             , 'pattern'     : '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]'
             , 'message'     : 'La entrada debe ser una hora válida.'
             }
