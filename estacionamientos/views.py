@@ -460,19 +460,67 @@ def estacionamiento_editar(request, _id):
     _id = int(_id)
     # Verificamos que el objeto exista antes de continuar
     try:
-        estacionamiento = Estacionamiento.objects.get(id = _id)
+        estacionamiento_selec = Estacionamiento.objects.get(id = _id)
+        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = estacionamiento_selec )
+    
+        esquema_no_feriado = None
+        esquema_feriado = None
+        
+        for esquema in estacionamientotarifa:
+                    
+            if esquema.tarifa.tipoVehiculo == 'Liviano':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                    
+                    esquemaLivianos  = esquema
+                    
+                else: #Es feriado
+                         
+                    esquemaLivianosF = esquema
+        
+            elif esquema.tarifa.tipoVehiculo == 'Pesado':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                    
+                    esquemaPesados   = esquema
+                    
+                else: #Es feriado
+                    
+                    esquemaPesadosF  = esquema
+                    
+            elif esquema.tarifa.tipoVehiculo == 'Moto':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+        
+                    esquemaMotos     = esquema
+                    
+                else: #Es feriado
+
+                    esquemaMotosF    = esquema
+        
+            elif esquema.tarifa.tipoVehiculo == 'Discapacitados':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                
+                    esquemaDiscapacitados  = esquema
+                    
+                else: #Es feriado
+                    
+                    esquemaDiscapacitadosF = esquema
+        
     except ObjectDoesNotExist:
         raise Http404
 
     if request.method == 'GET':
         
+
+
         
-        
-        if estacionamiento.CI_prop:
+        if estacionamiento_selec.CI_prop:
             
             form_data = {
-                'CI_prop' : estacionamiento.CI_prop,
-                'cedulaTipo' : estacionamiento.cedulaTipo
+                'CI_prop' : estacionamiento_selec.CI_prop,
+                'cedulaTipo' : estacionamiento_selec.cedulaTipo
                 }
             form = EditarEstacionamientoForm(data = form_data)
         else:
@@ -493,16 +541,16 @@ def estacionamiento_editar(request, _id):
                         request,
                         'estacionamiento_editar_datos.html',
                         { "form"    : form
-                        , 'estacionamiento': estacionamiento
+                        , 'estacionamiento': estacionamiento_selec
                         , "color"   : "red"
                         ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
                         }
                     )
                 
-            estacionamiento.CI_prop = form.cleaned_data['CI_prop']
-            estacionamiento.cedulaTipo = form.cleaned_data['cedulaTipo']
+            estacionamiento_selec.CI_prop = form.cleaned_data['CI_prop']
+            estacionamiento_selec.cedulaTipo = form.cleaned_data['cedulaTipo']
                                                
-            estacionamiento.save()
+            estacionamiento_selec.save()
                                          
             # Recargamos los estacionamientos ya que acabamos de agregar
             form = EditarEstacionamientoForm()
@@ -511,12 +559,20 @@ def estacionamiento_editar(request, _id):
         request,
         'estacionamiento_editar_datos.html',
         { 'form': form
-        , 'estacionamiento': estacionamiento
+        , 'estacionamiento'        : estacionamiento_selec
+        , 'esquemaLivianos'        : esquemaLivianos 
+        , 'esquemaLivianosF'       : esquemaLivianosF
+        , 'esquemaPesados'         : esquemaPesados
+        , 'esquemaPesadosF'        : esquemaPesadosF
+        , 'esquemaMotos'           : esquemaMotos
+        , 'esquemaMotosF'          : esquemaMotosF
+        , 'esquemaDiscapacitados'  : esquemaDiscapacitados
+        , 'esquemaDiscapacitadosF' : esquemaDiscapacitadosF
         }
     )
 
     # Verificamos que el estacionamiento este parametrizado
-    if (estacionamiento.apertura is None):
+    if (estacionamiento_selec.apertura is None):
         return HttpResponse(status = 403) # Esta prohibido entrar aun
 
     # Si se hace un GET renderizamos los estacionamientos con su formulario
@@ -541,9 +597,9 @@ def estacionamiento_editar(request, _id):
             m_validado = validarHorarioReserva(
                 inicioReserva,
                 finalReserva,
-                estacionamiento.apertura,
-                estacionamiento.cierre,
-                estacionamiento.horizonte,
+                estacionamiento_selec.apertura,
+                estacionamiento_selec.cierre,
+                estacionamiento_selec.horizonte,
             )
 
             # Si no es valido devolvemos el request
@@ -559,7 +615,7 @@ def estacionamiento_editar(request, _id):
             if marzullo(_id, inicioReserva, finalReserva, tipo_vehiculo_tomado):
                 print("funciono marzullo!")
                 reservaFinal = Reserva(
-                    estacionamiento = estacionamiento,
+                    estacionamiento = estacionamiento_selec,
                     inicioReserva   = inicioReserva,
                     finalReserva    = finalReserva,
                     estado          = 'Válido',
@@ -567,13 +623,13 @@ def estacionamiento_editar(request, _id):
                 )
 
                 monto = Decimal(
-                    estacionamiento.tarifa.calcularPrecio(
+                    estacionamiento_selec.tarifa.calcularPrecio(
                         inicioReserva,finalReserva
                     )
                 )
 
                 request.session['monto'] = float(
-                    estacionamiento.tarifa.calcularPrecio(
+                    estacionamiento_selec.tarifa.calcularPrecio(
                         inicioReserva,
                         finalReserva
                     )
@@ -616,9 +672,15 @@ def estacionamiento_editar(request, _id):
         request,
         'reserva.html',
         { 'form': form
-        , 'estacionamiento': estacionamiento
-        , 'esquema_no_feriado' : esquema_no_feriado
-        , 'esquema_feriado' : esquema_feriado
+        , 'estacionamiento'        : estacionamiento_selec
+        , 'esquemaLivianos'        : esquemaLivianos 
+        , 'esquemaLivianosF'       : esquemaLivianosF
+        , 'esquemaPesados'         : esquemaPesados
+        , 'esquemaPesadosF'        : esquemaPesadosF
+        , 'esquemaMotos'           : esquemaMotos
+        , 'esquemaMotosF'          : esquemaMotosF
+        , 'esquemaDiscapacitados'  : esquemaDiscapacitados
+        , 'esquemaDiscapacitadosF' : esquemaDiscapacitadosF
         }
     )
 
@@ -761,6 +823,60 @@ def estacionamiento_reserva(request, _id):
     # Si se hace un GET renderizamos los estacionamientos con su formulario
     if request.method == 'GET':
         form = ReservaForm()
+        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
+
+        esquemaLivianos        = None 
+        esquemaLivianosF       = None
+        esquemaPesados         = None
+        esquemaPesadosF        = None
+        esquemaMotos           = None
+        esquemaMotosF          = None
+        esquemaDiscapacitados  = None
+        esquemaDiscapacitadosF = None
+
+        for esquema in estacionamientotarifa:
+                    
+            if esquema.tarifa.tipoVehiculo == 'Liviano':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                    
+                    esquemaLivianos  = esquema
+                    
+                else: #Es feriado
+                         
+                    esquemaLivianosF = esquema
+        
+            elif esquema.tarifa.tipoVehiculo == 'Pesado':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                    
+                    esquemaPesados   = esquema
+                    
+                else: #Es feriado
+                    
+                    esquemaPesadosF  = esquema
+                    
+            elif esquema.tarifa.tipoVehiculo == 'Moto':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+        
+                    esquemaMotos     = esquema
+                    
+                else: #Es feriado
+
+                    esquemaMotosF    = esquema
+        
+            elif esquema.tarifa.tipoVehiculo == 'Discapacitados':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                
+                    esquemaDiscapacitados  = esquema
+                    
+                else: #Es feriado
+                    
+                    esquemaDiscapacitadosF = esquema
+
+
 
     # Si es un POST estan mandando un request
     elif request.method == 'POST':
@@ -846,9 +962,15 @@ def estacionamiento_reserva(request, _id):
         request,
         'reserva.html',
         { 'form': form
-        , 'estacionamiento': estacionamiento_selec
-        , 'esquema_no_feriado' : esquema_no_feriado
-        , 'esquema_feriado' : esquema_feriado
+        , 'estacionamiento'        : estacionamiento_selec
+        , 'esquemaLivianos'        : esquemaLivianos 
+        , 'esquemaLivianosF'       : esquemaLivianosF
+        , 'esquemaPesados'         : esquemaPesados
+        , 'esquemaPesadosF'        : esquemaPesadosF
+        , 'esquemaMotos'           : esquemaMotos
+        , 'esquemaMotosF'          : esquemaMotosF
+        , 'esquemaDiscapacitados'  : esquemaDiscapacitados
+        , 'esquemaDiscapacitadosF' : esquemaDiscapacitadosF
         }
     )
 

@@ -91,9 +91,10 @@ def Consultar_Saldo(request):
         form = BilleteraLogin(request.POST)
         if form.is_valid():
             
-            try:
-                autenticar(form.cleaned_data['id'], form.cleaned_data['pin'])
-            except:
+            if autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
+                pass
+                
+            else:
                 return render(
                         request,
                         'billetera_consultar_saldo.html',
@@ -232,9 +233,10 @@ def billetera_recargar(request):
         form = BilleteraLogin(request.POST)
         if form.is_valid():
             
-            try:
-                autenticar(form.cleaned_data['id'], form.cleaned_data['pin'])
-            except:
+            if autenticar(form.cleaned_data['id'], form.cleaned_data['pin']):
+                pass
+                
+            else:
                 return render(
                         request,
                         'billetera_recargar.html',
