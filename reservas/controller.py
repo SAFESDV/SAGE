@@ -92,6 +92,7 @@ def marzullo(idEstacionamiento, hIn, hOut, tipo):
     capacidadLivianos = e.capacidadLivianos
     capacidadPesados = e.capacidadPesados
     capacidadMotos = e.capacidadMotos
+    capacidadDiscapacitados = e.capacidadDiscapacitados
 
     for reserva in e.reserva_set.filter(estado = 'Válido', tipo_vehiculo = tipo):
         ocupacion += [(reserva.inicioReserva, 1), (reserva.finalReserva, -1)]
