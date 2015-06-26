@@ -35,7 +35,7 @@ urlpatterns = patterns('',
     
     url(r'^mover_reserva$', Mover_reserva_buscar_original, name = 'Mover_reserva_buscar_original'),
     url(r'^mover_reserva/buscar_nueva$', Mover_Reserva_buscar_nueva, name = 'Mover_reserva_buscar_nuevo'),
-    url(r'^mover_reserva/comfirmar$', Mover_Reserva_comfirmar, name = 'Mover_Reserva_comfirmar'),
+    url(r'^mover_reserva/Confirmar$', Mover_Reserva_Confirmar, name = 'Mover_Reserva_Confirmar'),
 
     # SMS
     

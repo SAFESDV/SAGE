@@ -77,6 +77,7 @@ from django.template.context_processors import request
 from django.forms.forms import Form
 from unittest.case import _id
 from transacciones.models import *
+from transacciones.controller import *
 
 # Usamos esta vista para procesar todos los estacionamientos
 def estacionamientos_all(request):
@@ -96,7 +97,7 @@ def estacionamientos_all(request):
         if len(estacionamientos) >= 5:
             return render(
                 request, 
-                'catalogo-estacionamientos.html',
+                'estacionamiento_catalogo.html',
                 {'color'   : 'red'
                 , 'mensaje' : 'No se pueden agregar más estacionamientos'
                 }
@@ -106,6 +107,8 @@ def estacionamientos_all(request):
         # el constructor del modelo
         if form.is_valid():
             
+            
+            
             try:
                 propietario = Propietario.objects.get(
                     Cedula = form.cleaned_data['CI_prop'],
@@ -114,26 +117,42 @@ def estacionamientos_all(request):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'catalogo-estacionamientos.html',
+                        'estacionamiento_catalogo.html',
                         { "form"    : form
                         , 'estacionamientos': estacionamientos
                         , "color"   : "red"
                         ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
                         }
                     )
+                
+            try:
+                rif_repetido = Estacionamiento.objects.get(
+                    rif = form.cleaned_data['rif']
+                    )
+                
+                return render(
+                    request,
+                    'estacionamiento_catalogo.html',
+                    { 'form': form
+                    , 'estacionamientos': estacionamientos
+                    , 'mensaje'     : "Ya existe un estacionamiento con este rif"
+                    , "color"   : "red"
+                    }
+                )
             
-              
-            obj = Estacionamiento(
-                nombre      = form.cleaned_data['nombre'],
-                CI_prop     = form.cleaned_data['CI_prop'],
-                cedulaTipo  = form.cleaned_data['cedulaTipo'],
-                direccion   = form.cleaned_data['direccion'],
-                rif         = form.cleaned_data['rif'],
-                telefono1   = form.cleaned_data['telefono_1'],
-                telefono2   = form.cleaned_data['telefono_2'],
-                email1      = form.cleaned_data['email_1']
-            )
-            obj.save()
+            except ObjectDoesNotExist:
+                
+                obj = Estacionamiento(
+                    nombre      = form.cleaned_data['nombre'],
+                    CI_prop     = form.cleaned_data['CI_prop'],
+                    cedulaTipo  = form.cleaned_data['cedulaTipo'],
+                    direccion   = form.cleaned_data['direccion'],
+                    rif         = form.cleaned_data['rif'],
+                    telefono1   = form.cleaned_data['telefono_1'],
+                    telefono2   = form.cleaned_data['telefono_2'],
+                    email1      = form.cleaned_data['email_1']
+                )
+                obj.save()
                      
             # Recargamos los estacionamientos ya que acabamos de agregar
             estacionamientos = Estacionamiento.objects.all()
@@ -141,7 +160,7 @@ def estacionamientos_all(request):
 
     return render(
         request,
-        'catalogo-estacionamientos.html',
+        'estacionamiento_catalogo.html',
         { 'form': form
         , 'estacionamientos': estacionamientos
         }
@@ -272,6 +291,7 @@ def estacionamiento_detail(request, _id):
             formMoto           = EsquemaTarifarioMoto(form_dataM)
             formDiscapacitados = EsquemaTarifarioDiscapacitados(form_dataD)
 
+
     elif request.method == 'POST':
         
         limpiarEsquemasTarifarios(_id)
@@ -318,7 +338,7 @@ def estacionamiento_detail(request, _id):
             if not HorarioEstacionamiento(horaIn, horaOut):
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     { 'color':'red'
                     , 'mensaje': 'El horario de apertura debe ser menor al horario de cierre'
                     }
@@ -397,7 +417,7 @@ def estacionamiento_detail(request, _id):
             if (estacionamiento.capacidadLivianos + estacionamiento.capacidadPesados + estacionamiento.capacidadMotos + estacionamiento.capacidadDiscapacitados <= 0):
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     { 'color':'red'
                     , 'mensaje': 'El estacionamiento debe tener al menos un puesto'
                     }
@@ -418,7 +438,7 @@ def estacionamiento_detail(request, _id):
             
     return render(
         request,
-        'detalle-estacionamiento.html',
+        'estacionamiento_detalle.html',
         { 'form'                   : form
         , 'formLiviano'            : formLiviano
         , 'formPesado'             : formPesado
@@ -440,19 +460,67 @@ def estacionamiento_editar(request, _id):
     _id = int(_id)
     # Verificamos que el objeto exista antes de continuar
     try:
-        estacionamiento = Estacionamiento.objects.get(id = _id)
+        estacionamiento_selec = Estacionamiento.objects.get(id = _id)
+        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = estacionamiento_selec )
+    
+        esquema_no_feriado = None
+        esquema_feriado = None
+        
+        for esquema in estacionamientotarifa:
+                    
+            if esquema.tarifa.tipoVehiculo == 'Liviano':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                    
+                    esquemaLivianos  = esquema
+                    
+                else: #Es feriado
+                         
+                    esquemaLivianosF = esquema
+        
+            elif esquema.tarifa.tipoVehiculo == 'Pesado':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                    
+                    esquemaPesados   = esquema
+                    
+                else: #Es feriado
+                    
+                    esquemaPesadosF  = esquema
+                    
+            elif esquema.tarifa.tipoVehiculo == 'Moto':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+        
+                    esquemaMotos     = esquema
+                    
+                else: #Es feriado
+
+                    esquemaMotosF    = esquema
+        
+            elif esquema.tarifa.tipoVehiculo == 'Discapacitados':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                
+                    esquemaDiscapacitados  = esquema
+                    
+                else: #Es feriado
+                    
+                    esquemaDiscapacitadosF = esquema
+        
     except ObjectDoesNotExist:
         raise Http404
 
     if request.method == 'GET':
         
+
+
         
-        
-        if estacionamiento.CI_prop:
+        if estacionamiento_selec.CI_prop:
             
             form_data = {
-                'CI_prop' : estacionamiento.CI_prop,
-                'cedulaTipo' : estacionamiento.cedulaTipo
+                'CI_prop' : estacionamiento_selec.CI_prop,
+                'cedulaTipo' : estacionamiento_selec.cedulaTipo
                 }
             form = EditarEstacionamientoForm(data = form_data)
         else:
@@ -471,32 +539,40 @@ def estacionamiento_editar(request, _id):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'editar-datos-estacionamiento.html',
+                        'estacionamiento_editar_datos.html',
                         { "form"    : form
-                        , 'estacionamiento': estacionamiento
+                        , 'estacionamiento': estacionamiento_selec
                         , "color"   : "red"
                         ,'mensaje'  : "La cédula ingresada no esta asociada a ningún usuario."
                         }
                     )
                 
-            estacionamiento.CI_prop = form.cleaned_data['CI_prop']
-            estacionamiento.cedulaTipo = form.cleaned_data['cedulaTipo']
+            estacionamiento_selec.CI_prop = form.cleaned_data['CI_prop']
+            estacionamiento_selec.cedulaTipo = form.cleaned_data['cedulaTipo']
                                                
-            estacionamiento.save()
+            estacionamiento_selec.save()
                                          
             # Recargamos los estacionamientos ya que acabamos de agregar
             form = EditarEstacionamientoForm()
 
     return render(
         request,
-        'editar-datos-estacionamiento.html',
+        'estacionamiento_editar_datos.html',
         { 'form': form
-        , 'estacionamiento': estacionamiento
+        , 'estacionamiento'        : estacionamiento_selec
+        , 'esquemaLivianos'        : esquemaLivianos 
+        , 'esquemaLivianosF'       : esquemaLivianosF
+        , 'esquemaPesados'         : esquemaPesados
+        , 'esquemaPesadosF'        : esquemaPesadosF
+        , 'esquemaMotos'           : esquemaMotos
+        , 'esquemaMotosF'          : esquemaMotosF
+        , 'esquemaDiscapacitados'  : esquemaDiscapacitados
+        , 'esquemaDiscapacitadosF' : esquemaDiscapacitadosF
         }
     )
 
     # Verificamos que el estacionamiento este parametrizado
-    if (estacionamiento.apertura is None):
+    if (estacionamiento_selec.apertura is None):
         return HttpResponse(status = 403) # Esta prohibido entrar aun
 
     # Si se hace un GET renderizamos los estacionamientos con su formulario
@@ -521,16 +597,16 @@ def estacionamiento_editar(request, _id):
             m_validado = validarHorarioReserva(
                 inicioReserva,
                 finalReserva,
-                estacionamiento.apertura,
-                estacionamiento.cierre,
-                estacionamiento.horizonte,
+                estacionamiento_selec.apertura,
+                estacionamiento_selec.cierre,
+                estacionamiento_selec.horizonte,
             )
 
             # Si no es valido devolvemos el request
             if not m_validado[0]:
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     { 'color'  :'red'
                     , 'mensaje': m_validado[1]
                     }
@@ -539,7 +615,7 @@ def estacionamiento_editar(request, _id):
             if marzullo(_id, inicioReserva, finalReserva, tipo_vehiculo_tomado):
                 print("funciono marzullo!")
                 reservaFinal = Reserva(
-                    estacionamiento = estacionamiento,
+                    estacionamiento = estacionamiento_selec,
                     inicioReserva   = inicioReserva,
                     finalReserva    = finalReserva,
                     estado          = 'Válido',
@@ -547,13 +623,13 @@ def estacionamiento_editar(request, _id):
                 )
 
                 monto = Decimal(
-                    estacionamiento.tarifa.calcularPrecio(
+                    estacionamiento_selec.tarifa.calcularPrecio(
                         inicioReserva,finalReserva
                     )
                 )
 
                 request.session['monto'] = float(
-                    estacionamiento.tarifa.calcularPrecio(
+                    estacionamiento_selec.tarifa.calcularPrecio(
                         inicioReserva,
                         finalReserva
                     )
@@ -584,7 +660,7 @@ def estacionamiento_editar(request, _id):
                 # Cambiar mensaje
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     {'color'   : 'red'
                     , 'mensaje' : 'No hay un puesto disponible para ese horario'
                     }
@@ -596,9 +672,15 @@ def estacionamiento_editar(request, _id):
         request,
         'reserva.html',
         { 'form': form
-        , 'estacionamiento': estacionamiento
-        , 'esquema_no_feriado' : esquema_no_feriado
-        , 'esquema_feriado' : esquema_feriado
+        , 'estacionamiento'        : estacionamiento_selec
+        , 'esquemaLivianos'        : esquemaLivianos 
+        , 'esquemaLivianosF'       : esquemaLivianosF
+        , 'esquemaPesados'         : esquemaPesados
+        , 'esquemaPesadosF'        : esquemaPesadosF
+        , 'esquemaMotos'           : esquemaMotos
+        , 'esquemaMotosF'          : esquemaMotosF
+        , 'esquemaDiscapacitados'  : esquemaDiscapacitados
+        , 'esquemaDiscapacitadosF' : esquemaDiscapacitadosF
         }
     )
 
@@ -712,7 +794,7 @@ def estacionamiento_modo_pago(request, _id):
     
     return render(
         request,
-        'ModoPago.html'
+        'billetera_modo_pago.html'
     )
 
 def estacionamiento_reserva(request, _id):
@@ -741,6 +823,60 @@ def estacionamiento_reserva(request, _id):
     # Si se hace un GET renderizamos los estacionamientos con su formulario
     if request.method == 'GET':
         form = ReservaForm()
+        estacionamientotarifa = EsquemaTarifarioM2M.objects.filter( estacionamiento = _id )
+
+        esquemaLivianos        = None 
+        esquemaLivianosF       = None
+        esquemaPesados         = None
+        esquemaPesadosF        = None
+        esquemaMotos           = None
+        esquemaMotosF          = None
+        esquemaDiscapacitados  = None
+        esquemaDiscapacitadosF = None
+
+        for esquema in estacionamientotarifa:
+                    
+            if esquema.tarifa.tipoVehiculo == 'Liviano':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                    
+                    esquemaLivianos  = esquema
+                    
+                else: #Es feriado
+                         
+                    esquemaLivianosF = esquema
+        
+            elif esquema.tarifa.tipoVehiculo == 'Pesado':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                    
+                    esquemaPesados   = esquema
+                    
+                else: #Es feriado
+                    
+                    esquemaPesadosF  = esquema
+                    
+            elif esquema.tarifa.tipoVehiculo == 'Moto':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+        
+                    esquemaMotos     = esquema
+                    
+                else: #Es feriado
+
+                    esquemaMotosF    = esquema
+        
+            elif esquema.tarifa.tipoVehiculo == 'Discapacitados':
+                
+                if esquema.tarifa.tipoDia == 'Dia Normal':
+                
+                    esquemaDiscapacitados  = esquema
+                    
+                else: #Es feriado
+                    
+                    esquemaDiscapacitadosF = esquema
+
+
 
     # Si es un POST estan mandando un request
     elif request.method == 'POST':
@@ -767,7 +903,7 @@ def estacionamiento_reserva(request, _id):
             if not m_validado[0]:
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     { 'color'  :'red'
                     , 'mensaje': m_validado[1]
                     }
@@ -816,7 +952,7 @@ def estacionamiento_reserva(request, _id):
                 # Cambiar mensaje
                 return render(
                     request,
-                    'template-mensaje.html',
+                    'mensaje_template.html',
                     {'color'   : 'red'
                     , 'mensaje' : 'No hay un puesto disponible para ese horario'
                     }
@@ -826,9 +962,15 @@ def estacionamiento_reserva(request, _id):
         request,
         'reserva.html',
         { 'form': form
-        , 'estacionamiento': estacionamiento_selec
-        , 'esquema_no_feriado' : esquema_no_feriado
-        , 'esquema_feriado' : esquema_feriado
+        , 'estacionamiento'        : estacionamiento_selec
+        , 'esquemaLivianos'        : esquemaLivianos 
+        , 'esquemaLivianosF'       : esquemaLivianosF
+        , 'esquemaPesados'         : esquemaPesados
+        , 'esquemaPesadosF'        : esquemaPesadosF
+        , 'esquemaMotos'           : esquemaMotos
+        , 'esquemaMotosF'          : esquemaMotosF
+        , 'esquemaDiscapacitados'  : esquemaDiscapacitados
+        , 'esquemaDiscapacitadosF' : esquemaDiscapacitadosF
         }
     )
 
@@ -847,7 +989,7 @@ def estacionamiento_ingreso(request):
             except ObjectDoesNotExist:
                 return render(
                         request,
-                        'consultar-ingreso.html',
+                        'estacionamiento_consultar_ingreso.html',
                         { "form"    : form
                         , "color"   : "red"
                         ,'mensaje'  : "No hay estacionamiento registrado bajo el rif escogido"
@@ -858,7 +1000,7 @@ def estacionamiento_ingreso(request):
 
             return render(
                 request,
-                'consultar-ingreso.html',
+                'estacionamiento_consultar_ingreso.html',
                 { "estacionamiento" : estacionamiento_selec
                 ,  "ingresoTotal"    : ingresoTotal
                 , "listaIngresos"   : listaIngresos
@@ -869,7 +1011,7 @@ def estacionamiento_ingreso(request):
 
     return render(
         request,
-        'consultar-ingreso.html',
+        'estacionamiento_consultar_ingreso.html',
         { "form" : form }
     )
     
@@ -889,14 +1031,14 @@ def estacionamiento_consulta_reserva(request):
             )
             return render(
                 request,
-                'consultar-reservas.html',
+                'reserva_consulta.html',
                 { "listaFacturas" : listaFacturas
                 , "form"          : form
                 }
             )
     return render(
         request,
-        'consultar-reservas.html',
+        'reserva_consulta.html',
         { "form" : form }
     )
 
@@ -964,7 +1106,7 @@ def tasa_de_reservacionDiscapacitados(request, _id):
         raise Http404
     if (estacionamiento.apertura is None):
         return render(
-            request, 'template-mensaje.html',
+            request, 'mensaje_template.html',
             { 'color'   : 'red'
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
@@ -977,7 +1119,7 @@ def tasa_de_reservacionDiscapacitados(request, _id):
     
     return render(
         request,
-        'tasa-reservacion-discapacitados.html',
+        'reserva_tasa_discapacitados.html',
         { "ocupacionDiscapacitados" : ocupacionDiscapacitados
         , "datos_ocupacionDiscapacitados": datos_ocupacionDiscapacitados
         }
@@ -992,7 +1134,7 @@ def tasa_de_reservacionLivianos(request, _id):
         raise Http404
     if (estacionamiento.apertura is None):
         return render(
-            request, 'template-mensaje.html',
+            request, 'mensaje_template.html',
             { 'color'   : 'red'
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
@@ -1005,7 +1147,7 @@ def tasa_de_reservacionLivianos(request, _id):
         
     return render(
         request,
-        'tasa-reservacion.html',
+        'reserva_tasa.html',
         { "ocupacionLivianos" : ocupacionLivianos
         , "datos_ocupacionLivianos": datos_ocupacionLivianos
         }
@@ -1020,7 +1162,7 @@ def tasa_de_reservacionPesados(request, _id):
         raise Http404
     if (estacionamiento.apertura is None):
         return render(
-            request, 'template-mensaje.html',
+            request, 'mensaje_template.html',
             { 'color'   : 'red'
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
@@ -1032,7 +1174,7 @@ def tasa_de_reservacionPesados(request, _id):
     datos_ocupacionPesados = urlencode(ocupacionPesados)
     return render(
         request,
-        'tasa-reservacion-pesados.html',
+        'reserva_tasa_pesados.html',
         { "ocupacionPesados" : ocupacionPesados
         , "datos_ocupacionPesados": datos_ocupacionPesados
         }
@@ -1047,7 +1189,7 @@ def tasa_de_reservacionMotos(request, _id):
         raise Http404
     if (estacionamiento.apertura is None):
         return render(
-            request, 'template-mensaje.html',
+            request, 'mensaje_template.html',
             { 'color'   : 'red'
             , 'mensaje' : 'Se debe parametrizar el estacionamiento primero.'
             }
@@ -1061,7 +1203,7 @@ def tasa_de_reservacionMotos(request, _id):
        
     return render(
         request,
-        'tasa-reservacion-motos.html',
+        'reserva_tasa_motos.html',
         { "ocupacionMotos" : ocupacionMotos
         , "datos_ocupacionMotos": datos_ocupacionMotos
         }
@@ -1115,17 +1257,20 @@ def Estacionamiento_Dias_Feriados(request, _id):
         
         if form.is_valid():
             diaFeriado =  form.cleaned_data['esquema_diasFeriados']
-            seleccionar_feriados(diaFeriado, estacionamiento)
+            
+            if len(diaFeriado) > 0:
+            
+                seleccionar_feriados(diaFeriado, estacionamiento)
         
-        # Arle
-        return render(
-                  request,
-                  'dias_feriados.html',
-                  { "form" : form 
-                   , "color"   : "green"
-                   ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
-                   }
-                )
+                # Arle
+                return render(
+                          request,
+                          'dias_feriados.html',
+                          { "form" : form 
+                           , "color"   : "green"
+                           ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
+                           }
+                        )
                     
     return render(
         request,
@@ -1159,17 +1304,43 @@ def Estacionamiento_Dia_Feriado_Extra(request, _id):
         if form.is_valid():
             diaFecha =  form.cleaned_data['fecha']
             diaDescripcion =  form.cleaned_data['descripcion']
-            seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
         
-    # Arle  
-        return render(
-            request,
-            'dia_feriado_extra.html',
-            { "form" : form 
-            , "color"   : "green"
-            ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
-            }
-          )
+            try:
+                DiasFeriadosRepetido = DiasFeriadosEscogidos.objects.get(
+                                                    fecha = diaFecha ,
+                                                    descripcion = diaDescripcion)
+                return render(
+                request,
+                'dia_feriado_extra.html',
+                { "form" : form 
+                , "color"   : "red"
+                ,'mensaje'  : "Dia Feriado ya existente"
+                }
+              )
+                
+            except ObjectDoesNotExist:
+                
+                seleccionar_feriado_extra(diaFecha, diaDescripcion, estacionamiento)
+                
+                return render(
+                request,
+                'dia_feriado_extra.html',
+                { "form" : form 
+                , "color"   : "green"
+                ,'mensaje'  : "Se han actualizado la lista de Fechas Feriadas."
+                }
+                              )
+        
+            
+        else:
+            return render(
+                request,
+                'dia_feriado_extra.html',
+                { "form" : form 
+                , "color"   : "red"
+                ,'mensaje'  : "Datos ingresados inválidos"
+                }
+              )
         
     return render(
 
@@ -1202,7 +1373,7 @@ def Mostrar_Dias_Feriados(request, _id):
     print(DiasFeriados)
     return render(
                 request,
-                'catalogo_dias_feriados.html',
+                'estacionamiento_dias_feriados.html',
                 {"estacionamientos": estacionamiento
                 ,"DiasFeriados" : DiasFeriados
                 , "Comprobacion" : Comprobacion

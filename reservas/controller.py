@@ -159,7 +159,7 @@ def cancelar_reserva(idReserva,idbilletera):
     except:
         return render(
                     request,
-                    'cancelar_reserva_confirmar.html',
+                    'reserva_confirmar_cancelar.html',
                     { "color"   : "red"
                      , 'mensaje' : 'No se puede hacer un reembolso a esta billetera porque excede el limite'
                      , 'billetera' : form

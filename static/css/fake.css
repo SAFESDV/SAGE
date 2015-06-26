@@ -1,0 +1,343 @@
+#cssmenu,
+#cssmenu ul,
+#cssmenu ul li,
+#cssmenu ul li a,
+#cssmenu #menu-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width : 100%;
+  list-style: none;
+  line-height: 1;
+  display: block;
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#cssmenu:after,
+#cssmenu > ul:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+#cssmenu #menu-button {
+  display: none;
+}
+#cssmenu {
+  width: auto;
+  font-family: sans-serif;
+  line-height: 1;
+}
+#cssmenu > ul > li {
+  float: left;
+}
+#cssmenu.align-center > ul {
+  font-size: 0;
+  text-align: center;
+}
+#cssmenu.align-center > ul > li {
+  display: inline-block;
+  float: none;
+}
+#cssmenu.align-right > ul > li {
+  float: right;
+}
+#cssmenu > ul > li > a {
+  padding: 13px 15px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #FFFFFF;
+  -webkit-transition: all .3s ease;
+  -moz-transition: all .3s ease;
+  -ms-transition: all .3s ease;
+  -o-transition: all .3s ease;
+  transition: all .3s ease;
+}
+#cssmenu > ul > li > a:hover,
+#cssmenu > ul > li:hover > a,
+#cssmenu > ul > li.active > a {
+  color: #333333;
+  background-color : #ffffff;
+  z-index : 0
+}
+#cssmenu #menu-indicator {
+  position: absolute;
+  display: block;
+  height: 0;
+  width: 0;
+  transform: rotate(90deg);
+  border: 5px solid transparent;
+  border-bottom-color: #666666;
+  -webkit-transition: all 0.15s ease-out;
+  -moz-transition: all 0.15s ease-out;
+  -ms-transition: all 0.15s ease-out;
+  -o-transition: all 0.15s ease-out;
+  transition: all 0.15s ease-out;
+  z-index : 1;
+}
+#cssmenu.small-screen {
+  width: 100%;
+}
+#cssmenu.small-screen > ul,
+#cssmenu.small-screen.align-center > ul {
+  width: 100%;
+  text-align: left;
+}
+#cssmenu.small-screen > ul > li,
+#cssmenu.small-screen.align-center > ul > li {
+  float: none;
+  display: block;
+  border-top: 1px solid rgba(100, 100, 100, 0.1);
+}
+#cssmenu.small-screen > ul > li > a {
+  padding: 18px 25px;
+}
+#cssmenu.small-screen > ul > li:after,
+#cssmenu.small-screen > ul > li:before {
+  display: none;
+}
+#cssmenu.small-screen #menu-button {
+  display: block;
+  padding: 18px 25px;
+  cursor: pointer;
+  font-size: 14px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fd8a17;
+}
+#cssmenu.small-screen #menu-button.menu-opened {
+  color: #444444;
+}
+#cssmenu.small-screen #menu-button:after {
+  content: "";
+  position: absolute;
+  right: 25px;
+  top: 19.5px;
+  display: block;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  border-top: 2px solid #fd8a17;
+  border-bottom: 2px solid #fd8a17;
+  width: 18px;
+  height: 3px;
+}
+#cssmenu.small-screen #menu-button.menu-opened:after {
+  border-top: 2px solid #444444;
+  border-bottom: 2px solid #444444;
+}
+#cssmenu.small-screen #menu-button:before {
+  content: "";
+  position: absolute;
+  right: 25px;
+  top: 29.5px;
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #fd8a17;
+}
+#cssmenu.small-screen #menu-button.menu-opened:before {
+  background: #444444;
+}
+#cssmenu.small-screen #menu-indicator {
+  display: none;
+}
+
+
+body.index {
+  background-image: url("./index_background.jpg");
+}
+
+h3.index {
+	color: white;
+}
+
+#index_menu.col-sm-2 {
+	height: 100%;
+}
+
+#index.cssmenu {
+
+}
+
+#rectangle{
+	position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: -1;
+    left: 0px;
+    top: 0px;
+    opacity: 0.3;
+}
+
+#logo{
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    margin-bottom: 20px;
+}
+
+#safe{
+	position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.navbar-static-top {
+  margin-bottom:20px;
+}
+
+i {
+  font-size:18px;
+}
+
+footer {
+  margin-top:20px;
+  padding-top:20px;
+  padding-bottom:20px;
+  background-color:#efefef;
+}
+
+.nav>li .count {
+  position: absolute;
+  top: 10%;
+  right: 25%;
+  font-size: 10px;
+  font-weight: normal;
+  background: rgba(41,200,41,0.75);
+  color: rgb(255,255,255);
+  line-height: 1em;
+  padding: 2px 4px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.errorlist {
+border: 1px solid;
+margin: 10px 0px;
+padding:15px 10px 15px 50px;
+background-repeat: no-repeat;
+background-position: 10px center;
+}
+
+.errorlist {
+color: #D8000C;
+background-color: #FFBABA;
+}
+
+input.dirty:invalid{
+  background-color: #FDD;
+}
+
+input.dirty:focus:invalid {
+  background-color: white;
+}
+
+.error {
+  font-size: 80%;
+  color: red;
+}
+
+.error.active {
+  padding: 0.3em;
+}
+
+.control-group {
+  margin: 0 5px;
+}
+
+body{
+font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-weight: 300;
+}
+.css-slideshow{
+  position: relative;
+  max-width: 495px;
+  height: 370px;
+  margin: 5em auto .5em auto;
+}
+.css-slideshow figure{
+  margin: 0;
+  max-width: 495px;
+  height: 370px;
+  position: absolute;
+}
+
+.css-slideshow figcaption{
+  position: absolute;
+  top: 0;
+  color: #fff;
+  background: rgba(0,0,0, .3);
+  font-size: .8em;
+  padding: 8px 12px;
+  opacity: 0;
+  transition: opacity .5s;
+}
+.css-slideshow:hover figure figcaption{
+  transition: opacity .5s;
+  opacity: 1;
+}
+.css-slideshow-attr{
+  max-width: 495px;
+  text-align: right;
+  font-size: .7em;
+  font-style: italic;
+  margin:0 auto;
+}
+.css-slideshow-attr a{
+  color: #666;
+}
+.css-slideshow figure{
+  opacity:0;
+}
+figure:nth-child(1) {
+  animation: xfade 48s 42s infinite;
+}
+figure:nth-child(2) {
+  animation: xfade 48s 36s infinite;
+}
+figure:nth-child(3) {
+  animation: xfade 48s 30s infinite;
+}
+figure:nth-child(4) {
+  animation: xfade 48s 24s infinite;
+}
+figure:nth-child(5) {
+  animation: xfade 48s 18s infinite;
+}
+figure:nth-child(6) {
+  animation: xfade 48s 12s infinite;
+}
+figure:nth-child(7) {
+  animation: xfade 48s 6s infinite;
+}
+figure:nth-child(8) {
+  animation: xfade 48s 0s infinite;
+}
+
+@keyframes xfade{
+  0%{
+    opacity: 1;
+  }
+  10.5% {
+    opacity: 1;
+  }
+  12.5%{
+    opacity: 0;
+  }
+  98% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
