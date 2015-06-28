@@ -305,79 +305,6 @@ class FronteraMasCaraTestCase(TestCase):
         monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
         self.assertEqual(monto, Decimal(0.17).quantize(Decimal('1.00')))
     
-    ###################### TarifaHora/TarifaFindeSemana#######################
-    #esquina 
-    def testTarifaHoraTarifaFindeSemanaDif001(self):
-        #NoFeriado: esquema TarifaHora. Reserva 1h 
-        #Feriado: esquema TarifaFinDeSemana. Reserva 29min
-        #diferencia en tarifa 0.01
-        
-        estacionamiento = self.crearEstacionamiento()
-        self.crearFeriados(estacionamiento)
-        tarifa = 5.01
-        tarifaFeriado = 4.03
-        tarifaFeriadoE = 5.02
-        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
-        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaFeriadoE, None, None, 'Liviano', estacionamiento)
-        inicioReserva = datetime(2015, 6, 27, 23, 0 )
-        finReserva = datetime(2015, 6, 28, 0, 29)
-        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
-        self.assertEqual(monto, Decimal(10.04).quantize(Decimal('1.00')))
-        
-    #malicia
-    def testTarifaHoraTarifaFindeSemana59min(self):
-
-        #NoFeriado: esquema TarifaHora. Reserva 31h 
-        #Feriado: esquema TarifaFinDeSemana. Reserva 29min
-        #diferencia en tarifa 0.01 con 59 min de reserva
-        
-        estacionamiento = self.crearEstacionamiento()
-        self.crearFeriados(estacionamiento)
-        tarifa = 5.01
-        tarifaFeriado = 4.03
-        tarifaFeriadoE = 5.02
-        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
-        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaFeriadoE, None, None, 'Liviano', estacionamiento)
-        inicioReserva = datetime(2015, 6, 27, 23, 29)
-        finReserva = datetime(2015, 6, 28, 0, 28)
-        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
-        self.assertEqual(monto, Decimal(5.02).quantize(Decimal('1.00')))
-        
-    #esquina
-    def testTarifaHoraTarifaFindeSemana89minPreciosDif001(self):
-        #NoFeriado: esquema TarifaHora. Reserva 1h 
-        #Feriado: esquema TarifaFinDeSemana. Reserva 29min
-        #diferencia entre el precio de 0.01 con 59 min de reserva
-        
-        estacionamiento = self.crearEstacionamiento()
-        self.crearFeriados(estacionamiento)
-        tarifa = 3.75
-        tarifaFeriado = 5.02
-        tarifaFeriadoE = 5.01
-        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
-        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaFeriadoE, None, None, 'Liviano', estacionamiento)
-        inicioReserva = datetime(2015, 6, 27, 23, 0)
-        finReserva = datetime(2015, 6, 28, 0, 29)
-        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
-        self.assertEqual(monto, Decimal(10.02).quantize(Decimal('1.00')))
-        
-    #malicia
-    def testTarifaHoraTarifaFindeSemana2minEnFrontera(self):
-        #NoFeriado: esquema TarifaHora. Reserva 1min 
-        #Feriado: esquema TarifaFinDeSemana. Reserva 1min
-        #diferencia entre el precio de 0.01 con 2 min de reserva
-        
-        estacionamiento = self.crearEstacionamiento()
-        self.crearFeriados(estacionamiento)
-        tarifa = 5.09
-        tarifaFeriado = 5.01
-        tarifaFeriadoE = 5.10
-        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
-        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaFeriadoE, None, None, 'Liviano', estacionamiento)
-        inicioReserva = datetime(2015, 6, 27, 23, 59 )
-        finReserva = datetime(2015, 6, 28, 0, 1)
-        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
-        self.assertEqual(monto, Decimal(5.10).quantize(Decimal('1.00')))
     
     ###################### TarifaHora/TarifaHorayFraccion#######################
     #esquina 
@@ -450,8 +377,9 @@ class FronteraMasCaraTestCase(TestCase):
         self.assertEqual(monto, Decimal(5.10).quantize(Decimal('1.00')))
     
     ######################## TarifaHora/TarifaHoraPico #########################
-    '''
-        #borde 
+    
+    ''' DESCOMENTAR
+    #borde 
     def testTarifaHoraTarifaHoraPicoDif001(self):
         #NoFeriado: esquema TarifaHora. Reserva 30min 
         #Feriado: esquema TarifaHoraPico. Reserva 20min
@@ -462,7 +390,7 @@ class FronteraMasCaraTestCase(TestCase):
         tarifa = 5.01
         tarifaFeriado = 5.02
         estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
-        estacionamientoTarifa = guardarEsquemasFeriado('TarifaHorayPico', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaHoraPico', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
         inicioReserva = datetime(2015, 6, 27, 23, 30 )
         finReserva = datetime(2015, 6, 28, 0, 20)
         monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
@@ -480,7 +408,7 @@ class FronteraMasCaraTestCase(TestCase):
         tarifa = 5.01
         tarifaFeriado = 5.02
         estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
-        estacionamientoTarifa = guardarEsquemasFeriado('TarifaHorayPico', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaHoraPico', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
         inicioReserva = datetime(2015, 6, 27, 23, 30 )
         finReserva = datetime(2015, 6, 28, 0, 29)
         monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
@@ -589,5 +517,177 @@ class FronteraMasCaraTestCase(TestCase):
         finReserva = datetime(2015, 6, 28, 0, 1)
         monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
         self.assertEqual(monto, Decimal(0.17).quantize(Decimal('1.00')))
-            
         
+    ######################### TarifaFinDeSemana/TarifaMinuto ########################## 
+    
+    def testTarifaFinSemanaTarifaMinuto59Min(self):
+        #NoFeriado: esquema TarifaFinSemana. Reserva 30min 
+        #Feriado: esquema TarifaMinuto. Reserva 29min
+        #Reserva 30 min dia Normal de Semana y 29 Minutos Feriados
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaEspecial = 5.20
+        tarifaFeriado = 0.15
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaFinDeSemana', tarifa, tarifaEspecial, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaMinuto', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 26, 23, 30 )
+        finReserva = datetime(2015, 6, 27, 0, 29)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(5.06).quantize(Decimal('1.00')))
+        
+    def testTarifaFinSemanaTarifaMinuto2Min(self):
+        #NoFeriado: esquema TarifaFinSemana. Reserva 30min 
+        #Feriado: esquema TarifaMinuto. Reserva 29min
+        #Reserva 1 min dia Normal de Semana y 29 Minutos Feriados
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaEspecial = 5.20
+        tarifaFeriado = 0.15
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaFinDeSemana', tarifa, tarifaEspecial, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaMinuto', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 26, 23, 59 )
+        finReserva = datetime(2015, 6, 27, 0, 1)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(0.17).quantize(Decimal('1.00')))
+        
+    def testTarifaFinSemanaTarifaMinuto59MinFinSemana(self):
+        #NoFeriado: esquema TarifaFinSemana. Reserva 30min 
+        #Feriado: esquema TarifaMinuto. Reserva 29min
+        #Reserva 30 min dia Especial y 29 Minutos Feriados
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaEspecial = 5.20
+        tarifaFeriado = 0.15
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaFinDeSemana', tarifa, tarifaEspecial, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaMinuto', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 27, 23, 30 )
+        finReserva = datetime(2015, 6, 28, 0, 29)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(5.11).quantize(Decimal('1.00')))
+        
+    def testTarifaFinSemanaTarifaMinuto2MinFinSemana(self):
+        #NoFeriado: esquema TarifaFinSemana. Reserva 30min 
+        #Feriado: esquema TarifaMinuto. Reserva 29min
+        #Reserva 1 min dia Especial y 1 Minutos Feriados
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaEspecial = 5.20
+        tarifaFeriado = 0.15
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaFinDeSemana', tarifa, tarifaEspecial, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaMinuto', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 27, 23, 59 )
+        finReserva = datetime(2015, 6, 28, 0, 1)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(0.17).quantize(Decimal('1.00')))
+        
+    def testTarifaFinSemanaTarifaMinuto2MinFinSemana_TresDias(self):
+        #NoFeriado: esquema TarifaFinSemana. Reserva 30min 
+        #Feriado: esquema TarifaMinuto. Reserva 29min
+        #Reserva 1 min dia Normal, un dia Especial y 1 Minutos dia Feriado
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaEspecial = 5.20
+        tarifaFeriado = 0.15
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaFinDeSemana', tarifa, tarifaEspecial, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaMinuto', tarifaFeriado, None, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 26, 23, 59 )
+        finReserva = datetime(2015, 6, 28, 0, 1)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(124.97).quantize(Decimal('1.00')))
+        
+    ######################### TarifaHora/TarifaFinDeSemana ########################## 
+    
+    def testTarifaHoraTarifaFinSemana59Min(self):
+        #NoFeriado: esquema TarifaHora. Reserva 30min 
+        #Feriado: esquema TarifaFinDeSemana. Reserva 29min
+        #Reserva 30 min dia Normal de Semana y 29 Minutos Feriados
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaFeriado = 0.15
+        tarifaEspecialFeriado = 5.20
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaEspecialFeriado, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 26, 23, 30 )
+        finReserva = datetime(2015, 6, 27, 0, 29)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(5.10).quantize(Decimal('1.00')))
+        
+    def testTarifaHoraTarifaFinSemana2Min(self):
+        #NoFeriado: esquema TarifaHora. Reserva 1 min 
+        #Feriado: esquema TarifaFinDeSemana. Reserva 1 min
+        #Reserva 1 min dia Normal de Semana y 1 Minutos Feriados
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaFeriado = 0.15
+        tarifaEspecialFeriado = 5.20
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaEspecialFeriado, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 26, 23, 59 )
+        finReserva = datetime(2015, 6, 27, 0, 1)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(5.10).quantize(Decimal('1.00')))
+        
+    def testTarifaHoraTarifaFinDeSemana59MinFinSemana(self):
+        #NoFeriado: esquema TarifaHora. Reserva 30min 
+        #Feriado: esquema TarifaFinDeSemana. Reserva 29min
+        #Reserva 30 min dia Especial y 29 Minutos Feriados
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaEspecialFeriado = 5.20
+        tarifaFeriado = 0.15
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaEspecialFeriado, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 27, 23, 30 )
+        finReserva = datetime(2015, 6, 28, 0, 29)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(5.11).quantize(Decimal('1.00')))
+        
+    def testTarifaHoraTarifaFinDeSemana2MinFinSemana(self):
+        #NoFeriado: esquema TarifaHora. Reserva 1min 
+        #Feriado: esquema TarifaFinDeSemana. Reserva 1min
+        #Reserva 1 min dia Fin de Semana y 1 Minutos Feriados Fin De Semana
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaEspecialFeriado = 5.20
+        tarifaFeriado = 0.15
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaEspecialFeriado, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 27, 23, 59 )
+        finReserva = datetime(2015, 6, 28, 0, 1)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(5.10).quantize(Decimal('1.00')))
+        
+    def testTarifaHoraTarifaFinDeSemana_TresDias(self):
+        #NoFeriado: esquema TarifaHora. Reserva 30min 
+        #Feriado: esquema TarifaFinDeSemana. Reserva 29min
+        #Reserva 1 min dia Normal, un dia Especial y 1 Minutos dia Feriado
+        
+        estacionamiento = self.crearEstacionamiento()
+        self.crearFeriados(estacionamiento)
+        tarifa = 5.10
+        tarifaFeriado = 0.15
+        tarifaEspecialFeriado = 5.20
+        estacionamientoTarifa = guardarEsquemasNormal('TarifaHora', tarifa, None, None, None, 'Liviano', estacionamiento)
+        estacionamientoTarifa = guardarEsquemasFeriado('TarifaFinDeSemana', tarifaFeriado, tarifaEspecialFeriado, None, None, 'Liviano', estacionamiento)
+        inicioReserva = datetime(2015, 6, 26, 23, 59 )
+        finReserva = datetime(2015, 6, 28, 0, 1)
+        monto = estacionamiento.fronteraTarifaria.calcularPrecioFrontera(inicioReserva, finReserva, estacionamiento.id, 'Liviano')
+        self.assertEqual(monto, Decimal(127.50).quantize(Decimal('1.00')))
